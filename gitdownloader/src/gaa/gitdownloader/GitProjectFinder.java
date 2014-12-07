@@ -1,38 +1,40 @@
 package gaa.gitdownloader;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.lf5.viewer.configure.ConfigurationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jcabi.github.Github;
-import com.jcabi.github.RtGithub;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.JsonResponse;
 
 public class GitProjectFinder {
 
 	Logger logger = LoggerFactory.getLogger(GitProjectFinder.class);
-	
-	public static void main(String[] args) throws IOException {
-		new GitProjectFinder().findRepos();
+//	public static void main(String[] args) throws IOException {
+//		new GitProjectFinder().findRepos();
+//	}
+	public GitProjectFinder() {
+		BasicConfigurator.configure();
+		LogManager.getRootLogger().setLevel(Level.INFO);
 	}
 
-	private void findRepos() throws IOException {
-		Github github = new RtGithub("asergufmg", "aserg.ufmg2009");
-		Request request = github.entry()
-				.uri().path("/search/repositories")
-				.queryParam("q", "language:Java created:<=2014-06-01")
-				.queryParam("sort", "stars")
-				.queryParam("order", "desc")
-				.queryParam("per_page", "100").back()
-				.method(Request.GET);
+	public List<ProjectGit> findRepos(Request request) throws IOException {
+		
+		
 
 		JsonArray items = request.fetch().as(JsonResponse.class).json().readObject().getJsonArray("items");
+		List<ProjectGit> projects = new ArrayList<ProjectGit>();
 		for (JsonValue item : items) {
 			JsonObject repoData = (JsonObject) item;
 			ProjectGit p = new ProjectGit();
@@ -53,9 +55,9 @@ public class GitProjectFinder {
 			if (!repoData.isNull("description")) {
 //				p.setDescription(repoData.getString("description"));
 			}
-
-			this.logger.info("Project {} {}", repoData.getString("clone_url"), repoData.getString("default_branch"));
+			projects.add(p);
+			logger.info("Project {} {}", repoData.getString("clone_url"), repoData.getString("default_branch"));
 		}
-	}
-
+		return projects;
+	}	
 }
