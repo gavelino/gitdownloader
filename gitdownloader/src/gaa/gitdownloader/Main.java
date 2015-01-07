@@ -1,5 +1,8 @@
 package gaa.gitdownloader;
 
+import gaa.gitdownloader.dao.ProjectDAO;
+import gaa.gitdownloader.model.ProjectGit;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
@@ -39,7 +42,10 @@ public class Main {
 				.queryParam("per_page", "5").back()
 				.method(Request.GET);
 		
+		
+		
 		List<ProjectGit> projectsInfo = new GitProjectFinder().findRepos(request);
+		persistProjects(projectsInfo);
 		for (ProjectGit projectInfo : projectsInfo) {
 			System.out.println("Clonando " + projectInfo.getName());
 			GitServiceImpl s = new GitServiceImpl();
@@ -63,6 +69,14 @@ public class Main {
 			} finally {
 				walk.dispose();
 			}
+		}
+		
+	}
+
+	private static void persistProjects(List<ProjectGit> projectsInfo) {
+		ProjectDAO projectDAO = new ProjectDAO();
+		for (ProjectGit projectGit : projectsInfo) {
+			projectDAO.merge(projectGit);
 		}
 		
 	}

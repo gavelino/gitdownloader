@@ -1,17 +1,16 @@
-package gaa.gitdownloader;
+package gaa.gitdownloader.model;
 	
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import gaa.gitdownloader.AbstractEntity;
 
-import javax.persistence.CascadeType;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -23,6 +22,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "projectgit")
 public class ProjectGit extends AbstractEntity {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String name;
 	@Column(unique = true)
 	private String cloneUrl;
@@ -33,8 +36,11 @@ public class ProjectGit extends AbstractEntity {
 	private int forks_count;
 	private String default_branch;
 	private int open_issues;
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date created_at;
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date updated_at;
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date pushed_at;
 	@Column(length = 5000)
 	private String description;

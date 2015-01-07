@@ -1,5 +1,7 @@
 package gaa.gitdownloader;
 
+import gaa.gitdownloader.model.ProjectGit;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
