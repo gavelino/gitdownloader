@@ -37,9 +37,32 @@ public class GitServiceImpl implements GitService {
 			git = Git.cloneRepository()
 					.setDirectory(folder)
 					.setURI(cloneUrl)
-					.setCloneAllBranches(false)
+					.setCloneAllBranches(true)
 					.call();
 			logger.info("Done cloning {}", cloneUrl);
+		}
+		return git.getRepository();
+	}
+	
+	public Repository getClonedRepository(String projectPath, String branch) throws Exception {
+		File folder = new File(projectPath);
+		Git git;
+		if (folder.exists()) {
+			RepositoryBuilder builder = new RepositoryBuilder();
+			Repository repository = builder
+					.setGitDir(new File(folder, ".git"))
+					.readEnvironment()
+					.findGitDir()
+					.build();
+			git = new Git(repository);
+
+			git.checkout()
+			.setStartPoint(Constants.HEAD)
+			.setName(branch)
+			.call();
+		} else {
+			System.err.println("Repositorio não clonado: "  + branch );
+			return null;
 		}
 		return git.getRepository();
 	}
