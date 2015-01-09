@@ -50,6 +50,8 @@ public class ProjectGit extends AbstractEntity {
 	private int merge_commits_count;
 	private int error_commits_count;
 	private boolean analyzed;
+	
+	private String query;
 
 //	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //	private List<RevisionGit> revisionGitList = new ArrayList<RevisionGit>();
@@ -219,6 +221,14 @@ public class ProjectGit extends AbstractEntity {
 	@Override
 	public String toString() {
 		return this.cloneUrl;
+	}
+
+	public String getQuery() {
+		return query;
+	}
+
+	public void setQuery(String consulta) {
+		this.query = consulta;
 	}
 
 }

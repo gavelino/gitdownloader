@@ -1,5 +1,7 @@
 package gaa.gitdownloader.dao;
 
+import java.util.List;
+
 import gaa.gitdownloader.model.ProjectGit;
 
 
@@ -16,6 +18,10 @@ public class ProjectDAO extends GenericDAO<ProjectGit> {
 		return this.em.find(ProjectGit.class, id);
 	}
 	
-	
+	@Override
+	public List<ProjectGit> findAll(Class clazz) {
+		// TODO Auto-generated method stub
+		return super.findAll(ProjectGit.class);
+	}
 
 }

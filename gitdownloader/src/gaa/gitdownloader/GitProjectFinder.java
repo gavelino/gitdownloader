@@ -31,11 +31,12 @@ public class GitProjectFinder {
 		LogManager.getRootLogger().setLevel(Level.INFO);
 	}
 
-	public List<ProjectGit> findRepos(Request request) throws IOException {
+	public List<ProjectGit> findRepos(Request request, String query) throws IOException {
 		
 		
 
 		JsonArray items = request.fetch().as(JsonResponse.class).json().readObject().getJsonArray("items");
+		
 		List<ProjectGit> projects = new ArrayList<ProjectGit>();
 		for (JsonValue item : items) {
 			JsonObject repoData = (JsonObject) item;
@@ -53,7 +54,7 @@ public class GitProjectFinder {
 //			p.setPushed_at(StringToDate.parseDatePatterns(repoData.getString("pushed_at")));
 			p.setLanguage(repoData.getString("language"));
 			p.setCloneUrl(repoData.getString("clone_url"));
-
+			p.setQuery(query);
 			if (!repoData.isNull("description")) {
 //				p.setDescription(repoData.getString("description"));
 			}

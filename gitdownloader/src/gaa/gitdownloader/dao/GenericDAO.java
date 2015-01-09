@@ -1,9 +1,14 @@
 package gaa.gitdownloader.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
+
+import org.eclipse.persistence.sessions.Session;
 
 
 abstract class GenericDAO<T> {
@@ -60,6 +65,12 @@ abstract class GenericDAO<T> {
 		super.finalize();
 	}
 	
+	public List<T> findAll(Class clazz) {
+		String hql = "select a from " +  clazz.getSimpleName() + " a";
+		Query q = em.createQuery(hql);
+		return q.getResultList();
+	}
+    
 	
 	
 }
