@@ -1,5 +1,7 @@
 package gaa.prototype;
 
+import gaa.model.CommitFile;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

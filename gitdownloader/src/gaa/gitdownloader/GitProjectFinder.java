@@ -1,6 +1,6 @@
 package gaa.gitdownloader;
 
-import gaa.gitdownloader.model.ProjectGit;
+import gaa.model.ProjectInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,16 +31,17 @@ public class GitProjectFinder {
 		LogManager.getRootLogger().setLevel(Level.INFO);
 	}
 
-	public List<ProjectGit> findRepos(Request request, String query) throws IOException {
+	public List<ProjectInfo> findRepos(Request request, String query) throws IOException {
 		
 		
 
 		JsonArray items = request.fetch().as(JsonResponse.class).json().readObject().getJsonArray("items");
 		
-		List<ProjectGit> projects = new ArrayList<ProjectGit>();
+		List<ProjectInfo> projects = new ArrayList<ProjectInfo>();
 		for (JsonValue item : items) {
 			JsonObject repoData = (JsonObject) item;
-			ProjectGit p = new ProjectGit();
+			ProjectInfo p = new ProjectInfo();
+			p.setFullName(repoData.getString("full_name"));
 			p.setName(repoData.getString("name"));
 			p.setSize(repoData.getInt("size"));
 			p.setFork(repoData.getBoolean("fork"));

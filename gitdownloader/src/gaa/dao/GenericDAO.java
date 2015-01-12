@@ -1,4 +1,4 @@
-package gaa.gitdownloader.dao;
+package gaa.dao;
 
 import java.util.List;
 

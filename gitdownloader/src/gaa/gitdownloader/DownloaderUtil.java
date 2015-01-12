@@ -1,8 +1,8 @@
 package gaa.gitdownloader;
 
-import gaa.gitdownloader.dao.ProjectDAO;
-import gaa.gitdownloader.model.ProjectGit;
-import gaa.prototype.CommitFile;
+import gaa.dao.ProjectInfoDAO;
+import gaa.model.CommitFile;
+import gaa.model.ProjectInfo;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -25,9 +25,9 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 public class DownloaderUtil {
 
-	public static Map<String, List<CommitFile>> getCommitFiles(List<ProjectGit> projectsInfo) throws Exception {
+	public static Map<String, List<CommitFile>> getCommitFiles(List<ProjectInfo> projectsInfo) throws Exception {
 		Map<String, List<CommitFile>> allCommitFiles = new HashMap<String, List<CommitFile>>();
-		for (ProjectGit projectInfo : projectsInfo) {
+		for (ProjectInfo projectInfo : projectsInfo) {
 			GitServiceImpl s = new GitServiceImpl();
 			Repository repository = s.getClonedRepository("tmp/"+projectInfo.getName(), projectInfo.getDefault_branch());
 			RevCommit currentCommit = null;
@@ -72,7 +72,7 @@ public class DownloaderUtil {
 			diffs = df.scan(parent.getTree(), commit.getTree());
 
 		for (DiffEntry diff : diffs) {
-			commitFiles.add(new gaa.prototype.CommitFile(new Timestamp(commit.getAuthorIdent().getWhen().getTime()), 
+			commitFiles.add(new gaa.model.CommitFile(new Timestamp(commit.getAuthorIdent().getWhen().getTime()), 
 					diff.getNewPath(), 
 					gaa.prototype.Status.getStatus(diff.getChangeType().name()), 
 					commit.getAuthorIdent().getName(), 
@@ -98,16 +98,16 @@ public class DownloaderUtil {
 		return commitFiles;
 	}
 	
-	public static void persistProjects(List<ProjectGit> projectsInfo) {
-		ProjectDAO projectDAO = new ProjectDAO();
-		for (ProjectGit projectGit : projectsInfo) {
+	public static void persistProjects(List<ProjectInfo> projectsInfo) {
+		ProjectInfoDAO projectDAO = new ProjectInfoDAO();
+		for (ProjectInfo projectGit : projectsInfo) {
 			projectDAO.merge(projectGit);
 		}
 
 	}
 	
-	public static List<ProjectGit> getProjects() {
-		ProjectDAO projectDAO = new ProjectDAO();
+	public static List<ProjectInfo> getProjects() {
+		ProjectInfoDAO projectDAO = new ProjectInfoDAO();
 		return projectDAO.findAll(null);
 	}
 }

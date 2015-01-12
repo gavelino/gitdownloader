@@ -1,4 +1,4 @@
-package gaa.gitdownloader;
+package gaa.model;
 
 
 import java.io.Serializable;
@@ -13,17 +13,17 @@ import javax.persistence.Transient;
 public abstract class AbstractEntity implements Serializable {
     @Transient
     private static final long serialVersionUID = -3038903536445432584L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
-
-    public Long getId() {
-        id = null;
-        return id;
-    }
-
-    public void setId(final Long id) {
-        this.id = null;
-    }
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    protected Long id;
+//
+//    public Long getId() {
+//        id = null;
+//        return id;
+//    }
+//
+//    public void setId(final Long id) {
+//        this.id = null;
+//    }
 
 }

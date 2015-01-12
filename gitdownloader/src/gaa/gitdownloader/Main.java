@@ -1,8 +1,8 @@
 package gaa.gitdownloader;
 
-import gaa.gitdownloader.dao.ProjectDAO;
-import gaa.gitdownloader.model.ProjectGit;
-import gaa.prototype.CommitFile;
+import gaa.dao.ProjectInfoDAO;
+import gaa.model.CommitFile;
+import gaa.model.ProjectInfo;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -50,8 +50,9 @@ public class Main {
 		//				.findGitDir()
 		//				.build();
 		Github github = new RtGithub("asergufmg", "aserg.ufmg2009");
+		String query = "language:Java repo:gavelino/gitresearch";
 //		String query = "language:Java repo:junit-team/junit";
-		String query = "language:Java";
+//		String query = "language:Java";
 		Request request = github.entry()
 				.uri().path("/search/repositories")
 				//				.queryParam("language", "java")
@@ -60,14 +61,14 @@ public class Main {
 				.queryParam("q", query )
 								.queryParam("sort", "stars")
 								.queryParam("order", "desc")
-								.queryParam("per_page", "200")
+								.queryParam("per_page", "2")
 				.back()
 				.method(Request.GET);
 
 
-		List<ProjectGit> projectsInfo = new GitProjectFinder().findRepos(request, query);
+		List<ProjectInfo> projectsInfo = new GitProjectFinder().findRepos(request, query);
 		DownloaderUtil.persistProjects(projectsInfo);
-		for (ProjectGit projectInfo : projectsInfo) {
+		for (ProjectInfo projectInfo : projectsInfo) {
 			System.out.println("Clonando " + projectInfo.getName());
 			GitServiceImpl s = new GitServiceImpl();
 			Repository repository = s.cloneIfNotExists("tmp/"+projectInfo.getName(), projectInfo.getCloneUrl(), projectInfo.getDefault_branch());

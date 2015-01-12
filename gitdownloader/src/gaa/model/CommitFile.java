@@ -1,22 +1,49 @@
-package gaa.prototype;
+package gaa.model;
+
+import gaa.prototype.Status;
 
 import java.sql.Timestamp;
 import java.util.Date;
 
-public class CommitFile implements Comparable<CommitFile> {
-	
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+public class CommitFile extends AbstractEntity implements Comparable<CommitFile> {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	protected Long id;
+
+
+
+	private String sha;
 	private String fileName;
+	@Enumerated(EnumType.STRING)
 	private Status status;
 	private String login;
 	private String name;
 	private String email;
 	private int additions;
 	private int deletions;
-	private String sha;
 	private int commitId;
+	@Lob
 	private String message;
-	private Timestamp date;
-	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date date;
+	String projectName;
+
+	public CommitFile() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public CommitFile(Timestamp date, String fileName, Status status, String login,
 			int additions, int deletions, String sha, int commitId,
 			String message) {
@@ -31,8 +58,8 @@ public class CommitFile implements Comparable<CommitFile> {
 		this.commitId = commitId;
 		this.message = message;
 	}
-	
-	
+
+
 	public CommitFile(Timestamp date, String fileName, Status status, String login,
 			String name, String email, int additions, int deletions,
 			String sha, int commitId, String message) {
@@ -50,6 +77,14 @@ public class CommitFile implements Comparable<CommitFile> {
 		this.date = date;
 	}
 
+	public Long getId() {
+		id = null;
+		return id;
+	}
+
+	public void setId(final Long id) {
+		this.id = null;
+	}
 
 	@Override
 	public String toString() {
@@ -78,7 +113,7 @@ public class CommitFile implements Comparable<CommitFile> {
 	public void setLogin(String login) {
 		this.login = login;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -146,10 +181,18 @@ public class CommitFile implements Comparable<CommitFile> {
 	public Date getDate() {
 		return date;
 	}
-	public void setDate(Timestamp date) {
+	public void setDate(Date date) {
 		this.date = date;
 	}
-	
-	
-	
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
+
+
 }

@@ -1,11 +1,10 @@
-package gaa.gitdownloader.model;
+package gaa.model;
 	
-import gaa.gitdownloader.AbstractEntity;
-
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -14,17 +13,20 @@ import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@XmlRootElement
-@NamedQueries({
-	@NamedQuery(name = "projectGit.findAll", query = "SELECT i FROM ProjectGit i"),
-	@NamedQuery(name = "projectGit.findByCloneUrl", query = "SELECT i FROM ProjectGit i where i.cloneUrl = :cloneUrl")
-})
+//@XmlRootElement
+//@NamedQueries({
+//	@NamedQuery(name = "projectGit.findAll", query = "SELECT i FROM ProjectGit i"),
+//	@NamedQuery(name = "projectGit.findByCloneUrl", query = "SELECT i FROM ProjectGit i where i.cloneUrl = :cloneUrl")
+//})
 @Table(name = "projectgit")
-public class ProjectGit extends AbstractEntity {
+public class ProjectInfo extends AbstractEntity {
 
 	/**
 	 * 
 	 */
+	@Id 
+	private String fullName;
+	
 	private static final long serialVersionUID = 1L;
 	private String name;
 	@Column(unique = true)
@@ -56,15 +58,7 @@ public class ProjectGit extends AbstractEntity {
 //	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //	private List<RevisionGit> revisionGitList = new ArrayList<RevisionGit>();
 
-	public Long getId() {
-		return id;
-	}
 
-	public void setId(final Long id) {
-		this.id = id;
-	}
-
-	
 
 	public String getName() {
 		return name;
@@ -229,6 +223,14 @@ public class ProjectGit extends AbstractEntity {
 
 	public void setQuery(String consulta) {
 		this.query = consulta;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 
 }

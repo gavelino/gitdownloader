@@ -1,5 +1,7 @@
 package gaa.prototype;
 
+import gaa.model.CommitFile;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;

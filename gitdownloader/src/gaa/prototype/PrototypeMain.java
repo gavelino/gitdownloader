@@ -1,7 +1,8 @@
 package gaa.prototype;
 
 import gaa.gitdownloader.DownloaderUtil;
-import gaa.gitdownloader.model.ProjectGit;
+import gaa.model.CommitFile;
+import gaa.model.ProjectInfo;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,8 +33,8 @@ import br.ufmg.aserg.topicviewer.util.UnsufficientNumberOfColorsException;
 public class PrototypeMain {
 	// JDBC driver name and database URL
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-//	static final String DB_URL = "jdbc:mysql://localhost:3306/gitresearch";
-		   static final String DB_URL = "jdbc:mysql://localhost:3306/";
+	//	static final String DB_URL = "jdbc:mysql://localhost:3306/gitresearch";
+	static final String DB_URL = "jdbc:mysql://localhost:3306/";
 	//	   static final String DB_URL = "jdbc:mysql://localhost:3306/gitelasticsearch";
 
 	//  Database credentials
@@ -43,58 +44,51 @@ public class PrototypeMain {
 	static Set<UserInfoData> usersInfo;
 
 	public static void main(String[] args) throws Exception {
-		List<ProjectGit> projectsInfo =  DownloaderUtil.getProjects();
-		Map<String, List<CommitFile>> map = DownloaderUtil.getCommitFiles(projectsInfo);
-		Entry<String,List<CommitFile>> entry =  map.entrySet().iterator().next();
 		Rank rank;
-		String projectName = entry.getKey();
-		System.out.println(projectName);
-		
-		rank = new Rank(entry.getValue(), projectName);
-//		rank = new Rank(getCommitFiles("gitresearch2", "gitresearch"), "gitresearch");	
-		
+//		List<ProjectInfo> projectsInfo =  DownloaderUtil.getProjects();
+//		Map<String, List<CommitFile>> map = DownloaderUtil.getCommitFiles(projectsInfo);
+//		Entry<String,List<CommitFile>> entry =  map.entrySet().iterator().next();
+//		
+//		String projectName = entry.getKey();
+//		System.out.println(projectName);
+
+		String projectName = "elasticsearch/elasticsearch";
+//		rank = new Rank(entry.getValue(), projectName);
+		rank = new Rank(getCommitFiles("gitdownloader", projectName), projectName);	
+
 		distributionMap(getMap(rank), "Rank "+projectName);
-		
-//		System.out.println("\n\nJUnit");
-//		rank = new Rank(getCommitFiles("gitjunit"), "gitjunit");		
-//		distributionMap(getMap(rank), "Rank JUnit");
-		
-//		System.out.println("\n\nElasticSearch");
-//		rank = new Rank(getCommitFiles("gitelasticsearch"), "gitelasticsearch");		
-//		distributionMap(getMap(rank), "Rank ElasticSearch");
-		
-		
+
+		//		System.out.println("\n\nJUnit");
+		//		rank = new Rank(getCommitFiles("gitjunit"), "gitjunit");		
+		//		distributionMap(getMap(rank), "Rank JUnit");
+
+		//		System.out.println("\n\nElasticSearch");
+		//		rank = new Rank(getCommitFiles("gitelasticsearch"), "gitelasticsearch");		
+		//		distributionMap(getMap(rank), "Rank ElasticSearch");
+
+
 		System.out.println();
 		distributionMap(getAuthorMap(rank), "Author");
-		
+
 		for (String packageName : rank.getJavaPackages()) {
 			System.out.println(packageName);
 		}
 		System.out.println("total = "+rank.getJavaPackages().size());
-//		for (UserFileRank userFile : rank.getCompleteRank()) {
-//			System.out.println(userFile);
-//		}
-//		System.out.println("\n------------------------------\n");
-//		for (String projectName : Util.getProjectNames()) {
-//			System.out.println("Projeto:  "+projectName);
-//			for (String user : Util.getAllUsers(projectName)) {
-////				System.out.println("user = " + user);
-//				printUserFiles(rank, user);
-//			}
-//		}
+		//		for (UserFileRank userFile : rank.getCompleteRank()) {
+		//			System.out.println(userFile);
+		//		}
+		//		System.out.println("\n------------------------------\n");
+		//		for (String projectName : Util.getProjectNames()) {
+		//			System.out.println("Projeto:  "+projectName);
+		//			for (String user : Util.getAllUsers(projectName)) {
+		////				System.out.println("user = " + user);
+		//				printUserFiles(rank, user);
+		//			}
+		//		}
 	}
-	
-	
-	
-	private static List<CommitFile> getCommitFiles(String database, String filter) {
-		List<CommitFile> allCommitFiles = getCommitFiles(database);
-		List<CommitFile> filteredCommitFiles = new ArrayList<CommitFile>();
-		for (CommitFile commitFile : allCommitFiles) {
-			if (commitFile.getFileName().contains(filter))
-				filteredCommitFiles.add(commitFile);
-		}
-		return filteredCommitFiles;
-	}
+
+
+
 
 
 
@@ -121,18 +115,18 @@ public class PrototypeMain {
 	private static void printUserFiles(Rank rank, String user) {
 		for (UserFileRank userFile : rank.getCompleteRank()) {
 			String filename = userFile.getFilename();
-			
+
 			if (user.equals(userFile.getUser()) && filename.substring(filename.lastIndexOf('.')+1, filename.length()).equals("java")) 
-					System.out.print(filename+",");
+				System.out.print(filename+",");
 		}
 		System.out.println();
 	}
-	
-	private static List<CommitFile> getCommitFiles(String database) {
+
+	private static List<CommitFile> getCommitFiles(String database, String projectName) {
 		Connection conn = null;
 		Statement stmt = null;
 		List<CommitFile> cFiles = new ArrayList<CommitFile>();
-		
+
 		try{
 			//STEP 2: Register JDBC driver
 			Class.forName("com.mysql.jdbc.Driver");
@@ -145,34 +139,34 @@ public class PrototypeMain {
 			System.out.println("Creating statement...");
 			stmt = conn.createStatement();
 			String sql;
-			sql = "SELECT gcuser.DATE, gfile.FILENAME, gfile.STATUS, gCuser.EMAIL, gfile.ADDITIONS, gfile.DELETIONS, grc.SHA, grc.COMMIT_ID ,gcommit.MESSAGE FROM gitrepositorycommit_gitcommitfile gg "
-					+ "JOIN gitrepositorycommit grc ON (grc.SHA = gg.GitRepositoryCommit_SHA) "
-					+ "JOIN gitcommitfile gfile ON (gfile.ID = gg.files_ID) "
-					+ "JOIN gitcommit gcommit on grc.COMMIT_ID = gcommit.ID "
-					+ "JOIN gitcommituser gcuser on gcommit.AUTHOR_ID = gcuser.ID;";
-//			sql = "SELECT gcuser.DATE, gfile.FILENAME, gfile.STATUS, gcuser.NAME, gfile.ADDITIONS, gfile.DELETIONS, grc.SHA, grc.COMMIT_ID ,gcommit.MESSAGE FROM gitrepositorycommit_gitcommitfile gg"
-//					+ "JOIN gitcommitfile gfile ON (gfile.ID = gg.files_ID) "
+//			sql = "SELECT gcuser.DATE, gfile.FILENAME, gfile.STATUS, gCuser.EMAIL, gfile.ADDITIONS, gfile.DELETIONS, grc.SHA, grc.COMMIT_ID ,gcommit.MESSAGE FROM gitrepositorycommit_gitcommitfile gg "
 //					+ "JOIN gitrepositorycommit grc ON (grc.SHA = gg.GitRepositoryCommit_SHA) "
+//					+ "JOIN gitcommitfile gfile ON (gfile.ID = gg.files_ID) "
 //					+ "JOIN gitcommit gcommit on grc.COMMIT_ID = gcommit.ID "
 //					+ "JOIN gitcommituser gcuser on gcommit.AUTHOR_ID = gcuser.ID;";
+			sql = "SELECT cf.* FROM  gitproject_commitfile git_commit "
+					+ "JOIN commitfile cf on git_commit.commitFiles_ID = cf.ID "
+					+ "JOIN gitproject gp on git_commit.GitProject_ID = gp.ID "
+					+ "where gp.PROJECTINFO_FULLNAME = "
+					+ "\""+ projectName + "\";"  ;
 			ResultSet rs = stmt.executeQuery(sql);
 			//STEP 5: Extract data from result set
 			while(rs.next()){
 				//Retrieve by column name
 				String fileName = rs.getString("filename");
 				String status = rs.getString("status");
-//				String login = rs.getString("name");
-//				String login = rs.getString("email");
+				//				String login = rs.getString("name");
+				//				String login = rs.getString("email");
 				String login = rs.getString("email").split("@")[0];
 				int additions  = rs.getInt("additions");
 				int deletions = rs.getInt("deletions");
 				String sha = rs.getString("sha");
-				int commitId  = rs.getInt("commit_id");
+				int commitId  = rs.getInt("commitid");
 				String message = rs.getString("message");
-//				Date date = rs.getDate("date");
+				//				Date date = rs.getDate("date");
 				Timestamp time = rs.getTimestamp("date");
-				
-//				String simpleFileName = fileName.substring(fileName.lastIndexOf('/')+1,fileName.length());
+
+				//				String simpleFileName = fileName.substring(fileName.lastIndexOf('/')+1,fileName.length());
 				cFiles.add(new CommitFile(time, fileName, Status.getStatus(status), 
 						login, additions, deletions, sha, commitId, message));
 			}
@@ -202,10 +196,10 @@ public class PrototypeMain {
 		}//end try
 		return cFiles;
 	}
-	
-	
-	
-	
+
+
+
+
 	static void distributionMap(Map<String, Set<String>> maps, String mapName){
 		usersInfo = new HashSet<UserInfoData>();
 		DistributionMap dm = new DistributionMap(mapName);
@@ -215,7 +209,7 @@ public class PrototypeMain {
 		Queue<Entry<String, Set<String>>> queuedMap = getOrderedMap(maps);
 		while (!queuedMap.isEmpty()){
 			Entry<String, Set<String>> entry = queuedMap.poll();
-//		for (Entry<String, Set<String>> entry : getOrderedMap(maps).entrySet()) {
+			//		for (Entry<String, Set<String>> entry : getOrderedMap(maps).entrySet()) {
 			String sTopics[] = new String[entry.getValue().size()];
 			int i =0;
 			for (String name : entry.getValue()) {
@@ -228,7 +222,7 @@ public class PrototypeMain {
 			index++;
 			usersInfo.add(new UserInfoData(entry.getKey(), stCount, entry.getValue()));
 			semanticTopics[stCount++] = sTopics;
-			
+
 		}
 		try {
 			dm = DistributionMapCalculator.addSemanticClustersMetrics(dm, maps.size());
@@ -236,14 +230,14 @@ public class PrototypeMain {
 			calcDMValues(dm);
 			JFrame frame = new JFrame("DistributionMap - "+mapName);
 			JScrollPane scrollPane = new JScrollPane(dmPanel);  
-//			scrollPane.setBorder(BorderFactory.createTitledBorder("DistributionMap"));
+			//			scrollPane.setBorder(BorderFactory.createTitledBorder("DistributionMap"));
 			frame.setContentPane(scrollPane);
 			frame.setVisible(true);
 		} catch (UnsufficientNumberOfColorsException e1) {
 			e1.printStackTrace();
 		}
 	}
-	
+
 	private static Queue<Entry<String, Set<String>>> getOrderedMap(
 			Map<String, Set<String>> maps) {
 		Map<String, Set<String>> clonedMap =  new HashMap<String, Set<String>>();
@@ -252,7 +246,7 @@ public class PrototypeMain {
 			clonedMap.put(entry.getKey(), entry.getValue());
 
 		}
-		
+
 		while (!clonedMap.isEmpty()) {
 			int bigSize = 0;
 			Entry<String, Set<String>> bigEntry =  null;
@@ -267,7 +261,7 @@ public class PrototypeMain {
 				newMap.add(bigEntry);
 				clonedMap.remove(bigEntry.getKey());
 			}
-			
+
 		}
 		return newMap;
 	}
