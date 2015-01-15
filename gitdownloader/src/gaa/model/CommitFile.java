@@ -25,7 +25,8 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 
 
 	private String sha;
-	private String fileName;
+	private String oldFileName;
+	private String newFileName;
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	private String login;
@@ -44,12 +45,13 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 		// TODO Auto-generated constructor stub
 	}
 
-	public CommitFile(Timestamp date, String fileName, Status status, String login,
+	public CommitFile(Timestamp date, String oldFileName, String newFileName, Status status, String login,
 			int additions, int deletions, String sha, int commitId,
 			String message) {
 		super();
 		this.date = date;
-		this.fileName = fileName;
+		this.oldFileName = oldFileName;
+		this.newFileName = newFileName;
 		this.status = status;
 		this.login = login;
 		this.additions = additions;
@@ -60,11 +62,12 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 	}
 
 
-	public CommitFile(Timestamp date, String fileName, Status status, String login,
+	public CommitFile(Timestamp date, String oldFileName, String newFileName, Status status, String login,
 			String name, String email, int additions, int deletions,
 			String sha, int commitId, String message) {
 		super();
-		this.fileName = fileName;
+		this.oldFileName = oldFileName;
+		this.newFileName = newFileName;
 		this.status = status;
 		this.login = login;
 		this.name = name;
@@ -88,14 +91,14 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 
 	@Override
 	public String toString() {
-		return sha + ", " + date + ", " + fileName + ", " + status + ", " + login + ", " + name + ", " + email; //+ ", " + additions  + ", " + deletions + ", " + sha + ", " + commitId + ", " + message; 
+		return sha + ", " + date + ", " + newFileName + ", " + status + ", " + login + ", " + name + ", " + email; //+ ", " + additions  + ", " + deletions + ", " + sha + ", " + commitId + ", " + message; 
 	}
-	public String getFileName() {
-		return fileName;
+	public String getNewFileName() {
+		return newFileName;
 	}
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public void setNewFileName(String fileName) {
+		this.newFileName = fileName;
 	}
 
 	public Status getStatus() {
@@ -191,6 +194,14 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
+	}
+
+	public String getOldFileName() {
+		return oldFileName;
+	}
+
+	public void setOldFileName(String oldFileName) {
+		this.oldFileName = oldFileName;
 	}
 
 

@@ -95,7 +95,7 @@ public class FileRank {
 					} else
 						System.out
 								.println("\n\nMuito errado! Analizar porque commit Added nao esta antes\n"
-										+ commitFile.getFileName()
+										+ commitFile.getNewFileName()
 										+ commitFile.getSha()
 										+ commitFile.getStatus() + "\n");
 				}
@@ -109,7 +109,7 @@ public class FileRank {
 	private void testPrintCommits(List<CommitFile> commits2) {
 		System.out.println();
 		for (CommitFile commitFile : commits2) {
-			System.out.println(commitFile.getDate() + " , " + commitFile.getCommitId() + " , " + commitFile.getFileName() + " , " + commitFile.getStatus());
+			System.out.println(commitFile.getDate() + " , " + commitFile.getCommitId() + " , " + commitFile.getNewFileName() + " , " + commitFile.getStatus());
 		}
 		System.out.println();
 		

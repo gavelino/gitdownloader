@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 //	@NamedQuery(name = "projectGit.findAll", query = "SELECT i FROM ProjectGit i"),
 //	@NamedQuery(name = "projectGit.findByCloneUrl", query = "SELECT i FROM ProjectGit i where i.cloneUrl = :cloneUrl")
 //})
-@Table(name = "projectgit")
+@Table(name = "projectinfo")
 public class ProjectInfo extends AbstractEntity {
 
 	/**

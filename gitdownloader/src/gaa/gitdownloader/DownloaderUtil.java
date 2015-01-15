@@ -73,6 +73,7 @@ public class DownloaderUtil {
 
 		for (DiffEntry diff : diffs) {
 			commitFiles.add(new gaa.model.CommitFile(new Timestamp(commit.getAuthorIdent().getWhen().getTime()), 
+					diff.getOldPath(),
 					diff.getNewPath(), 
 					gaa.prototype.Status.getStatus(diff.getChangeType().name()), 
 					commit.getAuthorIdent().getName(), 

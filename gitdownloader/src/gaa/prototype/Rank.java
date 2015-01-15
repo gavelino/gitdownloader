@@ -23,7 +23,7 @@ public class Rank {
 
 	private void fillMap() { 
 		for (CommitFile commitFile : commits) {
-			String fileName = commitFile.getFileName();
+			String fileName = commitFile.getNewFileName();
 			if (!mapFileRank.containsKey(fileName)){
 				mapFileRank.put(fileName, new FileRank(fileName, new ArrayList<CommitFile>()));
 			}

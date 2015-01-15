@@ -52,7 +52,9 @@ public class PrototypeMain {
 //		String projectName = entry.getKey();
 //		System.out.println(projectName);
 
-		String projectName = "elasticsearch/elasticsearch";
+//		String projectName = "elasticsearch/elasticsearch";
+		String projectName = "gavelino/gitresearch";
+		
 //		rank = new Rank(entry.getValue(), projectName);
 		rank = new Rank(getCommitFiles("gitdownloader", projectName), projectName);	
 
@@ -153,7 +155,8 @@ public class PrototypeMain {
 			//STEP 5: Extract data from result set
 			while(rs.next()){
 				//Retrieve by column name
-				String fileName = rs.getString("filename");
+				String oldFileName = rs.getString("oldfilename");
+				String newFileName = rs.getString("newfilename");
 				String status = rs.getString("status");
 				//				String login = rs.getString("name");
 				//				String login = rs.getString("email");
@@ -167,7 +170,7 @@ public class PrototypeMain {
 				Timestamp time = rs.getTimestamp("date");
 
 				//				String simpleFileName = fileName.substring(fileName.lastIndexOf('/')+1,fileName.length());
-				cFiles.add(new CommitFile(time, fileName, Status.getStatus(status), 
+				cFiles.add(new CommitFile(time, oldFileName, newFileName, Status.getStatus(status), 
 						login, additions, deletions, sha, commitId, message));
 			}
 			//STEP 6: Clean-up environment

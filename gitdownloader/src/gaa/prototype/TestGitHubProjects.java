@@ -111,7 +111,7 @@ public class TestGitHubProjects {
 		List<CommitFile> allCommitFiles = getCommitFiles(database);
 		List<CommitFile> filteredCommitFiles = new ArrayList<CommitFile>();
 		for (CommitFile commitFile : allCommitFiles) {
-			if (commitFile.getFileName().contains(filter))
+			if (commitFile.getNewFileName().contains(filter))
 				filteredCommitFiles.add(commitFile);
 		}
 		return filteredCommitFiles;
@@ -176,7 +176,8 @@ public class TestGitHubProjects {
 			//STEP 5: Extract data from result set
 			while(rs.next()){
 				//Retrieve by column name
-				String fileName = rs.getString("filename");
+				String oldFileName = rs.getString("oldfilename");
+				String newFileName = rs.getString("newfilename");
 				String status = rs.getString("status");
 				String login = rs.getString("author_id");
 				String name = rs.getString("name");
@@ -190,8 +191,8 @@ public class TestGitHubProjects {
 				Timestamp time = rs.getTimestamp("date");
 				
 //				String simpleFileName = fileName.substring(fileName.lastIndexOf('/')+1,fileName.length());
-				cFiles.add(new CommitFile(time, fileName, Status.getStatus(status), 
-						login, name, email, additions, deletions, sha, commitId, message));
+				cFiles.add(new CommitFile(time, oldFileName, newFileName, Status.getStatus(status), 
+						login, additions, deletions, sha, commitId, message));
 			}
 			//STEP 6: Clean-up environment
 			rs.close();
