@@ -72,7 +72,7 @@ public class DownloaderUtil {
 			diffs = df.scan(parent.getTree(), commit.getTree());
 
 		for (DiffEntry diff : diffs) {
-			commitFiles.add(new gaa.model.CommitFile(new Timestamp(commit.getAuthorIdent().getWhen().getTime()), 
+			commitFiles.add(new gaa.model.CommitFile(new Timestamp(commit.getCommitterIdent().getWhen().getTime()), 
 					diff.getOldPath(),
 					diff.getNewPath(), 
 					gaa.prototype.Status.getStatus(diff.getChangeType().name()), 
@@ -102,7 +102,7 @@ public class DownloaderUtil {
 	public static void persistProjects(List<ProjectInfo> projectsInfo) {
 		ProjectInfoDAO projectDAO = new ProjectInfoDAO();
 		for (ProjectInfo projectGit : projectsInfo) {
-			projectDAO.merge(projectGit);
+			projectDAO.persist(projectGit);
 		}
 
 	}

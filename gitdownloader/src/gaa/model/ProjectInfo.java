@@ -44,6 +44,9 @@ public class ProjectInfo extends AbstractEntity {
 	private Date updated_at;
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date pushed_at;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date lastCommit;
+	
 	@Column(length = 5000)
 	private String description;
 	private String language;
@@ -231,6 +234,14 @@ public class ProjectInfo extends AbstractEntity {
 
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
+	}
+
+	public Date getLastCommit() {
+		return lastCommit;
+	}
+
+	public void setLastCommit(Date lastCommit) {
+		this.lastCommit = lastCommit;
 	}
 
 }

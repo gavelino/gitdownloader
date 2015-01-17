@@ -5,7 +5,7 @@ import gaa.model.CommitFile;
 import gaa.model.ProjectInfo;
 
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -37,6 +37,7 @@ import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 import com.jcabi.github.Github;
+import com.jcabi.github.Github.Time;
 import com.jcabi.github.RtGithub;
 import com.jcabi.http.Request;
 
@@ -50,13 +51,11 @@ public class Main {
 		//				.findGitDir()
 		//				.build();
 		Github github = new RtGithub("asergufmg", "aserg.ufmg2009");
-		String query = "language:Java repo:gavelino/gitresearch";
+//		String query = "language:Java repo:gavelino/gitresearch";
 //		String query = "language:Java repo:junit-team/junit";
-//		String query = "language:Java";
+		String query = "language:Java";
 		Request request = github.entry()
 				.uri().path("/search/repositories")
-				//				.queryParam("language", "java")
-				//				.queryParam("user", "gavelino")
 				//				.queryParam("q", "language:Java created:<=2014-06-01")
 				.queryParam("q", query )
 								.queryParam("sort", "stars")
@@ -67,15 +66,27 @@ public class Main {
 
 
 		List<ProjectInfo> projectsInfo = new GitProjectFinder().findRepos(request, query);
-		DownloaderUtil.persistProjects(projectsInfo);
 		for (ProjectInfo projectInfo : projectsInfo) {
 			System.out.println("Clonando " + projectInfo.getName());
 			GitServiceImpl s = new GitServiceImpl();
 			Repository repository = s.cloneIfNotExists("tmp/"+projectInfo.getName(), projectInfo.getCloneUrl(), projectInfo.getDefault_branch());
 			System.out.println("Clonou");
-
-
+			Iterable<RevCommit> logs = new Git(repository).log()
+	                .call();
+	        int count = 0;
+	        Date lastCommitDate = null;
+	        for (RevCommit rev : logs) {
+	            //System.out.println("Commit: " + rev /* + ", name: " + rev.getName() + ", id: " + rev.getId().getName() */);
+	            count++;
+	            if (lastCommitDate == null || lastCommitDate.compareTo(rev.getCommitterIdent().getWhen())<0)
+	            	lastCommitDate = rev.getCommitterIdent().getWhen();
+	            
+	        }
+	        System.out.println("Had " + count + " commits overall in repository "+lastCommitDate);
+	        projectInfo.setCommits_count(count);
 		}
+		DownloaderUtil.persistProjects(projectsInfo);
+		
 //		System.out.println(" Percorrendo repositorios clonados ");
 //		projectsInfo = null;
 //		projectsInfo = DownloaderUtil.getProjects();
