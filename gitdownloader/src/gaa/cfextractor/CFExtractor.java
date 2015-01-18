@@ -20,6 +20,7 @@ public class CFExtractor {
 			GitProject gitProject = new GitProject();
 			gitProject.setProjectInfo(projectInfo);			
 			gitProject.setCommitFiles(map.get(projectInfo.getName()));
+			
 			gpDAO.merge(gitProject);
 		}
 		

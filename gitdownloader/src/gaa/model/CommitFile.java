@@ -1,7 +1,5 @@
 package gaa.model;
 
-import gaa.prototype.Status;
-
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -178,7 +176,13 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 	}
 	@Override
 	public int compareTo(CommitFile o) {
-		// TODO Auto-generated method stub
+//		if (this.date.compareTo(o.date)==0){
+//			if (this.status == Status.ADDED)
+//				return -1;
+//			if (o.status == Status.ADDED)
+//				return 1;
+//			else return 0;
+//		}
 		return this.date.compareTo(o.date);
 	}
 	public Date getDate() {

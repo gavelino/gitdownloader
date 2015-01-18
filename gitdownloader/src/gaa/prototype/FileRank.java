@@ -1,6 +1,7 @@
 package gaa.prototype;
 
 import gaa.model.CommitFile;
+import gaa.model.Status;
 
 import java.util.ArrayList;
 import java.util.Collections;

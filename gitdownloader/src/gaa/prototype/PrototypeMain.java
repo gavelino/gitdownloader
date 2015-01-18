@@ -3,6 +3,7 @@ package gaa.prototype;
 import gaa.gitdownloader.DownloaderUtil;
 import gaa.model.CommitFile;
 import gaa.model.ProjectInfo;
+import gaa.model.Status;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -41,9 +42,33 @@ public class PrototypeMain {
 	static final String USER = "git";
 	static final String PASS = "git";
 
-	static Set<UserInfoData> usersInfo;
-
+	static Map<String, HashSet<UserInfoData>> usersInfo = new HashMap<String, HashSet<UserInfoData>>();
 	public static void main(String[] args) throws Exception {
+		List<ProjectInfo> projectsInfo =  DownloaderUtil.getProjects();
+		for (ProjectInfo projectInfo : projectsInfo) {
+			String projectName = projectInfo.getFullName();
+			
+			Rank rank = new Rank(getCommitFiles("gitdownloader", projectName), projectName);	
+
+			distributionMap(getMap(rank), projectName, "Rank "+projectName);
+		}
+		printProjectUsersInfo();
+		
+		
+	}
+	
+	private static void printProjectUsersInfo() {
+	for (Entry<String, HashSet<UserInfoData>> entry : usersInfo.entrySet()) {
+			for (UserInfoData userInfo : entry.getValue()) {
+				System.out.format("%s,%s,%d,%.0f,%f\n", entry.getKey(), userInfo.getUserName(), userInfo.getnFiles(), userInfo.getSpread(), userInfo.getFocus());
+//				System.out.println(entry.getKey()+","+userInfo.getUserName()+ ","+userInfo.getnFiles() + ","+userInfo.getSpread() + ","+userInfo.getFocus());
+			}
+		}
+		System.out.println();
+		
+	}
+
+	public static void oldMain(String[] args) throws Exception {
 		Rank rank;
 //		List<ProjectInfo> projectsInfo =  DownloaderUtil.getProjects();
 //		Map<String, List<CommitFile>> map = DownloaderUtil.getCommitFiles(projectsInfo);
@@ -58,7 +83,7 @@ public class PrototypeMain {
 //		rank = new Rank(entry.getValue(), projectName);
 		rank = new Rank(getCommitFiles("gitdownloader", projectName), projectName);	
 
-		distributionMap(getMap(rank), "Rank "+projectName);
+		distributionMap(getMap(rank), projectName, "Rank "+projectName);
 
 		//		System.out.println("\n\nJUnit");
 		//		rank = new Rank(getCommitFiles("gitjunit"), "gitjunit");		
@@ -69,13 +94,14 @@ public class PrototypeMain {
 		//		distributionMap(getMap(rank), "Rank ElasticSearch");
 
 
-		System.out.println();
-		distributionMap(getAuthorMap(rank), "Author");
-
-		for (String packageName : rank.getJavaPackages()) {
-			System.out.println(packageName);
-		}
-		System.out.println("total = "+rank.getJavaPackages().size());
+//		System.out.println();
+//		distributionMap(getAuthorMap(rank), "Author");
+//
+//		for (String packageName : rank.getJavaPackages()) {
+//			System.out.println(packageName);
+//		}
+//		System.out.println("total = "+rank.getJavaPackages().size());
+		
 		//		for (UserFileRank userFile : rank.getCompleteRank()) {
 		//			System.out.println(userFile);
 		//		}
@@ -203,8 +229,17 @@ public class PrototypeMain {
 
 
 
-	static void distributionMap(Map<String, Set<String>> maps, String mapName){
-		usersInfo = new HashSet<UserInfoData>();
+	static void distributionMap(Map<String, Set<String>> maps, String projectName, String mapName){
+		HashSet<UserInfoData> projectUsersInfo;
+		if (usersInfo.containsKey(projectName))
+			projectUsersInfo = usersInfo.get(projectName);
+		else{
+			projectUsersInfo = new HashSet<UserInfoData>();
+			usersInfo.put(projectName, projectUsersInfo);
+		}
+			
+		
+		HashSet<UserInfoData> userInfo = new HashSet<UserInfoData>();
 		DistributionMap dm = new DistributionMap(mapName);
 		String semanticTopics[][] = new String[maps.size()][];
 		int index = 0;
@@ -223,14 +258,14 @@ public class PrototypeMain {
 				dm.put(getPackageName(name), className, index, 0.0);
 			}
 			index++;
-			usersInfo.add(new UserInfoData(entry.getKey(), stCount, entry.getValue()));
+			projectUsersInfo.add(new UserInfoData(entry.getKey(), stCount, entry.getValue()));
 			semanticTopics[stCount++] = sTopics;
 
 		}
 		try {
 			dm = DistributionMapCalculator.addSemanticClustersMetrics(dm, maps.size());
 			DistributionMapPanel dmPanel = new DistributionMapPanel(dm,semanticTopics);
-			calcDMValues(dm);
+			calcDMValues(dm, projectUsersInfo);
 			JFrame frame = new JFrame("DistributionMap - "+mapName);
 			JScrollPane scrollPane = new JScrollPane(dmPanel);  
 			//			scrollPane.setBorder(BorderFactory.createTitledBorder("DistributionMap"));
@@ -271,11 +306,10 @@ public class PrototypeMain {
 
 
 
-	private static void calcDMValues(DistributionMap dm) {
-		for (UserInfoData userInfo : usersInfo) {
+	private static void calcDMValues(DistributionMap dm, HashSet<UserInfoData> projectUsersInfo) {
+		for (UserInfoData userInfo : projectUsersInfo) {
 			userInfo.setFocus(dm.getFocus(userInfo.getIndex()));
 			userInfo.setSpread(dm.getSpread(userInfo.getIndex()));
-			System.out.println(userInfo.getUserName()+ ","+userInfo.getnFiles() + ","+userInfo.getSpread() + ","+userInfo.getFocus());
 		}
 	}
 

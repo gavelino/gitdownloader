@@ -41,7 +41,7 @@ import com.jcabi.github.Github.Time;
 import com.jcabi.github.RtGithub;
 import com.jcabi.http.Request;
 
-public class Main {
+public class GitDownloader {
 	public static void main(String[] args) throws Exception {
 
 		//		RepositoryBuilder builder = new RepositoryBuilder();
@@ -51,9 +51,9 @@ public class Main {
 		//				.findGitDir()
 		//				.build();
 		Github github = new RtGithub("asergufmg", "aserg.ufmg2009");
-//		String query = "language:Java repo:gavelino/gitresearch";
+		String query = "language:Java repo:gavelino/gitresearch";
 //		String query = "language:Java repo:junit-team/junit";
-		String query = "language:Java";
+//		String query = "language:Java";
 		Request request = github.entry()
 				.uri().path("/search/repositories")
 				//				.queryParam("q", "language:Java created:<=2014-06-01")
@@ -84,6 +84,7 @@ public class Main {
 	        }
 	        System.out.println("Had " + count + " commits overall in repository "+lastCommitDate);
 	        projectInfo.setCommits_count(count);
+	        projectInfo.setLastCommit(lastCommitDate);
 		}
 		DownloaderUtil.persistProjects(projectsInfo);
 		

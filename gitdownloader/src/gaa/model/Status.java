@@ -1,4 +1,4 @@
-package gaa.prototype;
+package gaa.model;
 
 
 public enum Status {

@@ -1,6 +1,7 @@
 package gaa.prototype;
 
 import gaa.model.CommitFile;
+import gaa.model.Status;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -75,7 +75,7 @@ public class DownloaderUtil {
 			commitFiles.add(new gaa.model.CommitFile(new Timestamp(commit.getCommitterIdent().getWhen().getTime()), 
 					diff.getOldPath(),
 					diff.getNewPath(), 
-					gaa.prototype.Status.getStatus(diff.getChangeType().name()), 
+					gaa.model.Status.getStatus(diff.getChangeType().name()), 
 					commit.getAuthorIdent().getName(), 
 					commit.getAuthorIdent().getName(), 
 					commit.getAuthorIdent().getEmailAddress(), 
