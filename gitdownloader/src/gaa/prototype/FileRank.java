@@ -97,7 +97,7 @@ public class FileRank {
 						System.out
 								.println("\n\nMuito errado! Analizar porque commit Added nao esta antes\n"
 										+ commitFile.getNewFileName()
-										+ commitFile.getSha()
+										+ commitFile.getCommitSha()
 										+ commitFile.getStatus() + "\n");
 				}
 				if (best == null || best.getValue() < userFile.getValue())

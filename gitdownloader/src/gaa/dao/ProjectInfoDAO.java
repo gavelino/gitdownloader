@@ -11,29 +11,9 @@ public class ProjectInfoDAO extends GenericDAO<ProjectInfo> {
 	@Override
 	public void persist(ProjectInfo o) {
 		ProjectInfo persistedProject = this.em.find(ProjectInfo.class, o.getFullName());
-		if (persistedProject != null){
-			persistedProject.setCloneUrl(o.getCloneUrl());
-			persistedProject.setCommits_count(o.getCommits_count());
-			persistedProject.setCreated_at(o.getCreated_at());
-			persistedProject.setDefault_branch(o.getDefault_branch());
-			persistedProject.setDescription(o.getDescription());
-			persistedProject.setError_commits_count(o.getError_commits_count());
-			persistedProject.setForks_count(o.getForks_count());
-			persistedProject.setLanguage(o.getLanguage());
-			persistedProject.setMerge_commits_count(o.getMerge_commits_count());
-			persistedProject.setOpen_issues(o.getOpen_issues());
-			persistedProject.setPushed_at(o.getPushed_at());
-			persistedProject.setQuery(o.getQuery());
-			persistedProject.setSize(o.getSize());
-			persistedProject.setStargazers_count(o.getStargazers_count());
-			persistedProject.setUpdated_at(o.getUpdated_at());
-			persistedProject.setWatchers_count(o.getWatchers_count());
-			super.persist(persistedProject);
-			
-			
-		}
-		else	
+		if (persistedProject == null)
 			super.persist(o);
+		
 	}
 
 	@Override
@@ -49,6 +29,10 @@ public class ProjectInfoDAO extends GenericDAO<ProjectInfo> {
 	
 	@Override
 	public void merge(ProjectInfo o) {
+		super.merge(o);
+	}
+	
+	public void update(ProjectInfo o){
 		ProjectInfo persistedProject = this.em.find(ProjectInfo.class, o.getFullName());
 		if (persistedProject != null){
 			persistedProject.setCloneUrl(o.getCloneUrl());
@@ -67,15 +51,10 @@ public class ProjectInfoDAO extends GenericDAO<ProjectInfo> {
 			persistedProject.setStargazers_count(o.getStargazers_count());
 			persistedProject.setUpdated_at(o.getUpdated_at());
 			persistedProject.setWatchers_count(o.getWatchers_count());
-			super.persist(persistedProject);
-			
-			
+			persistedProject.setLastCommit(o.getLastCommit());
+			super.merge(persistedProject);
+			o.setUpdated(false);
+			System.out.println(o.getFullName() + "has updated");
 		}
-		else	
-			super.merge(o);
-	}
-	
-	private void update(ProjectInfo o){
-		
 	}
 }

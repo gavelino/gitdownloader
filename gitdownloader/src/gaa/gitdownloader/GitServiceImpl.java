@@ -1,5 +1,7 @@
 package gaa.gitdownloader;
 
+import gaa.model.ProjectInfo;
+
 import java.io.File;
 
 import org.eclipse.jgit.api.Git;
@@ -14,7 +16,11 @@ public class GitServiceImpl implements GitService {
 
 	Logger logger = LoggerFactory.getLogger(GitServiceImpl.class);
 
-	public Repository cloneIfNotExists(String projectPath, String cloneUrl, String branch) throws Exception {
+	public Repository cloneIfNotExists(ProjectInfo projectInfo) throws Exception {
+		String projectPath = "tmp/"+projectInfo.getName();
+		String cloneUrl = projectInfo.getCloneUrl();
+		String branch = projectInfo.getDefault_branch();
+		
 		File folder = new File(projectPath);
 		Git git;
 		if (folder.exists()) {
@@ -32,6 +38,7 @@ public class GitServiceImpl implements GitService {
 			.setStartPoint(Constants.HEAD)
 			.setName(branch)
 			.call();
+			projectInfo.setUpdated(false);
 		} else {
 			logger.info("Cloning {} ...", cloneUrl);
 			git = Git.cloneRepository()
@@ -40,6 +47,7 @@ public class GitServiceImpl implements GitService {
 					.setCloneAllBranches(true)
 					.call();
 			logger.info("Done cloning {}", cloneUrl);
+			projectInfo.setUpdated(true);
 		}
 		return git.getRepository();
 	}
@@ -61,7 +69,7 @@ public class GitServiceImpl implements GitService {
 			.setName(branch)
 			.call();
 		} else {
-			System.err.println("Repositorio não clonado: "  + branch );
+			System.err.println("Repositorio nï¿½o clonado: "  + branch );
 			return null;
 		}
 		return git.getRepository();

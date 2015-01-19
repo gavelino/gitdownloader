@@ -55,6 +55,8 @@ public class GitProjectFinder {
 			p.setPushed_at(StringToDate.parseDatePatterns(repoData.getString("pushed_at")));
 			p.setLanguage(repoData.getString("language"));
 			p.setCloneUrl(repoData.getString("clone_url"));
+			if (repoData.get("homepage")!= JsonValue.NULL)
+				p.setHomepage(repoData.getString("homepage"));
 			p.setQuery(query);
 			if (!repoData.isNull("description")) {
 				p.setDescription(repoData.getString("description"));

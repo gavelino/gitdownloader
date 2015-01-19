@@ -10,6 +10,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
@@ -31,6 +32,7 @@ public class ProjectInfo extends AbstractEntity {
 	private String name;
 	@Column(unique = true)
 	private String cloneUrl;
+	private String homepage;
 	private int size;
 	private boolean fork;
 	private int stargazers_count;
@@ -57,6 +59,10 @@ public class ProjectInfo extends AbstractEntity {
 	private boolean analyzed;
 	
 	private String query;
+	@Transient
+	private Boolean updated = false;
+	
+	
 
 //	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //	private List<RevisionGit> revisionGitList = new ArrayList<RevisionGit>();
@@ -242,6 +248,22 @@ public class ProjectInfo extends AbstractEntity {
 
 	public void setLastCommit(Date lastCommit) {
 		this.lastCommit = lastCommit;
+	}
+
+	public Boolean hasUpdated() {
+		return updated;
+	}
+
+	public void setUpdated(Boolean updated) {
+		this.updated = updated;
+	}
+
+	public String getHomepage() {
+		return homepage;
+	}
+
+	public void setHomepage(String homepage) {
+		this.homepage = homepage;
 	}
 
 }

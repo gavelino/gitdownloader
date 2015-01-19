@@ -80,10 +80,14 @@ public class DownloaderUtil {
 					commit.getAuthorIdent().getName(), 
 					commit.getAuthorIdent().getEmailAddress(), 
 					0, 0, 
-					commit.getName(), 
+					commit.getName(),
+					diff.getOldId().name(),
+					diff.getNewId().name(),
 					0, 
 					commit.getShortMessage());
 			commitFile.setProjectName(projectName);
+//			if (!diff.getNewId().name().equals(diff.getOldId().name()))
+//				System.out.format("Diferentes %s %s %s\n",diff.getOldId().name(),diff.getNewId().name(), diff.getChangeType().name());
 			commitFiles.add(commitFile);
 			
 //			System.out.println("changeType=" + diff.getChangeType().name()
