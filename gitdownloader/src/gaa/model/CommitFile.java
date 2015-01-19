@@ -20,9 +20,12 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Long id;
 
-
-
-	private String sha;
+//	@Id
+	private String shaKey;
+	
+	private String commitSha;
+	private String newFileSha;
+	private String oldFileSha;
 	private String oldFileName;
 	private String newFileName;
 	@Enumerated(EnumType.STRING)
@@ -44,7 +47,7 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 	}
 
 	public CommitFile(Timestamp date, String oldFileName, String newFileName, Status status, String login,
-			int additions, int deletions, String sha, int commitId,
+			int additions, int deletions, String commitSha, int commitId,
 			String message) {
 		super();
 		this.date = date;
@@ -54,7 +57,7 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 		this.login = login;
 		this.additions = additions;
 		this.deletions = deletions;
-		this.sha = sha;
+		this.commitSha = commitSha;
 		this.commitId = commitId;
 		this.message = message;
 	}
@@ -62,7 +65,7 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 
 	public CommitFile(Timestamp date, String oldFileName, String newFileName, Status status, String login,
 			String name, String email, int additions, int deletions,
-			String sha, int commitId, String message) {
+			String commitSha, String oldFileSha, String newFileSHA, int commitId, String message) {
 		super();
 		this.oldFileName = oldFileName;
 		this.newFileName = newFileName;
@@ -72,24 +75,27 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 		this.email = email;
 		this.additions = additions;
 		this.deletions = deletions;
-		this.sha = sha;
+		this.commitSha = commitSha;
+		this.oldFileSha = oldFileSha;
+		this.newFileSha = newFileSHA;
+		setShaKey(commitSha+oldFileSha+newFileSHA);
 		this.commitId = commitId;
 		this.message = message;
 		this.date = date;
 	}
 
-	public Long getId() {
-		id = null;
-		return id;
-	}
-
-	public void setId(final Long id) {
-		this.id = null;
-	}
+//	public Long getId() {
+//		id = null;
+//		return id;
+//	}
+//
+//	public void setId(final Long id) {
+//		this.id = null;
+//	}
 
 	@Override
 	public String toString() {
-		return sha + ", " + date + ", " + newFileName + ", " + status + ", " + login + ", " + name + ", " + email; //+ ", " + additions  + ", " + deletions + ", " + sha + ", " + commitId + ", " + message; 
+		return commitSha + ", " + date + ", " + newFileName + ", " + status + ", " + login + ", " + name + ", " + email; //+ ", " + additions  + ", " + deletions + ", " + sha + ", " + commitId + ", " + message; 
 	}
 	public String getNewFileName() {
 		return newFileName;
@@ -151,12 +157,12 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 		this.deletions = deletions;
 	}
 
-	public String getSha() {
-		return sha;
+	public String getCommitSha() {
+		return commitSha;
 	}
 
-	public void setSha(String sha) {
-		this.sha = sha;
+	public void setCommitSha(String sha) {
+		this.commitSha = sha;
 	}
 
 	public int getCommitId() {
@@ -204,6 +210,30 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 
 	public void setOldFileName(String oldFileName) {
 		this.oldFileName = oldFileName;
+	}
+
+	public String getNewFileSha() {
+		return newFileSha;
+	}
+
+	public void setNewFileSha(String fileSha) {
+		this.newFileSha = fileSha;
+	}
+
+	public String getOldFileSha() {
+		return oldFileSha;
+	}
+
+	public void setOldFileSha(String oldFileSha) {
+		this.oldFileSha = oldFileSha;
+	}
+
+	public String getShaKey() {
+		return shaKey;
+	}
+
+	public void setShaKey(String shaKey) {
+		this.shaKey = shaKey;
 	}
 
 

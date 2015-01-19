@@ -27,9 +27,9 @@ public class CommitFileDAO extends GenericDAO<CommitFile> {
 	
 	@Override
 	public void merge(CommitFile o) {
-		ProjectInfo persistedProject = this.em.find(ProjectInfo.class, o.getSha());
+		ProjectInfo persistedProject = this.em.find(ProjectInfo.class, o.getCommitSha());
 		if (persistedProject != null){
-			//TODO Implementar Atualização dos dados de CommitFile
+			//TODO Implementar Atualizaï¿½ï¿½o dos dados de CommitFile
 //			persistedProject.setCloneUrl(o.getCloneUrl());
 //			persistedProject.setCommits_count(o.getCommits_count());
 //			persistedProject.setCreated_at(o.getCreated_at());
