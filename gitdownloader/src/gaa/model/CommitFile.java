@@ -176,13 +176,11 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 	}
 	@Override
 	public int compareTo(CommitFile o) {
-//		if (this.date.compareTo(o.date)==0){
-//			if (this.status == Status.ADDED)
-//				return -1;
+//		if (this.status == Status.ADDED)
 //			if (o.status == Status.ADDED)
-//				return 1;
-//			else return 0;
-//		}
+//				return 0;
+//			else 
+//				return -1;
 		return this.date.compareTo(o.date);
 	}
 	public Date getDate() {

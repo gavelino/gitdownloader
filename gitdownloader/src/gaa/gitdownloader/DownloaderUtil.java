@@ -39,7 +39,7 @@ public class DownloaderUtil {
 				int count =0;
 				while (i.hasNext()) {
 					currentCommit = i.next();
-					commitFiles.addAll(getDiff(repository, currentCommit));
+					commitFiles.addAll(getDiff(repository, currentCommit, projectInfo.getFullName()));
 					count++;
 				}
 				System.out.println(projectInfo.getName() + "/"+projectInfo.getDefault_branch()+" = "+count);
@@ -50,7 +50,7 @@ public class DownloaderUtil {
 		}
 		return allCommitFiles;
 	}
-	public static List<CommitFile> getDiff(Repository repository,RevCommit commit) throws IncorrectObjectTypeException, IOException{
+	public static List<CommitFile> getDiff(Repository repository,RevCommit commit, String projectName) throws IncorrectObjectTypeException, IOException{
 		List<CommitFile> commitFiles = new ArrayList<CommitFile>();
 		RevWalk rw = new RevWalk(repository);
 //		System.out.println("\nCommit =" + commit.name());
@@ -72,7 +72,7 @@ public class DownloaderUtil {
 			diffs = df.scan(parent.getTree(), commit.getTree());
 
 		for (DiffEntry diff : diffs) {
-			commitFiles.add(new gaa.model.CommitFile(new Timestamp(commit.getCommitterIdent().getWhen().getTime()), 
+			CommitFile commitFile = new gaa.model.CommitFile(new Timestamp(commit.getCommitterIdent().getWhen().getTime()), 
 					diff.getOldPath(),
 					diff.getNewPath(), 
 					gaa.model.Status.getStatus(diff.getChangeType().name()), 
@@ -82,7 +82,9 @@ public class DownloaderUtil {
 					0, 0, 
 					commit.getName(), 
 					0, 
-					commit.getShortMessage()));
+					commit.getShortMessage());
+			commitFile.setProjectName(projectName);
+			commitFiles.add(commitFile);
 			
 //			System.out.println("changeType=" + diff.getChangeType().name()
 //					+ " Mode=" + diff.getOldMode().getBits()

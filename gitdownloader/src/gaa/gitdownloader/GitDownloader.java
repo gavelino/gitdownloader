@@ -51,16 +51,16 @@ public class GitDownloader {
 		//				.findGitDir()
 		//				.build();
 		Github github = new RtGithub("asergufmg", "aserg.ufmg2009");
-		String query = "language:Java repo:gavelino/gitresearch";
+//		String query = "language:Java repo:gavelino/gitresearch";
 //		String query = "language:Java repo:junit-team/junit";
-//		String query = "language:Java";
+		String query = "language:Java";
 		Request request = github.entry()
 				.uri().path("/search/repositories")
 				//				.queryParam("q", "language:Java created:<=2014-06-01")
 				.queryParam("q", query )
 								.queryParam("sort", "stars")
 								.queryParam("order", "desc")
-								.queryParam("per_page", "2")
+								.queryParam("per_page", "100")
 				.back()
 				.method(Request.GET);
 
