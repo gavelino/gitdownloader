@@ -41,21 +41,28 @@ public class GitProjectFinder {
 		for (JsonValue item : items) {
 			JsonObject repoData = (JsonObject) item;
 			ProjectInfo p = new ProjectInfo();
-			p.setFullName(repoData.getString("full_name"));
-			p.setName(repoData.getString("name"));
+			if (!repoData.isNull("full_name"))
+				p.setFullName(repoData.getString("full_name"));
+			if (!repoData.isNull("name"))
+				p.setName(repoData.getString("name"));
 			p.setSize(repoData.getInt("size"));
 			p.setFork(repoData.getBoolean("fork"));
 			p.setStargazers_count(repoData.getInt("stargazers_count"));
 			p.setWatchers_count(repoData.getInt("watchers_count"));
 			p.setForks_count(repoData.getInt("forks_count"));
-			p.setDefault_branch(repoData.getString("default_branch"));
+			if (!repoData.isNull("default_branch"))
+				p.setDefault_branch(repoData.getString("default_branch"));
 			p.setOpen_issues(repoData.getInt("open_issues"));
-			p.setCreated_at(StringToDate.parseDatePatterns(repoData.getString("created_at")));
-			p.setUpdated_at(StringToDate.parseDatePatterns(repoData.getString("updated_at")));
-			p.setPushed_at(StringToDate.parseDatePatterns(repoData.getString("pushed_at")));
-			p.setLanguage(repoData.getString("language"));
+			if (!repoData.isNull("created_at"))
+				p.setCreated_at(StringToDate.parseDatePatterns(repoData.getString("created_at")));
+			if (!repoData.isNull("updated_at"))
+				p.setUpdated_at(StringToDate.parseDatePatterns(repoData.getString("updated_at")));
+			if (!repoData.isNull("pushed_at"))
+				p.setPushed_at(StringToDate.parseDatePatterns(repoData.getString("pushed_at")));
+			if (!repoData.isNull("language"))
+				p.setLanguage(repoData.getString("language"));
 			p.setCloneUrl(repoData.getString("clone_url"));
-			if (repoData.get("homepage")!= JsonValue.NULL)
+			if (!repoData.isNull("homepage"))
 				p.setHomepage(repoData.getString("homepage"));
 			p.setQuery(query);
 			if (!repoData.isNull("description")) {
