@@ -34,7 +34,6 @@ public class GitProjectFinder {
 	public List<ProjectInfo> findRepos(Request request, String query) throws IOException {
 		
 		
-
 		JsonArray items = request.fetch().as(JsonResponse.class).json().readObject().getJsonArray("items");
 		
 		List<ProjectInfo> projects = new ArrayList<ProjectInfo>();
@@ -69,7 +68,7 @@ public class GitProjectFinder {
 				p.setDescription(repoData.getString("description"));
 			}
 			projects.add(p);
-			logger.info("Project {} {}", repoData.getString("clone_url"), repoData.getString("default_branch"));
+//			logger.info("Project {} {}", repoData.getString("clone_url"), repoData.getString("default_branch"));
 		}
 		return projects;
 	}	
