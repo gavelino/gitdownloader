@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -61,6 +62,8 @@ public class ProjectInfo extends AbstractEntity {
 	private String query;
 	@Transient
 	private Boolean updated = false;
+	@Lob
+	private String errorMsg;
 	
 	
 
@@ -264,6 +267,14 @@ public class ProjectInfo extends AbstractEntity {
 
 	public void setHomepage(String homepage) {
 		this.homepage = homepage;
+	}
+
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
 	}
 
 }

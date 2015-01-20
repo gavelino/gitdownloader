@@ -87,29 +87,38 @@ public class GitDownloader {
 		DownloaderUtil.persistProjects(projectsInfo);
 		ProjectInfoDAO projectDAO = new ProjectInfoDAO();
 		for (ProjectInfo projectInfo : projectsInfo) {
-			System.out.println("Clonando " + projectInfo.getName());
-			GitServiceImpl s = new GitServiceImpl();
-			Repository repository = s.cloneIfNotExists(projectInfo);
-			System.out.println("Clonou");
-			if (projectInfo.hasUpdated()) {
-				Iterable<RevCommit> logs = new Git(repository).log().call();
-				int count = 0;
-				Date lastCommitDate = null;
-				for (RevCommit rev : logs) {
-					//System.out.println("Commit: " + rev /* + ", name: " + rev.getName() + ", id: " + rev.getId().getName() */);
-					count++;
-					if (lastCommitDate == null
-							|| lastCommitDate.compareTo(rev.getCommitterIdent()
-									.getWhen()) < 0)
-						lastCommitDate = rev.getCommitterIdent().getWhen();
+			try {
+				System.out.println("Clonando " + projectInfo.getName());
+				GitServiceImpl s = new GitServiceImpl();
+				Repository repository = s.cloneIfNotExists(projectInfo);
+				System.out.println("Clonou");
+				if (projectInfo.hasUpdated()) {
+					Iterable<RevCommit> logs = new Git(repository).log().call();
+					int count = 0;
+					Date lastCommitDate = null;
+					for (RevCommit rev : logs) {
+						//System.out.println("Commit: " + rev /* + ", name: " + rev.getName() + ", id: " + rev.getId().getName() */);
+						count++;
+						if (lastCommitDate == null
+								|| lastCommitDate.compareTo(rev.getCommitterIdent()
+										.getWhen()) < 0)
+							lastCommitDate = rev.getCommitterIdent().getWhen();
 
+					}
+					System.out.println("Had " + count
+							+ " commits overall in repository " + lastCommitDate);
+					projectInfo.setCommits_count(count);
+					projectInfo.setLastCommit(lastCommitDate);
+					projectInfo.setErrorMsg("ok");
+					projectDAO.update(projectInfo);
 				}
-				System.out.println("Had " + count
-						+ " commits overall in repository " + lastCommitDate);
-				projectInfo.setCommits_count(count);
-				projectInfo.setLastCommit(lastCommitDate);
+			} catch (Exception e) {
+
+				projectInfo.setErrorMsg(e.getMessage());
 				projectDAO.update(projectInfo);
 			}
+			
+			
 		}
 //		DownloaderUtil.persistProjects(projectsInfo);
 		
