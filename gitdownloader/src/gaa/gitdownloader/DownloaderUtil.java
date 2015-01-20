@@ -72,7 +72,7 @@ public class DownloaderUtil {
 			diffs = df.scan(parent.getTree(), commit.getTree());
 
 		for (DiffEntry diff : diffs) {
-			CommitFile commitFile = new gaa.model.CommitFile(new Timestamp(commit.getCommitterIdent().getWhen().getTime()), 
+			CommitFile commitFile = new gaa.model.CommitFile(new Timestamp(commit.getAuthorIdent().getWhen().getTime()), 
 					diff.getOldPath(),
 					diff.getNewPath(), 
 					gaa.model.Status.getStatus(diff.getChangeType().name()), 
