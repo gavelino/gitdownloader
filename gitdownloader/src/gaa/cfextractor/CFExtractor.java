@@ -14,13 +14,12 @@ import java.util.Map.Entry;
 public class CFExtractor {
 	public static void main(String[] args) throws Exception {
 		List<ProjectInfo> projectsInfo =  DownloaderUtil.getProjects();
-		Map<String, List<CommitFile>> map = DownloaderUtil.getCommitFiles(projectsInfo);
 		GitProjectDAO gpDAO = new GitProjectDAO();
 		for (ProjectInfo projectInfo : projectsInfo) {
 			GitProject gitProject = new GitProject();
 			gitProject.setProjectInfo(projectInfo);			
-			gitProject.setCommitFiles(map.get(projectInfo.getName()));
-			
+			gitProject.setCommitFiles(DownloaderUtil.getCommitFiles(projectInfo));
+			System.out.println(projectInfo+": Persistindo CommitFiles...");
 			gpDAO.merge(gitProject);
 		}
 		
