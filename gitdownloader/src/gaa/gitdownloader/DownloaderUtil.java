@@ -30,9 +30,28 @@ public class DownloaderUtil {
 	public static Map<String, List<CommitFile>> getAllCommitFiles(List<ProjectInfo> projectsInfo) throws Exception {
 		Map<String, List<CommitFile>> allCommitFiles = new HashMap<String, List<CommitFile>>();
 		for (ProjectInfo projectInfo : projectsInfo) {
-			
+
 			allCommitFiles.put(projectInfo.getName(), getCommitFiles(projectInfo));
-		}
+			GitServiceImpl s = new GitServiceImpl();
+			Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
+			RevCommit currentCommit = null;
+			RevWalk walk = new RevWalk(repository);
+			List<CommitFile> commitFiles =  new ArrayList<CommitFile>();
+			try {
+				walk.markStart(walk.parseCommit(repository.resolve("HEAD")));
+				Iterator<RevCommit> i = walk.iterator();
+				int count =0;
+				while (i.hasNext()) {
+					currentCommit = i.next();
+					commitFiles.addAll(getDiff(repository, currentCommit, projectInfo.getFullName()));
+					count++;
+				}
+				System.out.println(projectInfo.getName() + "/"+projectInfo.getDefault_branch()+" = "+count);
+			} finally {
+				walk.dispose();
+			}
+			allCommitFiles.put(projectInfo.getName(), commitFiles);
+}
 		return allCommitFiles;
 	}
 	public static List<CommitFile> getCommitFiles(ProjectInfo projectInfo) throws Exception {

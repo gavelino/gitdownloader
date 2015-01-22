@@ -52,6 +52,7 @@ public class ProjectInfoDAO extends GenericDAO<ProjectInfo> {
 			persistedProject.setUpdated_at(o.getUpdated_at());
 			persistedProject.setWatchers_count(o.getWatchers_count());
 			persistedProject.setLastCommit(o.getLastCommit());
+			persistedProject.setErrorMsg(o.getErrorMsg());
 			super.merge(persistedProject);
 			o.setUpdated(false);
 			System.out.println(o.getFullName() + "has updated");
