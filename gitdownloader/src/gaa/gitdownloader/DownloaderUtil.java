@@ -28,14 +28,14 @@ public class DownloaderUtil {
 	
 	static final String PATH = "F:/gitrepositories/";
 
-	public static Map<String, List<CommitInfo>> getAllCommitFiles(List<ProjectInfo> projectsInfo) throws Exception {
+	public static Map<String, List<CommitInfo>> getAllCommits(List<ProjectInfo> projectsInfo) throws Exception {
 		Map<String, List<CommitInfo>> allCommitFiles = new HashMap<String, List<CommitInfo>>();
 		for (ProjectInfo projectInfo : projectsInfo) {
-			allCommitFiles.put(projectInfo.getName(), getCommitFiles(projectInfo));
+			allCommitFiles.put(projectInfo.getName(), getCommits(projectInfo));
 }
 		return allCommitFiles;
 	}
-	public static List<CommitInfo> getCommitFiles(ProjectInfo projectInfo) throws Exception {
+	public static List<CommitInfo> getCommits(ProjectInfo projectInfo) throws Exception {
 		GitServiceImpl s = new GitServiceImpl();
 		Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
 		RevCommit currentCommit = null;

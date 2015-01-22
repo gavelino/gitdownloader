@@ -44,11 +44,11 @@ public class GitProject extends AbstractEntity{
 		this.projectInfo = projectInfo;
 	}
 
-	public List<CommitInfo> getCommit() {
+	public List<CommitInfo> getCommits() {
 		return commits;
 	}
 
-	public void setCommitFiles(List<CommitInfo> commits) {
+	public void setCommits(List<CommitInfo> commits) {
 		this.commits = commits;
 	}
 

@@ -17,7 +17,7 @@ public class CFExtractor {
 		for (ProjectInfo projectInfo : projectsInfo) {
 			GitProject gitProject = new GitProject();
 			gitProject.setProjectInfo(projectInfo);			
-			gitProject.setCommitFiles(DownloaderUtil.getCommitFiles(projectInfo));
+			gitProject.setCommits(DownloaderUtil.getCommits(projectInfo));
 			System.out.println(projectInfo+": Persistindo CommitFiles...");
 			gpDAO.merge(gitProject);
 		}
