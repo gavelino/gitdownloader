@@ -17,7 +17,7 @@ public class GitServiceImpl implements GitService {
 	Logger logger = LoggerFactory.getLogger(GitServiceImpl.class);
 
 	public Repository cloneIfNotExists(ProjectInfo projectInfo) throws Exception {
-		String projectPath = "tmp/"+projectInfo.getName();
+		String projectPath = DownloaderUtil.PATH+projectInfo.getName();
 		String cloneUrl = projectInfo.getCloneUrl();
 		String branch = projectInfo.getDefault_branch();
 		
@@ -69,7 +69,7 @@ public class GitServiceImpl implements GitService {
 			.setName(branch)
 			.call();
 		} else {
-			System.err.println("Repositorio n�o clonado: "  + branch );
+			System.err.println("Repositorio nao clonado: "  + branch );
 			return null;
 		}
 		return git.getRepository();

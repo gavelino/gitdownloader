@@ -150,7 +150,7 @@ public class PrototypeMain {
 		System.out.println();
 	}
 
-	private static List<CommitFile> getCommitFiles(String database, String projectName) {
+	public static List<CommitFile> getCommitFiles(String database, String projectName) {
 		Connection conn = null;
 		Statement stmt = null;
 		List<CommitFile> cFiles = new ArrayList<CommitFile>();
@@ -189,7 +189,7 @@ public class PrototypeMain {
 				String login = rs.getString("email").split("@")[0];
 				int additions  = rs.getInt("additions");
 				int deletions = rs.getInt("deletions");
-				String sha = rs.getString("sha");
+				String sha = rs.getString("newfilesha");
 				int commitId  = rs.getInt("commitid");
 				String message = rs.getString("message");
 				//				Date date = rs.getDate("date");

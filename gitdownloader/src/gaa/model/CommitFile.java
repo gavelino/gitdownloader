@@ -78,7 +78,7 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 		this.commitSha = commitSha;
 		this.oldFileSha = oldFileSha;
 		this.newFileSha = newFileSHA;
-		setShaKey(commitSha+oldFileSha+newFileSHA);
+//		setShaKey(commitSha+oldFileSha+newFileSHA);
 		this.commitId = commitId;
 		this.message = message;
 		this.date = date;
