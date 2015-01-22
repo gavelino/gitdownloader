@@ -1,7 +1,6 @@
 package gaa.gitdownloader;
 
 import gaa.dao.ProjectInfoDAO;
-import gaa.model.CommitFile;
 import gaa.model.ProjectInfo;
 
 import java.io.IOException;
@@ -50,13 +49,14 @@ public class GitDownloader {
 		//				.readEnvironment()
 		//				.findGitDir()
 		//				.build();
-		int numRepository = 1000;
+		int numRepository = 1;
 //		Github github = new RtGithub("asergufmg", "aserg.ufmg2009");
 		Github github = new RtGithub("asergprogram", "aserg.ufmg2009");
 //		String query = "language:Java repo:gavelino/gitresearch";
-//		String query = "language:Java repo:junit-team/junit";
+		String query = "language:Java repo:junit-team/junit";
+//		String query = "repo:textmate/textmate";
 //		String query = "language:Java";
-		String query = "stars:>1000";
+//		String query = "stars:>1000";
 		Request request = github.entry()
 				.uri().path("/search/repositories")
 				//				.queryParam("q", "language:Java created:<=2014-06-01")

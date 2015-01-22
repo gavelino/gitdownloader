@@ -1,7 +1,8 @@
 package gaa.gitdownloader;
 
 import gaa.dao.ProjectInfoDAO;
-import gaa.model.CommitFile;
+import gaa.model.CommitFileInfo;
+import gaa.model.CommitInfo;
 import gaa.model.ProjectInfo;
 
 import java.io.IOException;
@@ -27,63 +28,47 @@ public class DownloaderUtil {
 	
 	static final String PATH = "F:/gitrepositories/";
 
-	public static Map<String, List<CommitFile>> getAllCommitFiles(List<ProjectInfo> projectsInfo) throws Exception {
-		Map<String, List<CommitFile>> allCommitFiles = new HashMap<String, List<CommitFile>>();
+	public static Map<String, List<CommitInfo>> getAllCommitFiles(List<ProjectInfo> projectsInfo) throws Exception {
+		Map<String, List<CommitInfo>> allCommitFiles = new HashMap<String, List<CommitInfo>>();
 		for (ProjectInfo projectInfo : projectsInfo) {
-
 			allCommitFiles.put(projectInfo.getName(), getCommitFiles(projectInfo));
-			GitServiceImpl s = new GitServiceImpl();
-			Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
-			RevCommit currentCommit = null;
-			RevWalk walk = new RevWalk(repository);
-			List<CommitFile> commitFiles =  new ArrayList<CommitFile>();
-			try {
-				walk.markStart(walk.parseCommit(repository.resolve("HEAD")));
-				Iterator<RevCommit> i = walk.iterator();
-				int count =0;
-				while (i.hasNext()) {
-					currentCommit = i.next();
-					commitFiles.addAll(getDiff(repository, currentCommit, projectInfo.getFullName()));
-					count++;
-				}
-				System.out.println(projectInfo.getName() + "/"+projectInfo.getDefault_branch()+" = "+count);
-			} finally {
-				walk.dispose();
-			}
-			allCommitFiles.put(projectInfo.getName(), commitFiles);
 }
 		return allCommitFiles;
 	}
-	public static List<CommitFile> getCommitFiles(ProjectInfo projectInfo) throws Exception {
+	public static List<CommitInfo> getCommitFiles(ProjectInfo projectInfo) throws Exception {
 		GitServiceImpl s = new GitServiceImpl();
 		Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
 		RevCommit currentCommit = null;
 		RevWalk walk = new RevWalk(repository);
-		List<CommitFile> commitFiles =  new ArrayList<CommitFile>();
+		List<CommitInfo> commitsInfo =  new ArrayList<CommitInfo>();
 		try {
 			walk.markStart(walk.parseCommit(repository.resolve("HEAD")));
 			Iterator<RevCommit> i = walk.iterator();
 			int count =0;
 			while (i.hasNext()) {
 				currentCommit = i.next();
-				commitFiles.addAll(getDiff(repository, currentCommit, projectInfo.getFullName()));
+				commitsInfo.add(new CommitInfo(currentCommit.getName(), 
+						   currentCommit.getShortMessage(), 
+						   currentCommit.getAuthorIdent().getName(), 
+						   currentCommit.getAuthorIdent().getEmailAddress(),
+						   new Timestamp(currentCommit.getAuthorIdent().getWhen().getTime()), 
+						   getDiff(repository, currentCommit, projectInfo.getFullName())));
 				count++;
 			}
 			System.out.println(projectInfo.getName() + "/"+projectInfo.getDefault_branch()+" = "+count);
 		} finally {
 			walk.dispose();
 		}
-		return commitFiles;
+		return commitsInfo;
 	}
-	public static List<CommitFile> getDiff(Repository repository,RevCommit commit, String projectName) throws IncorrectObjectTypeException, IOException{
-		List<CommitFile> commitFiles = new ArrayList<CommitFile>();
+	public static List<CommitFileInfo> getDiff(Repository repository,RevCommit commit, String projectName) throws IncorrectObjectTypeException, IOException{
+		List<CommitFileInfo> commitFiles = new ArrayList<CommitFileInfo>();
 		RevWalk rw = new RevWalk(repository);
 //		System.out.println("\nCommit =" + commit.name());
 		RevCommit parent = null;
 		if (commit.getParentCount() > 0) {
 			parent = rw.parseCommit(commit.getParent(0).getId());
 		}
-
 
 		DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
 		df.setRepository(repository);
@@ -97,20 +82,25 @@ public class DownloaderUtil {
 			diffs = df.scan(parent.getTree(), commit.getTree());
 
 		for (DiffEntry diff : diffs) {
-			CommitFile commitFile = new gaa.model.CommitFile(new Timestamp(commit.getAuthorIdent().getWhen().getTime()), 
-					diff.getOldPath(),
-					diff.getNewPath(), 
+			CommitFileInfo commitFile = new CommitFileInfo(diff.getOldPath(), diff.getNewPath(), 
 					gaa.model.Status.getStatus(diff.getChangeType().name()), 
-					commit.getAuthorIdent().getName(), 
-					commit.getAuthorIdent().getName(), 
-					commit.getAuthorIdent().getEmailAddress(), 
-					0, 0, 
-					commit.getName(),
 					diff.getOldId().name(),
-					diff.getNewId().name(),
-					0, 
-					commit.getShortMessage());
-			commitFile.setProjectName(projectName);
+					diff.getNewId().name());
+//			CommitFileInfo commitFile = new CommitFileInfo(new Timestamp(commit.getAuthorIdent().getWhen().getTime()), 
+//					diff.getOldPath(),
+//					diff.getNewPath(), 
+//					gaa.model.Status.getStatus(diff.getChangeType().name()), 
+//					commit.getAuthorIdent().getName(), 
+//					commit.getAuthorIdent().getName(), 
+//					commit.getAuthorIdent().getEmailAddress(), 
+//					0, 0, 
+//					commit.getName(),
+//					diff.getOldId().name(),
+//					diff.getNewId().name(),
+//					0, 
+//					commit.getShortMessage());
+			
+//			commitFile.setProjectName(projectName);
 //			if (!diff.getNewId().name().equals(diff.getOldId().name()))
 //				System.out.format("Diferentes %s %s %s\n",diff.getOldId().name(),diff.getNewId().name(), diff.getChangeType().name());
 			commitFiles.add(commitFile);

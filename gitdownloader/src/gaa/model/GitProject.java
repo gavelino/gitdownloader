@@ -1,5 +1,6 @@
 package gaa.model;
 
+
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -20,7 +21,7 @@ public class GitProject extends AbstractEntity{
 	@OneToOne(cascade = { CascadeType.REFRESH })
 	ProjectInfo projectInfo;
 	@OneToMany(cascade = { CascadeType.ALL })
-	List<CommitFile> commitFiles;
+	List<CommitInfo> commits;
 
 	public GitProject() {
 		// TODO Auto-generated constructor stub
@@ -43,12 +44,12 @@ public class GitProject extends AbstractEntity{
 		this.projectInfo = projectInfo;
 	}
 
-	public List<CommitFile> getCommitFiles() {
-		return commitFiles;
+	public List<CommitInfo> getCommit() {
+		return commits;
 	}
 
-	public void setCommitFiles(List<CommitFile> commitFiles) {
-		this.commitFiles = commitFiles;
+	public void setCommitFiles(List<CommitInfo> commits) {
+		this.commits = commits;
 	}
 
 }

@@ -1,7 +1,6 @@
 package gaa.prototype;
 
 import gaa.gitdownloader.DownloaderUtil;
-import gaa.model.CommitFile;
 import gaa.model.ProjectInfo;
 import gaa.model.Status;
 
@@ -172,9 +171,16 @@ public class PrototypeMain {
 //					+ "JOIN gitcommitfile gfile ON (gfile.ID = gg.files_ID) "
 //					+ "JOIN gitcommit gcommit on grc.COMMIT_ID = gcommit.ID "
 //					+ "JOIN gitcommituser gcuser on gcommit.AUTHOR_ID = gcuser.ID;";
-			sql = "SELECT cf.* FROM  gitproject_commitfile git_commit "
-					+ "JOIN commitfile cf on git_commit.commitFiles_ID = cf.ID "
-					+ "JOIN gitproject gp on git_commit.GitProject_ID = gp.ID "
+			
+			
+			
+		    
+		    
+			sql = "SELECT ci.* , cfi.* FROM GITPROJECT_COMMITINFO gp_ci "
+					+ "JOIN GITPROJECT gp ON gp_ci.GitProject_ID = gp.ID "
+					+ "JOIN COMMITINFO ci ON gp_ci.commits_SHA = ci.SHA "
+					+ "JOIN COMMITINFO_COMMITFILEINFO ci_cfi ON ci.SHA = ci_cfi.CommitInfo_SHA "
+					+ "JOIN COMMITFILEINFO cfi on ci_cfi.commitFiles_ID = cfi.ID "
 					+ "where gp.PROJECTINFO_FULLNAME = "
 					+ "\""+ projectName + "\";"  ;
 			ResultSet rs = stmt.executeQuery(sql);
@@ -187,17 +193,17 @@ public class PrototypeMain {
 				//				String login = rs.getString("name");
 				//				String login = rs.getString("email");
 				String login = rs.getString("email").split("@")[0];
-				int additions  = rs.getInt("additions");
-				int deletions = rs.getInt("deletions");
+//				int additions  = rs.getInt("additions");
+//				int deletions = rs.getInt("deletions");
 				String sha = rs.getString("newfilesha");
-				int commitId  = rs.getInt("commitid");
+//				int commitId  = rs.getInt("commitid");
 				String message = rs.getString("message");
 				//				Date date = rs.getDate("date");
 				Timestamp time = rs.getTimestamp("date");
 
 				//				String simpleFileName = fileName.substring(fileName.lastIndexOf('/')+1,fileName.length());
 				cFiles.add(new CommitFile(time, oldFileName, newFileName, Status.getStatus(status), 
-						login, additions, deletions, sha, commitId, message));
+						login, 0, 0, sha, 0, message));
 			}
 			//STEP 6: Clean-up environment
 			rs.close();

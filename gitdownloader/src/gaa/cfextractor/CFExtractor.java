@@ -3,7 +3,6 @@ package gaa.cfextractor;
 import gaa.dao.CommitFileDAO;
 import gaa.dao.GitProjectDAO;
 import gaa.gitdownloader.DownloaderUtil;
-import gaa.model.CommitFile;
 import gaa.model.GitProject;
 import gaa.model.ProjectInfo;
 
@@ -32,11 +31,11 @@ public class CFExtractor {
 //			}
 //		}
 	}
-	static void printCommit(Map<String, List<CommitFile>> map ){
-		for (Entry<String, List<CommitFile>> entry : map.entrySet()) {
-			for (CommitFile cfiles : entry.getValue()) {
-				System.out.println(cfiles);
-			}
-		}
-	}
+//	static void printCommit(Map<String, List<CommitFile>> map ){
+//		for (Entry<String, List<CommitFile>> entry : map.entrySet()) {
+//			for (CommitFile cfiles : entry.getValue()) {
+//				System.out.println(cfiles);
+//			}
+//		}
+//	}
 }

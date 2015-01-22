@@ -1,4 +1,7 @@
-package gaa.model;
+package gaa.prototype;
+
+import gaa.model.AbstractEntity;
+import gaa.model.Status;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -13,14 +16,8 @@ import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-@Entity
 public class CommitFile extends AbstractEntity implements Comparable<CommitFile> {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	protected Long id;
-
-//	@Id
 	private String shaKey;
 	
 	private String commitSha;
@@ -28,7 +25,6 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 	private String oldFileSha;
 	private String oldFileName;
 	private String newFileName;
-	@Enumerated(EnumType.STRING)
 	private Status status;
 	private String login;
 	private String name;
@@ -36,9 +32,7 @@ public class CommitFile extends AbstractEntity implements Comparable<CommitFile>
 	private int additions;
 	private int deletions;
 	private int commitId;
-	@Lob
 	private String message;
-	@Temporal(TemporalType.TIMESTAMP)
 	private Date date;
 	String projectName;
 

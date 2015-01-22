@@ -1,7 +1,6 @@
 package gaa.prototype;
 
 import gaa.gitdownloader.DownloaderUtil;
-import gaa.model.CommitFile;
 import gaa.model.ProjectInfo;
 import gaa.model.Status;
 
