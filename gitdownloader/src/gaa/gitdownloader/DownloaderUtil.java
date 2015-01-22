@@ -24,12 +24,14 @@ import org.eclipse.jgit.treewalk.EmptyTreeIterator;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 public class DownloaderUtil {
+	
+	static final String PATH = "F:/gitrepositories/";
 
 	public static Map<String, List<CommitFile>> getCommitFiles(List<ProjectInfo> projectsInfo) throws Exception {
 		Map<String, List<CommitFile>> allCommitFiles = new HashMap<String, List<CommitFile>>();
 		for (ProjectInfo projectInfo : projectsInfo) {
 			GitServiceImpl s = new GitServiceImpl();
-			Repository repository = s.getClonedRepository("tmp/"+projectInfo.getName(), projectInfo.getDefault_branch());
+			Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
 			RevCommit currentCommit = null;
 			RevWalk walk = new RevWalk(repository);
 			List<CommitFile> commitFiles =  new ArrayList<CommitFile>();
