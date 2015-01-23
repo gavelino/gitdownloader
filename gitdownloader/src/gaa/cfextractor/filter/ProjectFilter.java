@@ -1,4 +1,4 @@
-package gaa.cfextractor;
+package gaa.cfextractor.filter;
 
 import gaa.model.GitProject;
 
