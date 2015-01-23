@@ -1,14 +1,14 @@
 package gaa.cfextractor.filter;
 
-import gaa.model.GitProject;
+import gaa.model.GitRepository;
 
 import java.util.List;
 
 public abstract class ProjectFilter {
-	List<GitProject> projects;
-	public ProjectFilter(List<GitProject> projects) {
+	List<GitRepository> projects;
+	public ProjectFilter(List<GitRepository> projects) {
 		this.projects = projects;
 	}
-	public abstract List<GitProject> filter();
+	public abstract List<GitRepository> filter();
 	public abstract void persistFilterInformations();
 }

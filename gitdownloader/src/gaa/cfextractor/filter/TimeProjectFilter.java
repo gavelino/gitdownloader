@@ -1,6 +1,6 @@
 package gaa.cfextractor.filter;
 
-import gaa.model.GitProject;
+import gaa.model.GitRepository;
 import gaa.model.ProjectInfo;
 
 import java.util.List;
@@ -12,14 +12,14 @@ public class TimeProjectFilter extends ProjectFilter {
 	
 	
 	
-	public TimeProjectFilter(List<GitProject> projects, float timeThreshold, float commitsThreshold) {
+	public TimeProjectFilter(List<GitRepository> projects, float timeThreshold, float commitsThreshold) {
 		super(projects);
 		this.timeThreshold = timeThreshold;
 		this.commitsThreshold = commitsThreshold;
 	}
 
 	@Override
-	public List<GitProject> filter() {
+	public List<GitRepository> filter() {
 		// TODO Auto-generated method stub
 		return null;
 	}

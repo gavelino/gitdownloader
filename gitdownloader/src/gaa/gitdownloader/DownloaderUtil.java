@@ -26,7 +26,7 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 public class DownloaderUtil {
 	
-	static final String PATH = "F:/gitrepositories/";
+	static final String PATH = "F:/tmp/gitrepositories/";
 
 	public static Map<String, List<CommitInfo>> getAllCommits(List<ProjectInfo> projectsInfo) throws Exception {
 		Map<String, List<CommitInfo>> allCommitFiles = new HashMap<String, List<CommitInfo>>();

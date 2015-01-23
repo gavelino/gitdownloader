@@ -13,27 +13,22 @@ import javax.persistence.OneToOne;
 
 @SuppressWarnings("serial")
 @Entity
-public class GitProject extends AbstractEntity{
+public class GitRepository extends AbstractEntity{
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	protected Long id;
+	private String repositoryName;
 	
 	@OneToOne(cascade = { CascadeType.REFRESH })
 	ProjectInfo projectInfo;
 	@OneToMany(cascade = { CascadeType.ALL })
 	List<CommitInfo> commits;
 
-	public GitProject() {
-		// TODO Auto-generated constructor stub
+	public GitRepository() {
 	}
 
-	public Long getId() {
-		id = null;
-		return id;
-	}
-
-	public void setId(final Long id) {
-		this.id = null;
+	public GitRepository(ProjectInfo projectInfo, List<CommitInfo> commits) {
+		this.projectInfo =  projectInfo;
+		this.commits = commits;
+		this.repositoryName = projectInfo.getFullName();
 	}
 
 	public ProjectInfo getProjectInfo() {
@@ -42,6 +37,7 @@ public class GitProject extends AbstractEntity{
 
 	public void setProjectInfo(ProjectInfo projectInfo) {
 		this.projectInfo = projectInfo;
+		this.repositoryName = projectInfo.getFullName();
 	}
 
 	public List<CommitInfo> getCommits() {
@@ -50,6 +46,14 @@ public class GitProject extends AbstractEntity{
 
 	public void setCommits(List<CommitInfo> commits) {
 		this.commits = commits;
+	}
+
+	public String getRepositoryName() {
+		return repositoryName;
+	}
+
+	public void setRepositoryName(String repositoryName) {
+		this.repositoryName = repositoryName;
 	}
 
 }
