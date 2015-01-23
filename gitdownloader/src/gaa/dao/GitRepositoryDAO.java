@@ -29,13 +29,17 @@ public class GitRepositoryDAO extends GenericDAO<GitRepository> {
 	public void merge(GitRepository o) {
 		GitRepository gitRepo = this.find(o.getRepositoryName());
 		if (gitRepo != null){
-			gitRepo.setCommits(o.getCommits());
-			super.merge(gitRepo);
+			super.remove(gitRepo);
 		}
-		else
-			super.merge(o);
+		super.merge(o);
 	}
 	
+	private void removeDuplicadeCommitFiles(GitRepository gitRepo,
+			GitRepository o) {
+		
+		
+	}
+
 	private void update(ProjectInfo o){
 		
 	}

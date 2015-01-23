@@ -20,8 +20,6 @@ public class CommitFileInfo extends AbstractEntity{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Long id;
 
-//	@Id
-	private String shaKey;
 	
 	private String newFileSha;
 	private String oldFileSha;
@@ -112,13 +110,6 @@ public class CommitFileInfo extends AbstractEntity{
 		this.oldFileSha = oldFileSha;
 	}
 
-	public String getShaKey() {
-		return shaKey;
-	}
-
-	public void setShaKey(String shaKey) {
-		this.shaKey = shaKey;
-	}
 
 
 
