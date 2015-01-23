@@ -15,6 +15,7 @@ import javax.persistence.TemporalType;
 public class CommitInfo extends AbstractEntity implements Comparable<CommitInfo>{
 		@Id
 		private String sha;
+		private String repositoryName;
 		@Lob
 		private String message;
 		private String name;
@@ -28,9 +29,10 @@ public class CommitInfo extends AbstractEntity implements Comparable<CommitInfo>
 			// TODO Auto-generated constructor stub
 		}
 
-		public CommitInfo(String sha, String message, String name,
+		public CommitInfo(String repositoryName, String sha, String message, String name,
 				String email, Date date, List<CommitFileInfo> commitFiles) {
 			super();
+			this.repositoryName = repositoryName;
 			this.sha = sha;
 			this.message = message;
 			this.name = name;
@@ -90,6 +92,14 @@ public class CommitInfo extends AbstractEntity implements Comparable<CommitInfo>
 		@Override
 		public int compareTo(CommitInfo o) {
 			return this.date.compareTo(o.date);
+		}
+
+		public String getRepositoryName() {
+			return repositoryName;
+		}
+
+		public void setRepositoryName(String repositoryName) {
+			this.repositoryName = repositoryName;
 		}
 		
 		

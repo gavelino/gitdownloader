@@ -1,5 +1,6 @@
 package gaa.gitdownloader;
 
+import gaa.dao.CommitInfoDAO;
 import gaa.dao.ProjectInfoDAO;
 import gaa.model.CommitFileInfo;
 import gaa.model.CommitInfo;
@@ -47,7 +48,7 @@ public class DownloaderUtil {
 			int count =0;
 			while (i.hasNext()) {
 				currentCommit = i.next();
-				commitsInfo.add(new CommitInfo(currentCommit.getName(), 
+				commitsInfo.add(new CommitInfo(projectInfo.getFullName(), currentCommit.getName(), 
 						   currentCommit.getShortMessage(), 
 						   currentCommit.getAuthorIdent().getName(), 
 						   currentCommit.getAuthorIdent().getEmailAddress(),
@@ -61,6 +62,67 @@ public class DownloaderUtil {
 		}
 		return commitsInfo;
 	}
+	static int MAXBUFEER = 1000;
+	public static void getAndPersistCommitsBlock(ProjectInfo projectInfo) throws Exception {
+		GitServiceImpl s = new GitServiceImpl();
+		Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
+		RevCommit currentCommit = null;
+		RevWalk walk = new RevWalk(repository);
+		CommitInfoDAO commitDAO = new CommitInfoDAO();
+		List<CommitInfo> commitsInfo =  new ArrayList<CommitInfo>();
+		try {
+			walk.markStart(walk.parseCommit(repository.resolve("HEAD")));
+			Iterator<RevCommit> i = walk.iterator();
+			int count =0;
+			while (i.hasNext()) {
+				currentCommit = i.next();
+				commitsInfo.add(new CommitInfo(projectInfo.getFullName(), currentCommit.getName(), 
+						   currentCommit.getShortMessage(), 
+						   currentCommit.getAuthorIdent().getName(), 
+						   currentCommit.getAuthorIdent().getEmailAddress(),
+						   new Timestamp(currentCommit.getAuthorIdent().getWhen().getTime()), 
+						   getDiff(repository, currentCommit, projectInfo.getFullName())));
+				if (++count%MAXBUFEER == 0){
+					System.out.println("entrou "+count);
+					commitDAO.persistAll(commitsInfo);					
+					commitsInfo = new ArrayList<CommitInfo>();
+				}
+			}
+			if (commitsInfo.size()>0)
+				commitDAO.persistAll(commitsInfo);	
+			System.out.println(projectInfo.getName() + "/"+projectInfo.getDefault_branch()+" = "+count);
+		} finally {
+			walk.dispose();
+		}
+	}
+	
+	
+	public static void getAndPersistCommits(ProjectInfo projectInfo) throws Exception {
+		GitServiceImpl s = new GitServiceImpl();
+		Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
+		RevCommit currentCommit = null;
+		RevWalk walk = new RevWalk(repository);
+		CommitInfoDAO commitDAO = new CommitInfoDAO();
+		try {
+			walk.markStart(walk.parseCommit(repository.resolve("HEAD")));
+			Iterator<RevCommit> i = walk.iterator();
+			int count =0;
+			while (i.hasNext()) {
+				currentCommit = i.next();
+				commitDAO.merge(new CommitInfo(projectInfo.getFullName(), currentCommit.getName(), 
+						   currentCommit.getShortMessage(), 
+						   currentCommit.getAuthorIdent().getName(), 
+						   currentCommit.getAuthorIdent().getEmailAddress(),
+						   new Timestamp(currentCommit.getAuthorIdent().getWhen().getTime()), 
+						   getDiff(repository, currentCommit, projectInfo.getFullName())));
+				count++;
+			}
+			System.out.println(projectInfo.getName() + "/"+projectInfo.getDefault_branch()+" = "+count);
+		} finally {
+			walk.dispose();
+		}
+	}
+	
 	public static List<CommitFileInfo> getDiff(Repository repository,RevCommit commit, String projectName) throws IncorrectObjectTypeException, IOException{
 		List<CommitFileInfo> commitFiles = new ArrayList<CommitFileInfo>();
 		RevWalk rw = new RevWalk(repository);
