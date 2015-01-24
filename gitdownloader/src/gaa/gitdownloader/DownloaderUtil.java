@@ -62,7 +62,7 @@ public class DownloaderUtil {
 		}
 		return commitsInfo;
 	}
-	static int MAXBUFEER = 2000;
+	static int MAXBUFEER = 10000;
 	public static void getAndPersistCommitsBlock(ProjectInfo projectInfo) throws Exception {
 		GitServiceImpl s = new GitServiceImpl();
 		Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
@@ -73,16 +73,20 @@ public class DownloaderUtil {
 		try {
 			walk.markStart(walk.parseCommit(repository.resolve("HEAD")));
 			Iterator<RevCommit> i = walk.iterator();
-			int count =0;
+			int count = 0;
+			int countcfs = 0;
 			while (i.hasNext()) {
 				currentCommit = i.next();
+				List<CommitFileInfo> commitFiles = getDiff(repository, currentCommit, projectInfo.getFullName());
 				commitsInfo.add(new CommitInfo(projectInfo.getFullName(), currentCommit.getName(), 
 						   currentCommit.getShortMessage(), 
 						   currentCommit.getAuthorIdent().getName(), 
 						   currentCommit.getAuthorIdent().getEmailAddress(),
 						   new Timestamp(currentCommit.getAuthorIdent().getWhen().getTime()), 
-						   getDiff(repository, currentCommit, projectInfo.getFullName())));
-				if (++count%MAXBUFEER == 0){
+						   commitFiles));
+				countcfs+=commitFiles.size();
+//				if (++count%MAXBUFEER == 0){
+				if (++countcfs >= MAXBUFEER){
 					System.out.println("entrou "+count);
 					commitDAO.persistAll(commitsInfo);					
 					commitsInfo = new ArrayList<CommitInfo>();

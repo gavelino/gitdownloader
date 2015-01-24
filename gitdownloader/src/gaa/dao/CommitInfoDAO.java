@@ -37,7 +37,8 @@ public class CommitInfoDAO extends GenericDAO<CommitInfo> {
 			thread = new PersistThread<CommitInfo>(commits, this);
 		else {
 			try {
-				thread.join();
+				if (thread.isAlive())
+					thread.join();
 				thread.setList(commits);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
