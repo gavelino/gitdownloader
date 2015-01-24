@@ -62,7 +62,7 @@ public class DownloaderUtil {
 		}
 		return commitsInfo;
 	}
-	static int MAXBUFEER = 1000;
+	static int MAXBUFEER = 2000;
 	public static void getAndPersistCommitsBlock(ProjectInfo projectInfo) throws Exception {
 		GitServiceImpl s = new GitServiceImpl();
 		Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());

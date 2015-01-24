@@ -18,7 +18,7 @@ public class CFExtractor {
 		
 		List<ProjectInfo> projectsInfo =  DownloaderUtil.getProjects();
 		GitRepositoryDAO grDAO = new GitRepositoryDAO();
-		String especificProject = "junit";
+		String especificProject = "linux";
 		for (ProjectInfo projectInfo : projectsInfo) {
 			if (especificProject !=null && projectInfo.getName().equalsIgnoreCase(especificProject)) {
 //				System.out.println(new Date());
