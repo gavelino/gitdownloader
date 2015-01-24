@@ -85,8 +85,9 @@ public class DownloaderUtil {
 						   new Timestamp(currentCommit.getAuthorIdent().getWhen().getTime()), 
 						   commitFiles));
 				countcfs+=commitFiles.size();
-//				if (++count%MAXBUFEER == 0){
-				if (++countcfs >= MAXBUFEER){
+				count++;
+//				if (count%MAXBUFEER == 0){
+				if (countcfs >= MAXBUFEER){
 					System.out.println("entrou Commits = "+count+" CommitFiles = "+countcfs);
 					countcfs = 0;
 					commitDAO.persistAll(commitsInfo);					
