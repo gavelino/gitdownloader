@@ -21,6 +21,7 @@ public class CFExtractor {
 		List<ProjectInfo> projectsInfo =  DownloaderUtil.getProjects();
 		GitRepositoryDAO grDAO = new GitRepositoryDAO();
 		String especificProject = "linux";
+		ProjectInfoDAO projectDAO = new ProjectInfoDAO();
 		for (ProjectInfo projectInfo : projectsInfo) {
 //			if (especificProject !=null && projectInfo.getName().equalsIgnoreCase(especificProject)) {
 			if (projectInfo.getStatus() == ProjectStatus.DOWNLOADED) {
@@ -33,16 +34,18 @@ public class CFExtractor {
 				
 				try {
 					System.out.println(new Date());
+					projectInfo.setStatus(ProjectStatus.ANALYZING);
+					projectDAO.update(projectInfo);
 					System.out.println(projectInfo + ": Persisting CommitFiles...");
 					DownloaderUtil.getAndPersistCommitsBlock(projectInfo);
 					System.out.println(projectInfo + ": CommitFiles were persisted");
 					projectInfo.setStatus(ProjectStatus.ANALYZED);
-					new ProjectInfoDAO().update(projectInfo);
+					projectDAO.update(projectInfo);
 					System.out.println(new Date());
 				} catch (Exception e) {
 					projectInfo.setErrorMsg("CFExtractor error: "+e.toString());
 					projectInfo.setStatus(ProjectStatus.ERROR);
-					new ProjectInfoDAO().update(projectInfo);
+					projectDAO.update(projectInfo);
 				}
 			}
 		}
