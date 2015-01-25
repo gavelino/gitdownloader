@@ -25,7 +25,11 @@ public class PersistThread <T> extends Thread{
 			if(tx != null && tx.isActive()) 
 				tx.rollback();
 			throw e;
-		}		
+		} 
+		finally{
+			persistDAO.em.clear();
+		}
+			
 //		System.out.println("Thread Finalizada = "+this.getName());		
 	}
 

@@ -2,6 +2,7 @@ package gaa.gitdownloader;
 
 import gaa.dao.ProjectInfoDAO;
 import gaa.model.ProjectInfo;
+import gaa.model.ProjectStatus;
 
 import java.io.IOException;
 import java.util.Date;
@@ -52,8 +53,8 @@ public class GitDownloader {
 		int numRepository = 1;
 //		Github github = new RtGithub("asergufmg", "aserg.ufmg2009");
 		Github github = new RtGithub("asergprogram", "aserg.ufmg2009");
-//		String query = "language:Java repo:gavelino/gitresearch";
-		String query = "language:Java repo:junit-team/junit";
+		String query = "language:Java repo:gavelino/gitresearch";
+//		String query = "language:Java repo:junit-team/junit";
 //		String query = "repo:textmate/textmate";
 //		String query = "language:Java";
 //		String query = "stars:>1000";
@@ -109,12 +110,13 @@ public class GitDownloader {
 							+ " commits overall in repository " + lastCommitDate);
 					projectInfo.setCommits_count(count);
 					projectInfo.setLastCommit(lastCommitDate);
-					projectInfo.setErrorMsg("ok");
+					projectInfo.setStatus(ProjectStatus.DOWNLOADED);
 					projectDAO.update(projectInfo);
 				}
 			} catch (Exception e) {
 
-				projectInfo.setErrorMsg(e.getMessage());
+				projectInfo.setErrorMsg("GitDownloader error: "+ e.toString());
+				projectInfo.setStatus(ProjectStatus.ERROR);
 				projectDAO.update(projectInfo);
 			}
 			

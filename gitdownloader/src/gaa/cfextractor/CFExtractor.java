@@ -3,10 +3,12 @@ package gaa.cfextractor;
 import gaa.dao.CommitInfoDAO;
 import gaa.dao.CommitFileDAO;
 import gaa.dao.GitRepositoryDAO;
+import gaa.dao.ProjectInfoDAO;
 import gaa.gitdownloader.DownloaderUtil;
 import gaa.model.CommitInfo;
 import gaa.model.GitRepository;
 import gaa.model.ProjectInfo;
+import gaa.model.ProjectStatus;
 
 import java.util.Date;
 import java.util.List;
@@ -20,7 +22,8 @@ public class CFExtractor {
 		GitRepositoryDAO grDAO = new GitRepositoryDAO();
 		String especificProject = "linux";
 		for (ProjectInfo projectInfo : projectsInfo) {
-			if (especificProject !=null && projectInfo.getName().equalsIgnoreCase(especificProject)) {
+//			if (especificProject !=null && projectInfo.getName().equalsIgnoreCase(especificProject)) {
+			if (projectInfo.getStatus() == ProjectStatus.DOWNLOADED) {
 //				System.out.println(new Date());
 //				GitRepository gitRepository = new GitRepository(projectInfo, DownloaderUtil.getCommits(projectInfo));
 //				System.out.println(projectInfo + ": Persisting CommitFiles...");
@@ -28,11 +31,19 @@ public class CFExtractor {
 //				System.out.println(projectInfo + ": CommitFiles were persisted");
 //				System.out.println(new Date());
 				
-				System.out.println(new Date());
-				System.out.println(projectInfo + ": Persisting CommitFiles...");
-				DownloaderUtil.getAndPersistCommitsBlock(projectInfo);
-				System.out.println(projectInfo + ": CommitFiles were persisted");
-				System.out.println(new Date());
+				try {
+					System.out.println(new Date());
+					System.out.println(projectInfo + ": Persisting CommitFiles...");
+					DownloaderUtil.getAndPersistCommitsBlock(projectInfo);
+					System.out.println(projectInfo + ": CommitFiles were persisted");
+					projectInfo.setStatus(ProjectStatus.ANALYZED);
+					new ProjectInfoDAO().update(projectInfo);
+					System.out.println(new Date());
+				} catch (Exception e) {
+					projectInfo.setErrorMsg("CFExtractor error: "+e.toString());
+					projectInfo.setStatus(ProjectStatus.ERROR);
+					new ProjectInfoDAO().update(projectInfo);
+				}
 			}
 		}
 		
