@@ -17,7 +17,8 @@ import java.util.Map.Entry;
 
 public class CFExtractor {
 	public static void main(String[] args) throws Exception {
-		
+		if (args.length>0)
+			DownloaderUtil.PATH = args[0];
 		List<ProjectInfo> projectsInfo =  DownloaderUtil.getProjects();
 		GitRepositoryDAO grDAO = new GitRepositoryDAO();
 		String especificProject = "linux";

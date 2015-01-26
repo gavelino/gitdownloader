@@ -50,6 +50,9 @@ public class GitDownloader {
 		//				.readEnvironment()
 		//				.findGitDir()
 		//				.build();
+		if (args.length>0)
+			DownloaderUtil.PATH = args[0];
+		
 		int numRepository = 1;
 //		Github github = new RtGithub("asergufmg", "aserg.ufmg2009");
 		Github github = new RtGithub("asergprogram", "aserg.ufmg2009");
@@ -58,32 +61,9 @@ public class GitDownloader {
 //		String query = "repo:textmate/textmate";
 //		String query = "language:Java";
 //		String query = "stars:>1000";
-		Request request = github.entry()
-				.uri().path("/search/repositories")
-				//				.queryParam("q", "language:Java created:<=2014-06-01")
-				.queryParam("q", query )
-								.queryParam("sort", "stars")
-								.queryParam("order", "desc")
-								.queryParam("per_page", numRepository>100?"100":String.valueOf(numRepository))
-				.back()
-				.method(Request.GET);
-
-		int page=1;
-		List<ProjectInfo> projectsInfo = new ArrayList<ProjectInfo>();
-		GitProjectFinder projectFinder = new GitProjectFinder();
-		while (projectsInfo.size()<numRepository){
-			request = github.entry()
-					.uri().path("/search/repositories")
-					//				.queryParam("q", "language:Java created:<=2014-06-01")
-					.queryParam("q", query )
-									.queryParam("sort", "stars")
-									.queryParam("order", "desc")
-									.queryParam("per_page", numRepository>100?"100":String.valueOf(numRepository))
-									.queryParam("page", String.valueOf(page++))
-					.back()
-					.method(Request.GET);
-			projectsInfo.addAll(projectFinder.findRepos(request, query));
-		}
+		
+		
+		List<ProjectInfo> projectsInfo = searchRepositories(numRepository, github, query);
 				
 		DownloaderUtil.persistProjects(projectsInfo);
 		ProjectInfoDAO projectDAO = new ProjectInfoDAO();
@@ -134,6 +114,38 @@ public class GitDownloader {
 //				System.out.println(cf);
 //			}
 //		}
+	}
+
+
+	private static List<ProjectInfo> searchRepositories(int numRepository,
+			Github github, String query) throws IOException {
+		Request request = github.entry()
+				.uri().path("/search/repositories")
+				//				.queryParam("q", "language:Java created:<=2014-06-01")
+				.queryParam("q", query )
+								.queryParam("sort", "stars")
+								.queryParam("order", "desc")
+								.queryParam("per_page", numRepository>100?"100":String.valueOf(numRepository))
+				.back()
+				.method(Request.GET);
+
+		int page=1;
+		List<ProjectInfo> projectsInfo = new ArrayList<ProjectInfo>();
+		GitProjectFinder projectFinder = new GitProjectFinder();
+		while (projectsInfo.size()<numRepository){
+			request = github.entry()
+					.uri().path("/search/repositories")
+					//				.queryParam("q", "language:Java created:<=2014-06-01")
+					.queryParam("q", query )
+									.queryParam("sort", "stars")
+									.queryParam("order", "desc")
+									.queryParam("per_page", numRepository>100?"100":String.valueOf(numRepository))
+									.queryParam("page", String.valueOf(page++))
+					.back()
+					.method(Request.GET);
+			projectsInfo.addAll(projectFinder.findRepos(request, query));
+		}
+		return projectsInfo;
 	}
 
 	
