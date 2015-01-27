@@ -43,7 +43,7 @@ public class ProjectInfoDAO extends GenericDAO<ProjectInfo> {
 			persistedProject.setError_commits_count(o.getError_commits_count());
 			persistedProject.setForks_count(o.getForks_count());
 			persistedProject.setLanguage(o.getLanguage());
-			persistedProject.setMerge_commits_count(o.getMerge_commits_count());
+			persistedProject.setNumAuthors(o.getNumAuthors());
 			persistedProject.setOpen_issues(o.getOpen_issues());
 			persistedProject.setPushed_at(o.getPushed_at());
 			persistedProject.setQuery(o.getQuery());

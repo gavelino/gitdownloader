@@ -57,7 +57,7 @@ public class ProjectInfo extends AbstractEntity {
 	private String language;
 
 	private int commits_count;
-	private int merge_commits_count;
+	private int numAuthors;
 	private int error_commits_count;
 	private boolean analyzed;
 	
@@ -219,13 +219,6 @@ public class ProjectInfo extends AbstractEntity {
 		this.error_commits_count = count;
 	}
 
-	public int getMerge_commits_count() {
-		return merge_commits_count;
-	}
-
-	public void setMerge_commits_count(int count) {
-		this.merge_commits_count = count;
-	}
 
 	@Override
 	public String toString() {
@@ -286,6 +279,14 @@ public class ProjectInfo extends AbstractEntity {
 
 	public void setStatus(ProjectStatus status) {
 		this.status = status;
+	}
+
+	public int getNumAuthors() {
+		return numAuthors;
+	}
+
+	public void setNumAuthors(int numAuthors) {
+		this.numAuthors = numAuthors;
 	}
 
 }

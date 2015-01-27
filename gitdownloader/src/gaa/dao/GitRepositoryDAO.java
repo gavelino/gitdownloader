@@ -10,8 +10,10 @@ public class GitRepositoryDAO extends GenericDAO<GitRepository> {
 	
 	
 	@Override
-	public void persist(GitRepository project) {
-		super.persist(project);
+	public void persist(GitRepository o) {
+		GitRepository repository = this.em.find(GitRepository.class, o.getRepositoryName());
+		if (repository == null)
+			super.persist(o);
 	}
 
 	@Override

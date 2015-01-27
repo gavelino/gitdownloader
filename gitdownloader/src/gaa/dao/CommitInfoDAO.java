@@ -2,6 +2,8 @@ package gaa.dao;
 
 import java.util.List;
 
+import javax.persistence.Query;
+
 import gaa.model.CommitFileInfo;
 import gaa.model.CommitInfo;
 import gaa.model.GitRepository;
@@ -23,6 +25,12 @@ public class CommitInfoDAO extends GenericDAO<CommitInfo> {
 	@Override
 	public List<CommitInfo> findAll(Class clazz) {
 		return super.findAll(CommitInfo.class);
+	}
+	
+	public List<CommitInfo> findAllOrderByRepositoryName() {
+		String hql = "select a from " +  CommitInfo.class.getSimpleName() + " a order by a.repositoryName";
+		Query q = em.createQuery(hql);
+		return q.getResultList();
 	}
 	
 	@Override
