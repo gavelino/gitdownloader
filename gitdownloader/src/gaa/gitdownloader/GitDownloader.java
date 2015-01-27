@@ -50,10 +50,7 @@ public class GitDownloader {
 		//				.readEnvironment()
 		//				.findGitDir()
 		//				.build();
-		if (args.length>0)
-			DownloaderUtil.PATH = args[0];
 		
-		int numRepository = 1;
 //		Github github = new RtGithub("asergufmg", "aserg.ufmg2009");
 		Github github = new RtGithub("asergprogram", "aserg.ufmg2009");
 		String query = "language:Java repo:gavelino/gitresearch";
@@ -61,43 +58,65 @@ public class GitDownloader {
 //		String query = "repo:textmate/textmate";
 //		String query = "language:Java";
 //		String query = "stars:>1000";
+		String op = "1";
+		int numRepository = 1;
+		if (args.length>0)
+			op = args[0];
+		if (args.length>1)
+			DownloaderUtil.PATH = args[1];
+		if (args.length>2)
+			  query = args[2];
+		if (args.length>3)
+			  numRepository = Integer.parseInt(args[3]);
 		
-		
-		List<ProjectInfo> projectsInfo = searchRepositories(numRepository, github, query);
-				
-		DownloaderUtil.persistProjects(projectsInfo);
+		List<ProjectInfo> projectsInfo = null;
 		ProjectInfoDAO projectDAO = new ProjectInfoDAO();
+		if (op.equals("1")){
+			projectsInfo = searchRepositories(numRepository, github, query);
+			DownloaderUtil.persistProjects(projectsInfo);
+		}
+		else 
+			projectsInfo = projectDAO.findAll(null); 
+				
+		
+		
 		for (ProjectInfo projectInfo : projectsInfo) {
-			try {
-				System.out.println("Clonando " + projectInfo.getName());
-				GitServiceImpl s = new GitServiceImpl();
-				Repository repository = s.cloneIfNotExists(projectInfo);
-				System.out.println("Clonou");
-				if (projectInfo.hasUpdated()) {
-					Iterable<RevCommit> logs = new Git(repository).log().call();
-					int count = 0;
-					Date lastCommitDate = null;
-					for (RevCommit rev : logs) {
-						//System.out.println("Commit: " + rev /* + ", name: " + rev.getName() + ", id: " + rev.getId().getName() */);
-						count++;
-						if (lastCommitDate == null
-								|| lastCommitDate.compareTo(rev.getCommitterIdent()
-										.getWhen()) < 0)
-							lastCommitDate = rev.getCommitterIdent().getWhen();
+			if (projectInfo.getStatus() == ProjectStatus.NULL) {
+				try {
+					System.out.println("Clonando " + projectInfo.getName());
+					GitServiceImpl s = new GitServiceImpl();
+					Repository repository = s.cloneIfNotExists(projectInfo);
+					System.out.println("Clonou");
+					if (projectInfo.hasUpdated()) {
+						Iterable<RevCommit> logs = new Git(repository).log()
+								.call();
+						int count = 0;
+						Date lastCommitDate = null;
+						for (RevCommit rev : logs) {
+							//System.out.println("Commit: " + rev /* + ", name: " + rev.getName() + ", id: " + rev.getId().getName() */);
+							count++;
+							if (lastCommitDate == null
+									|| lastCommitDate.compareTo(rev
+											.getCommitterIdent().getWhen()) < 0)
+								lastCommitDate = rev.getCommitterIdent()
+										.getWhen();
 
+						}
+						System.out.println("Had " + count
+								+ " commits overall in repository "
+								+ lastCommitDate);
+						projectInfo.setCommits_count(count);
+						projectInfo.setLastCommit(lastCommitDate);
+						projectInfo.setStatus(ProjectStatus.DOWNLOADED);
+						projectDAO.update(projectInfo);
 					}
-					System.out.println("Had " + count
-							+ " commits overall in repository " + lastCommitDate);
-					projectInfo.setCommits_count(count);
-					projectInfo.setLastCommit(lastCommitDate);
-					projectInfo.setStatus(ProjectStatus.DOWNLOADED);
+				} catch (Exception e) {
+
+					projectInfo.setErrorMsg("GitDownloader error: "
+							+ e.toString());
+					projectInfo.setStatus(ProjectStatus.ERROR);
 					projectDAO.update(projectInfo);
 				}
-			} catch (Exception e) {
-
-				projectInfo.setErrorMsg("GitDownloader error: "+ e.toString());
-				projectInfo.setStatus(ProjectStatus.ERROR);
-				projectDAO.update(projectInfo);
 			}
 			
 			
