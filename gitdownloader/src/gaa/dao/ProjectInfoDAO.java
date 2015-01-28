@@ -56,7 +56,6 @@ public class ProjectInfoDAO extends GenericDAO<ProjectInfo> {
 			persistedProject.setStatus(o.getStatus());
 			super.merge(persistedProject);
 			o.setUpdated(false);
-			System.out.println(o.getFullName() + "has updated");
 		}
 	}
 }
