@@ -6,22 +6,22 @@ import gaa.model.ProjectInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeamProjectFilter extends ProjectFilter {
+public class HistoryProjectFilter extends ProjectFilter {
 	
-	private float teamThreshold;
+	private float historyThreshold;
 	
 	
 	
-	public TeamProjectFilter(List<ProjectInfo> projects, float teamThreshold) {
-		super(projects, "*TEAMFILTER*");
-		this.teamThreshold = teamThreshold;
+	public HistoryProjectFilter(List<ProjectInfo> projects, float historyThreshold) {
+		super(projects, "*HISTORYFILTER*");
+		this.historyThreshold = historyThreshold;
 	}
 
 	@Override
 	public List<ProjectInfo> filter() {
 		List<ProjectInfo> newList = new ArrayList<ProjectInfo>();
 		for (ProjectInfo projectInfo : projects) {
-			if (projectInfo.getNumAuthors()<teamThreshold){
+			if (projectInfo.getCommits_count()<historyThreshold){
 				projectInfo.setFiltered(true);
 				String filterInfo = projectInfo.getFilterinfo();
 				projectInfo.setFilterinfo(filterInfo==null || filterInfo.isEmpty()?filterStamp:filterInfo+filterStamp);
@@ -34,11 +34,11 @@ public class TeamProjectFilter extends ProjectFilter {
 	
 
 	public float getTeamThreshold() {
-		return teamThreshold;
+		return historyThreshold;
 	}
 
 	public void setTeamThreshold(float teamThreshold) {
-		this.teamThreshold = teamThreshold;
+		this.historyThreshold = teamThreshold;
 	}
 
 

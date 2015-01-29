@@ -35,7 +35,7 @@ public class CommitInfoDAO extends GenericDAO<CommitInfo> {
 	
 	public int getNumberAuthors(String repositoryName) {
 //		String hql = "SELECT COUNT(C) FROM " +  CommitInfo.class.getSimpleName() +  " C WHERE C.repositoryName = \":name\"";
-		String hql = "SELECT COUNT(DISTINCT ci.email) FROM " +  CommitInfo.class.getSimpleName() +  " ci WHERE ci.repositoryName = \"" +  repositoryName+"\"";
+		String hql = "SELECT COUNT(DISTINCT ci.email) FROM COMMITINFO ci WHERE ci.repositoryName = \"" +  repositoryName+"\"";
 		Query q = em.createNativeQuery(hql);
 		
 		return ((Long)q.getSingleResult()).intValue();
