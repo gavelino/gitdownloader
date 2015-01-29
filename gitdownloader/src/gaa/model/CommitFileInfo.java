@@ -3,6 +3,7 @@ package gaa.model;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -20,10 +21,11 @@ public class CommitFileInfo extends AbstractEntity{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Long id;
 
-	
 	private String newFileSha;
 	private String oldFileSha;
+	@Column(length = 1000)
 	private String oldFileName;
+	@Column(length = 1000)
 	private String newFileName;
 	@Enumerated(EnumType.STRING)
 	private Status status;
@@ -108,6 +110,11 @@ public class CommitFileInfo extends AbstractEntity{
 
 	public void setOldFileSha(String oldFileSha) {
 		this.oldFileSha = oldFileSha;
+	}
+
+
+	public Long getId() {
+		return id;
 	}
 
 

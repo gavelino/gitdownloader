@@ -33,4 +33,9 @@ public class CommitFileDAO extends GenericDAO<CommitFileInfo> {
 	private void update(ProjectInfo o){
 		
 	}
+
+	@Override
+	public boolean exist(CommitFileInfo entity) {
+		return this.find(entity.getId())!=null;
+	}
 }

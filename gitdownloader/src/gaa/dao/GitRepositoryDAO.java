@@ -45,4 +45,9 @@ public class GitRepositoryDAO extends GenericDAO<GitRepository> {
 	private void update(ProjectInfo o){
 		
 	}
+
+	@Override
+	public boolean exist(GitRepository entity) {
+		return this.find(entity.getRepositoryName())!=null;
+	}
 }

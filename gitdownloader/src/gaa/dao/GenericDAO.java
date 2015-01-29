@@ -32,6 +32,7 @@ abstract class GenericDAO<T> {
 	}
 	
 	public abstract T find(Object id);
+	public abstract boolean exist(T entity);
 		
 	public void remove(T o) {
 		EntityTransaction tx = this.em.getTransaction();

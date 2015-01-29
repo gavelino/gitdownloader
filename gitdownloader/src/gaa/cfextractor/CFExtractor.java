@@ -21,11 +21,11 @@ public class CFExtractor {
 			DownloaderUtil.PATH = args[0];
 		List<ProjectInfo> projectsInfo =  DownloaderUtil.getProjects();
 		GitRepositoryDAO grDAO = new GitRepositoryDAO();
-		String especificProject = "linux";
+		String especificProject = "altercation/vim-colors-solarized";
 		ProjectInfoDAO projectDAO = new ProjectInfoDAO();
 		for (ProjectInfo projectInfo : projectsInfo) {
-//			if (especificProject !=null && projectInfo.getName().equalsIgnoreCase(especificProject)) {
-			if (projectInfo.getStatus() == ProjectStatus.DOWNLOADED) {
+			if (especificProject !=null && projectInfo.getFullName().equalsIgnoreCase(especificProject)) {
+//			if (projectInfo.getStatus() == ProjectStatus.DOWNLOADED) {
 //				System.out.println(new Date());
 //				GitRepository gitRepository = new GitRepository(projectInfo, DownloaderUtil.getCommits(projectInfo));
 //				System.out.println(projectInfo + ": Persisting CommitFiles...");

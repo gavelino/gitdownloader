@@ -65,4 +65,9 @@ public class CommitInfoDAO extends GenericDAO<CommitInfo> {
 	private void update(CommitInfo o){
 		
 	}
+
+	@Override
+	public boolean exist(CommitInfo entity) {
+		return this.find(entity.getSha())!=null;
+	}
 }

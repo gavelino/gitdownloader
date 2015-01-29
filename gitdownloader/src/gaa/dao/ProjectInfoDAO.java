@@ -60,4 +60,9 @@ public class ProjectInfoDAO extends GenericDAO<ProjectInfo> {
 			o.setUpdated(false);
 		}
 	}
+
+	@Override
+	public boolean exist(ProjectInfo entity) {
+		return this.find(entity.getFullName())!=null;
+	}
 }
