@@ -68,7 +68,8 @@ public class ProjectInfo extends AbstractEntity {
 	private String errorMsg;
 	@Enumerated(EnumType.STRING)
 	private ProjectStatus status =  ProjectStatus.NULL;
-	
+	private boolean filtered = false;
+	private String filterinfo = "";
 
 //	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //	private List<RevisionGit> revisionGitList = new ArrayList<RevisionGit>();
@@ -287,6 +288,22 @@ public class ProjectInfo extends AbstractEntity {
 
 	public void setNumAuthors(int numAuthors) {
 		this.numAuthors = numAuthors;
+	}
+
+	public boolean isFiltered() {
+		return filtered;
+	}
+
+	public void setFiltered(boolean filtered) {
+		this.filtered = filtered;
+	}
+
+	public String getFilterinfo() {
+		return filterinfo;
+	}
+
+	public void setFilterinfo(String filterinfo) {
+		this.filterinfo = filterinfo;
 	}
 
 }

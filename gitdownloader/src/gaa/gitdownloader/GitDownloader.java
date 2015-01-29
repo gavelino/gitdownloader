@@ -53,13 +53,13 @@ public class GitDownloader {
 		
 //		Github github = new RtGithub("asergufmg", "aserg.ufmg2009");
 		Github github = new RtGithub("asergprogram", "aserg.ufmg2009");
-		String query = "language:Java repo:gavelino/gitresearch";
+//		String query = "language:Java repo:gavelino/gitresearch";
 //		String query = "language:Java repo:junit-team/junit";
 //		String query = "repo:textmate/textmate";
-//		String query = "language:Java";
+		String query = "language:Java";
 //		String query = "stars:>1000";
 		String op = "1";
-		int numRepository = 1;
+		int numRepository = 1000;
 		if (args.length>0)
 			op = args[0];
 		if (args.length>1)
