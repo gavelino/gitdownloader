@@ -40,10 +40,10 @@ public class GitProjectFinder {
 		for (JsonValue item : items) {
 			JsonObject repoData = (JsonObject) item;
 			ProjectInfo p = new ProjectInfo();
-			if (!repoData.isNull("full_name"))
+			if (!repoData.isNull("full_name")){
 				p.setFullName(repoData.getString("full_name"));
-			if (!repoData.isNull("name"))
-				p.setName(repoData.getString("name"));
+				p.setName(p.getFullName().replace('/', '-'));
+			}
 			p.setSize(repoData.getInt("size"));
 			p.setFork(repoData.getBoolean("fork"));
 			p.setStargazers_count(repoData.getInt("stargazers_count"));
