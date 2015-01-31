@@ -45,11 +45,13 @@ public class PrototypeMain {
 	public static void main(String[] args) throws Exception {
 		List<ProjectInfo> projectsInfo =  DownloaderUtil.getProjects();
 		for (ProjectInfo projectInfo : projectsInfo) {
-			String projectName = projectInfo.getFullName();
-			
-			Rank rank = new Rank(getCommitFiles("gitdownloader", projectName), projectName);	
-
-			distributionMap(getMap(rank), projectName, "Rank "+projectName);
+			if (projectInfo.getFullName().equalsIgnoreCase("abraham/twitteroauth")) {
+				String projectName = projectInfo.getFullName();
+				Rank rank = new Rank(getCommitFiles("gitdownloader",
+						projectName), projectName);
+				distributionMap(getMap(rank), projectName, "Rank "
+						+ projectName);
+			}
 		}
 		printProjectUsersInfo();
 		
@@ -121,7 +123,7 @@ public class PrototypeMain {
 
 	private static Map<String, Set<String>> getMap(Rank rank){
 		Map<String, Set<String>> map = new HashMap<String, Set<String>>();
-		List<UserFileRank> userFiles = rank.getOnlyJavaFilesRank();
+		List<UserFileRank> userFiles = rank.getCompleteRank();
 		for (UserFileRank userFile : userFiles) {
 			if (!map.containsKey(userFile.getUser()))
 				map.put(userFile.getUser(), new HashSet<String>());
@@ -174,14 +176,14 @@ public class PrototypeMain {
 			
 			
 			
+			
 		    
-		    
-			sql = "SELECT ci.* , cfi.* FROM GITPROJECT_COMMITINFO gp_ci "
-					+ "JOIN GITPROJECT gp ON gp_ci.GitProject_ID = gp.ID "
-					+ "JOIN COMMITINFO ci ON gp_ci.commits_SHA = ci.SHA "
-					+ "JOIN COMMITINFO_COMMITFILEINFO ci_cfi ON ci.SHA = ci_cfi.CommitInfo_SHA "
+			
+		   
+			sql = "SELECT ci.* , cfi.* FROM COMMITINFO_COMMITFILEINFO ci_cfi "
 					+ "JOIN COMMITFILEINFO cfi on ci_cfi.commitFiles_ID = cfi.ID "
-					+ "where gp.PROJECTINFO_FULLNAME = "
+					+ "JOIN COMMITINFO ci ON ci_cfi.CommitInfo_ID = ci.ID "
+					+ "WHERE ci.REPOSITORYNAME = "
 					+ "\""+ projectName + "\";"  ;
 			ResultSet rs = stmt.executeQuery(sql);
 			//STEP 5: Extract data from result set
