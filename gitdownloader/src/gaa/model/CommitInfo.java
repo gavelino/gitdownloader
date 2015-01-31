@@ -5,15 +5,25 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 @Entity
+@Table(
+name = "COMMITINFO",
+uniqueConstraints = {@UniqueConstraint(columnNames = {"repositoryName", "sha"})}
+)
 public class CommitInfo extends AbstractEntity implements Comparable<CommitInfo>{
 		@Id
+		@GeneratedValue(strategy = GenerationType.AUTO)
+		protected Long id;
 		private String sha;
 		private String repositoryName;
 		@Lob
