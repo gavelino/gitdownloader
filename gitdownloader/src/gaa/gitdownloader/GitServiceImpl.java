@@ -37,6 +37,7 @@ public class GitServiceImpl implements GitService {
 			git.checkout()
 			.setStartPoint(Constants.HEAD)
 			.setName(branch)
+			.setCreateBranch(true)
 			.call();
 			projectInfo.setUpdated(false);
 		} else {
@@ -63,11 +64,11 @@ public class GitServiceImpl implements GitService {
 					.findGitDir()
 					.build();
 			git = new Git(repository);
-
-			git.checkout()
-			.setStartPoint(Constants.HEAD)
-			.setName(branch)
-			.call();
+//
+//			git.checkout()
+//			.setStartPoint(Constants.HEAD)
+//			.setName(branch)
+//			.call();
 		} else {
 			System.err.println("Repositorio nao clonado: "  + branch );
 			return null;

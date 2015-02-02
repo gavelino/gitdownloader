@@ -55,7 +55,7 @@ public class GitDownloader {
 		Github github = new RtGithub("asergprogram", "aserg.ufmg2009");
 //		String query = "language:Java repo:gavelino/gitresearch";
 //		String query = "language:Java repo:junit-team/junit";
-		String query = "repo:altercation/vim-colors-solarized";
+		String query = "altercation/vim-colors-solarized";
 //		String query = "language:Java";
 //		String query = "stars:>1000";
 		String op = "1";
