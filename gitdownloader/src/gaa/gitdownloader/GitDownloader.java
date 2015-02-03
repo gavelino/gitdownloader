@@ -55,11 +55,11 @@ public class GitDownloader {
 		Github github = new RtGithub("asergprogram", "aserg.ufmg2009");
 //		String query = "language:Java repo:gavelino/gitresearch";
 //		String query = "language:Java repo:junit-team/junit";
-		String query = "repo:altercation/vim-colors-solarized";
+//		String query = "repo:jessesquires/JSQMessagesViewController";
 //		String query = "language:Java";
-//		String query = "stars:>1000";
-		String op = "1";
-		int numRepository = 1;
+		String query = "stars:>1000";
+		String op = "2";
+		int numRepository = 1000;
 		if (args.length>0)
 			op = args[0];
 		if (args.length>1)
@@ -96,8 +96,7 @@ public class GitDownloader {
 							//System.out.println("Commit: " + rev /* + ", name: " + rev.getName() + ", id: " + rev.getId().getName() */);
 							count++;
 							if (lastCommitDate == null
-									|| lastCommitDate.compareTo(rev
-											.getCommitterIdent().getWhen()) < 0)
+									|| lastCommitDate.compareTo(rev.getCommitterIdent().getWhen()) < 0)
 								lastCommitDate = rev.getCommitterIdent()
 										.getWhen();
 
@@ -111,7 +110,7 @@ public class GitDownloader {
 						projectDAO.update(projectInfo);
 					}
 				} catch (Exception e) {
-
+					e.printStackTrace();
 					projectInfo.setErrorMsg("GitDownloader error: "
 							+ e.toString());
 					projectInfo.setStatus(ProjectStatus.ERROR);

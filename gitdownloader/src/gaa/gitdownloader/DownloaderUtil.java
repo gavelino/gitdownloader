@@ -78,9 +78,14 @@ public class DownloaderUtil {
 			while (i.hasNext()) {
 				currentCommit = i.next();
 				List<CommitFileInfo> commitFiles = getDiff(repository, currentCommit, projectInfo.getFullName());
+				//TODO workaroud pare resolver problema de persistencia no projeto jessesquires/JSQMessagesViewController
+				String name = currentCommit.getAuthorIdent().getName();
+				if(projectInfo.getFullName().equals("jessesquires/JSQMessagesViewController") && name.contains("Simon R")){
+					name = "Simon Rader - Workaround DownloaderUtilL.java";					
+				}
 				commitsInfo.add(new CommitInfo(projectInfo.getFullName(), currentCommit.getName(), 
 						   currentCommit.getShortMessage(), 
-						   currentCommit.getAuthorIdent().getName(), 
+						   name, 
 						   currentCommit.getAuthorIdent().getEmailAddress(),
 						   new Timestamp(currentCommit.getAuthorIdent().getWhen().getTime()), 
 						   commitFiles));

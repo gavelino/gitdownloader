@@ -24,15 +24,8 @@ public class CFExtractor {
 		String especificProject = "altercation/vim-colors-solarized";
 		ProjectInfoDAO projectDAO = new ProjectInfoDAO();
 		for (ProjectInfo projectInfo : projectsInfo) {
-			if (especificProject !=null && projectInfo.getFullName().equalsIgnoreCase(especificProject)) {
-//			if (projectInfo.getStatus() == ProjectStatus.DOWNLOADED) {
-//				System.out.println(new Date());
-//				GitRepository gitRepository = new GitRepository(projectInfo, DownloaderUtil.getCommits(projectInfo));
-//				System.out.println(projectInfo + ": Persisting CommitFiles...");
-//				grDAO.merge(gitRepository);
-//				System.out.println(projectInfo + ": CommitFiles were persisted");
-//				System.out.println(new Date());
-				
+//			if (especificProject !=null && projectInfo.getFullName().equalsIgnoreCase(especificProject)) {
+			if (projectInfo.getStatus() == ProjectStatus.DOWNLOADED) {				
 				try {
 					System.out.println(new Date());
 					projectInfo.setStatus(ProjectStatus.ANALYZING);

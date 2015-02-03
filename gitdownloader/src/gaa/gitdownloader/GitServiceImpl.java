@@ -64,10 +64,10 @@ public class GitServiceImpl implements GitService {
 					.build();
 			git = new Git(repository);
 
-			git.checkout()
-			.setStartPoint(Constants.HEAD)
-			.setName(branch)
-			.call();
+//			git.checkout()
+//			.setStartPoint(Constants.HEAD)
+//			.setName(branch)
+//			.call();
 		} else {
 			System.err.println("Repositorio nao clonado: "  + branch );
 			return null;

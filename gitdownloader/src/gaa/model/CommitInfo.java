@@ -15,6 +15,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import org.eclipse.persistence.annotations.Index;
+
 @Entity
 @Table(
 name = "COMMITINFO",
@@ -25,6 +27,7 @@ public class CommitInfo extends AbstractEntity implements Comparable<CommitInfo>
 		@GeneratedValue(strategy = GenerationType.AUTO)
 		protected Long id;
 		private String sha;
+		@Index(name="REPOSITORYNAMEINDEX")
 		private String repositoryName;
 		@Lob
 		private String message;
