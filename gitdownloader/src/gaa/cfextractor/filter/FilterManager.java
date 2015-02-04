@@ -11,6 +11,7 @@ public class FilterManager {
 	List<ProjectFilter> filters;
 	public static void main(String[] args) {
 		FilterManager filterManager =  new FilterManager(new ProjectInfoDAO().findAll(null));
+		filterManager.addFilter(new MigrationProjectFilter(filterManager.getProjects(), 0.5f, 20));
 		filterManager.addFilter(new TeamProjectFilter(filterManager.getProjects(), 22));
 		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjects(), 240));
 		filterManager.cleanAndFilter();

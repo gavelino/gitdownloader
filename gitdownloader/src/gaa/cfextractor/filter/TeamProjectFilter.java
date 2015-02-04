@@ -13,7 +13,7 @@ public class TeamProjectFilter extends ProjectFilter {
 	
 	
 	public TeamProjectFilter(List<ProjectInfo> projects, float teamThreshold) {
-		super(projects, "*TEAMFILTER*");
+		super(projects, "*TEAM*");
 		this.teamThreshold = teamThreshold;
 	}
 

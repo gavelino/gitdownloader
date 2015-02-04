@@ -13,7 +13,7 @@ public class HistoryProjectFilter extends ProjectFilter {
 	
 	
 	public HistoryProjectFilter(List<ProjectInfo> projects, float historyThreshold) {
-		super(projects, "*HISTORYFILTER*");
+		super(projects, "*HISTORY*");
 		this.historyThreshold = historyThreshold;
 	}
 
@@ -31,6 +31,7 @@ public class HistoryProjectFilter extends ProjectFilter {
 		}
 		return newList;
 	}
+	
 	
 
 	public float getTeamThreshold() {
