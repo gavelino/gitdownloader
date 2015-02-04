@@ -21,13 +21,16 @@ public class TeamProjectFilter extends ProjectFilter {
 	public List<ProjectInfo> filter() {
 		List<ProjectInfo> newList = new ArrayList<ProjectInfo>();
 		for (ProjectInfo projectInfo : projects) {
-			if (projectInfo.getNumAuthors()<teamThreshold){
-				projectInfo.setFiltered(true);
-				String filterInfo = projectInfo.getFilterinfo();
-				projectInfo.setFilterinfo(filterInfo==null || filterInfo.isEmpty()?filterStamp:filterInfo+filterStamp);
-			}	
-			else
-				newList.add(projectInfo);
+			if (!projectInfo.isFiltered()) {
+				if (projectInfo.getNumAuthors() < teamThreshold) {
+					projectInfo.setFiltered(true);
+					String filterInfo = projectInfo.getFilterinfo();
+					projectInfo.setFilterinfo(filterInfo == null
+							|| filterInfo.isEmpty() ? filterStamp : filterInfo
+							+ filterStamp);
+				} else
+					newList.add(projectInfo);
+			}
 		}
 		return newList;
 	}

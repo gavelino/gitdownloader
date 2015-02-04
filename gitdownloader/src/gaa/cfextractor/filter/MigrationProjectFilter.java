@@ -27,30 +27,30 @@ public class MigrationProjectFilter extends ProjectFilter {
 		CommitFileDAO cfiDAO = new CommitFileDAO();
 		System.out.println(new Date());
 		for (ProjectInfo projectInfo : projects) {
-			System.out.println(projectInfo.getFullName());
-			List<Long> listNumAddCommitFiles = cfiDAO
-					.getAddsCommitFile(projectInfo.getFullName());
-			int sum = 0;
-			int count = 0;
-			long totalCommitFiles = getNumCommitFiles(listNumAddCommitFiles);
-			while (count < nCommitsThreshold
-					&& count < listNumAddCommitFiles.size()) {
-				sum += listNumAddCommitFiles.get(count++);
-				if (sum > totalCommitFiles * percFilesThreshold)
-					break;
+			if (!projectInfo.isFiltered()) {
+				List<Long> listNumAddCommitFiles = cfiDAO
+						.getAddsCommitFile(projectInfo.getFullName());
+				int sum = 0;
+				int count = 0;
+				long totalCommitFiles = getNumCommitFiles(listNumAddCommitFiles);
+				while (count < nCommitsThreshold
+						&& count < listNumAddCommitFiles.size()) {
+					sum += listNumAddCommitFiles.get(count++);
+					if (sum > totalCommitFiles * percFilesThreshold)
+						break;
+				}
+				if (sum > totalCommitFiles * percFilesThreshold) {
+					System.out.format("%s %d de %d em %d\n",
+							projectInfo.getFullName(), sum,
+							totalCommitFiles, count);
+					projectInfo.setFiltered(true);
+					String filterInfo = projectInfo.getFilterinfo();
+					projectInfo.setFilterinfo(filterInfo == null
+							|| filterInfo.isEmpty() ? filterStamp : filterInfo
+									+ filterStamp);
+				} else
+					newList.add(projectInfo);
 			}
-			if (sum > totalCommitFiles * percFilesThreshold) {
-				System.out.format("%s %d de %d em %d\n",
-						projectInfo.getFullName(), sum,
-						totalCommitFiles, count);
-				projectInfo.setFiltered(true);
-				String filterInfo = projectInfo.getFilterinfo();
-				projectInfo.setFilterinfo(filterInfo == null
-						|| filterInfo.isEmpty() ? filterStamp : filterInfo
-								+ filterStamp);
-			} else
-				newList.add(projectInfo);
-
 		}
 		System.out.println(new Date());
 		return newList;
