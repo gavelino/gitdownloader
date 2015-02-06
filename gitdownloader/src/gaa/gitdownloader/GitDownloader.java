@@ -1,6 +1,7 @@
 package gaa.gitdownloader;
 
 import gaa.dao.ProjectInfoDAO;
+import gaa.model.LanguageInfo;
 import gaa.model.ProjectInfo;
 import gaa.model.ProjectStatus;
 
@@ -14,6 +15,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
@@ -40,6 +45,7 @@ import com.jcabi.github.Github;
 import com.jcabi.github.Github.Time;
 import com.jcabi.github.RtGithub;
 import com.jcabi.http.Request;
+import com.jcabi.http.response.JsonResponse;
 
 public class GitDownloader {
 	public static void main(String[] args) throws Exception {
@@ -58,7 +64,7 @@ public class GitDownloader {
 //		String query = "repo:jessesquires/JSQMessagesViewController";
 //		String query = "language:Java";
 		String query = "stars:>1000";
-		String op = "2";
+		String op = "3";
 		int numRepository = 1000;
 		if (args.length>0)
 			op = args[0];
@@ -81,6 +87,14 @@ public class GitDownloader {
 		
 		
 		for (ProjectInfo projectInfo : projectsInfo) {
+			if (op.equals("3")){
+				List<LanguageInfo> languages = getRepositoriesLanguages(projectInfo, github);
+				projectInfo.setLanguages(languages);
+				LanguageInfo mainLanguage = getMainLanguage(languages);
+				projectInfo.setMainLanguage(mainLanguage!=null?mainLanguage.getLanguage():"");
+				projectDAO.update(projectInfo);
+			}
+			else{
 			if (projectInfo.getStatus() == ProjectStatus.NULL) {
 				try {
 					System.out.println("Clonando " + projectInfo.getName());
@@ -116,6 +130,7 @@ public class GitDownloader {
 					projectInfo.setStatus(ProjectStatus.ERROR);
 					projectDAO.update(projectInfo);
 				}
+				}
 			}
 			
 			
@@ -132,6 +147,19 @@ public class GitDownloader {
 //				System.out.println(cf);
 //			}
 //		}
+	}
+
+
+	private static LanguageInfo getMainLanguage(List<LanguageInfo> languages) {
+		LanguageInfo mainLanguage = null;
+		long maxValue=0;
+		for (LanguageInfo languageInfo : languages) {
+			if (languageInfo.getSize()>maxValue){
+				maxValue = languageInfo.getSize();
+				mainLanguage = languageInfo;
+			}
+		}
+		return mainLanguage;
 	}
 
 
@@ -165,7 +193,27 @@ public class GitDownloader {
 		}
 		return projectsInfo;
 	}
+	
+	private static List<LanguageInfo> getRepositoriesLanguages(ProjectInfo project,  Github github) throws IOException {
+		Request request;
+		
+			request = github.entry()
+					.uri().path("/repos/"+ project.getFullName()+"/languages")
+					.back()
+					.method(Request.GET);
+//			JsonArray items = (JsonArray) request.fetch().as(JsonResponse.class).json().readObject();
+			JsonObject jsonObject = request.fetch().as(JsonResponse.class).json().readObject();
+			System.out.println(jsonObject);
+			List<LanguageInfo> languages = new ArrayList<LanguageInfo>();
+			for (Entry<String, JsonValue> entry : jsonObject.entrySet()) {
+				if (entry.getKey().equalsIgnoreCase("message")||entry.getKey().equalsIgnoreCase("documentation_url"))
+					return new ArrayList<LanguageInfo>();
+				languages.add(new LanguageInfo(entry.getKey(), Long.parseLong(entry.getValue().toString())));
+			}
+		
+			return languages;
 
+	}
 	
 	static void printDiff(Repository repository, String oldHead, String head) throws AmbiguousObjectException, IOException, GitAPIException{
 
