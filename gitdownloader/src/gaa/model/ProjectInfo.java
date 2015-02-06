@@ -1,7 +1,9 @@
 package gaa.model;
 	
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -55,6 +58,7 @@ public class ProjectInfo extends AbstractEntity {
 	@Column(length = 5000)
 	private String description;
 	private String language;
+	private String mainLanguage;
 
 	private int commits_count;
 	private int numAuthors;
@@ -70,6 +74,9 @@ public class ProjectInfo extends AbstractEntity {
 	private ProjectStatus status =  ProjectStatus.NULL;
 	private boolean filtered = false;
 	private String filterinfo = "";
+
+	@OneToMany(cascade = { CascadeType.ALL })
+	private List<LanguageInfo> languages;
 
 //	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //	private List<RevisionGit> revisionGitList = new ArrayList<RevisionGit>();
@@ -304,6 +311,22 @@ public class ProjectInfo extends AbstractEntity {
 
 	public void setFilterinfo(String filterinfo) {
 		this.filterinfo = filterinfo;
+	}
+
+	public List<LanguageInfo> getLanguages() {
+		return languages;
+	}
+
+	public void setLanguages(List<LanguageInfo> languages) {
+		this.languages = languages;
+	}
+
+	public String getMainLanguage() {
+		return mainLanguage;
+	}
+
+	public void setMainLanguage(String mainLanguage) {
+		this.mainLanguage = mainLanguage;
 	}
 
 }
