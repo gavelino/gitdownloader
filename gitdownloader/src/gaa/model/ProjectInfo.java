@@ -74,6 +74,7 @@ public class ProjectInfo extends AbstractEntity {
 	private ProjectStatus status =  ProjectStatus.NULL;
 	private boolean filtered = false;
 	private String filterinfo = "";
+	int numFiles;
 
 	@OneToMany(cascade = { CascadeType.ALL })
 	private List<LanguageInfo> languages;
@@ -327,6 +328,14 @@ public class ProjectInfo extends AbstractEntity {
 
 	public void setMainLanguage(String mainLanguage) {
 		this.mainLanguage = mainLanguage;
+	}
+
+	public int getNumFiles() {
+		return numFiles;
+	}
+
+	public void setNumFiles(int numFiles) {
+		this.numFiles = numFiles;
 	}
 
 }
