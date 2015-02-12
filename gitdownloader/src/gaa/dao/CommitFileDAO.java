@@ -42,7 +42,7 @@ public class CommitFileDAO extends GenericDAO<CommitFileInfo> {
 		return this.find(entity.getId())!=null;
 	}
 
-	public List<Long> getAddsCommitFile(String repositoryName) {
+	public List<Long> getAddsCommitFileOrderByNumberOfCFs(String repositoryName) {
 		
 		String hql = "SELECT COUNT(*) FROM COMMITINFO_COMMITFILEINFO ci_cfi	"
 				+ "JOIN COMMITINFO ci ON ci_cfi.CommitInfo_ID = ci.ID    "
@@ -54,4 +54,18 @@ public class CommitFileDAO extends GenericDAO<CommitFileInfo> {
 		
 		return q.getResultList();
 	}
+	public List<Long> getAddsCommitFileOrderByDate(String repositoryName) {
+		
+		String hql = "SELECT COUNT(*) FROM COMMITINFO_COMMITFILEINFO ci_cfi	"
+				+ "JOIN COMMITINFO ci ON ci_cfi.CommitInfo_ID = ci.ID    "
+				+ "JOIN COMMITFILEINFO cfi ON ci_cfi.commitFiles_ID = cfi.ID    "
+				+ "WHERE ci.REPOSITORYNAME = \"" +  repositoryName +"\"" + " AND cfi.STATUS = \"ADDED\"    "
+						+ "GROUP BY ci.SHA    "
+						+ "ORDER BY ci.DATE;";
+		Query q = em.createNativeQuery(hql);
+		
+		return q.getResultList();
+	}
+	
+	
 }

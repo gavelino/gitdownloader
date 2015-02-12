@@ -13,10 +13,13 @@ public class MigrationProjectFilter extends ProjectFilter {
 
 	private float percFilesThreshold;
 	private int nCommitsThreshold;
+	private int type;
 	
-	
-	public MigrationProjectFilter(List<ProjectInfo> projects, float percFilesThreshold, int nCommitsThreshold) {
-		super(projects, "*MIGRATION*");
+	public MigrationProjectFilter(List<ProjectInfo> projects, int type, float percFilesThreshold, int nCommitsThreshold) throws Exception {
+		super(projects, ("*MIGRATION-" + (type==1?"BIGGEST*":"FIRSTEST*")));
+		this.type = type;
+		if (type!= 1 && type != 2)
+			throw new Exception("Parameter type has a wrong value!");
 		this.percFilesThreshold = percFilesThreshold;
 		this.nCommitsThreshold = nCommitsThreshold;
 	}
@@ -28,8 +31,11 @@ public class MigrationProjectFilter extends ProjectFilter {
 		System.out.println(new Date());
 		for (ProjectInfo projectInfo : projects) {
 			if (!projectInfo.isFiltered()) {
-				List<Long> listNumAddCommitFiles = cfiDAO
-						.getAddsCommitFile(projectInfo.getFullName());
+				List<Long> listNumAddCommitFiles;
+				if (type == 1)
+					listNumAddCommitFiles = cfiDAO.getAddsCommitFileOrderByNumberOfCFs(projectInfo.getFullName());
+				else 
+					listNumAddCommitFiles = cfiDAO.getAddsCommitFileOrderByDate(projectInfo.getFullName());
 				int sum = 0;
 				int count = 0;
 				long totalCommitFiles = getNumCommitFiles(listNumAddCommitFiles);
@@ -40,9 +46,9 @@ public class MigrationProjectFilter extends ProjectFilter {
 						break;
 				}
 				if (sum > totalCommitFiles * percFilesThreshold) {
-					System.out.format("%s %d de %d em %d\n",
+					System.out.format("%s %d %d %d %d %s\n",
 							projectInfo.getFullName(), sum,
-							totalCommitFiles, count);
+							totalCommitFiles, count, projectInfo.getNumFiles(), projectInfo.getLanguage());
 					projectInfo.setFiltered(true);
 					String filterInfo = projectInfo.getFilterinfo();
 					projectInfo.setFilterinfo(filterInfo == null

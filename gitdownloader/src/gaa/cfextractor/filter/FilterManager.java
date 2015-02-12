@@ -9,12 +9,12 @@ import java.util.List;
 public class FilterManager {
 	List<ProjectInfo> projects;
 	List<ProjectFilter> filters;
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		FilterManager filterManager =  new FilterManager(new ProjectInfoDAO().findAll(null));
 		filterManager.addFilter(new TeamProjectFilter(filterManager.getProjects(), 22));
 		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjects(), 241));
 		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjects(), 44));
-		filterManager.addFilter(new MigrationProjectFilter(filterManager.getProjects(), 0.5f, 20));
+		filterManager.addFilter(new MigrationProjectFilter(filterManager.getProjects(), 2, 0.5f, 20));
 		filterManager.cleanAndFilter();
 		filterManager.persistFiltredProjects();
 	}
