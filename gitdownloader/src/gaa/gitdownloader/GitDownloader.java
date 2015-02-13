@@ -1,6 +1,7 @@
 package gaa.gitdownloader;
 
 import gaa.dao.ProjectInfoDAO;
+import gaa.model.FileInfo;
 import gaa.model.LanguageInfo;
 import gaa.model.ProjectInfo;
 import gaa.model.ProjectStatus;
@@ -64,7 +65,7 @@ public class GitDownloader {
 //		String query = "repo:jessesquires/JSQMessagesViewController";
 //		String query = "language:Java";
 		String query = "stars:>1000";
-		String op = "3";
+		String op = "4";
 		int numRepository = 1000;
 		if (args.length>0)
 			op = args[0];
@@ -92,6 +93,14 @@ public class GitDownloader {
 				projectInfo.setLanguages(languages);
 				LanguageInfo mainLanguage = getMainLanguage(languages);
 				projectInfo.setMainLanguage(mainLanguage!=null?mainLanguage.getLanguage():"");
+				projectDAO.update(projectInfo);
+			}
+			else if(op.equals("4")){
+				FileInfoAux fileAux =  getRepositoriesFiles(projectInfo, github);;
+				List<FileInfo> files = fileAux.files;
+				projectInfo.setFiles(files);
+				//TODO remover comentário quando for refazer download dos projetos
+				projectInfo.setNumFiles(fileAux.numFiles);
 				projectDAO.update(projectInfo);
 			}
 			else{
@@ -193,7 +202,7 @@ public class GitDownloader {
 		}
 		return projectsInfo;
 	}
-	
+
 	private static List<LanguageInfo> getRepositoriesLanguages(ProjectInfo project,  Github github) throws IOException {
 		Request request;
 		
@@ -212,6 +221,48 @@ public class GitDownloader {
 			}
 		
 			return languages;
+
+	}
+	
+	private static FileInfoAux getRepositoriesFiles(ProjectInfo project,  Github github) throws IOException {
+		Request request;
+		
+			request = github.entry()
+					.uri().path("/repos/"+ project.getFullName()+"/git/trees/"+project.getDefault_branch())
+					.queryParam("recursive", "1")
+					.back()
+					.method(Request.GET);
+//			JsonArray items = (JsonArray) request.fetch().as(JsonResponse.class).json().readObject();
+			JsonArray items = request.fetch().as(JsonResponse.class).json().readObject().getJsonArray("tree");
+			List<FileInfo> files = new ArrayList<FileInfo>();
+			int countFiles = 0;
+			int countDirectories = 0;
+			int countAll = 0;
+			if (items == null)
+				System.err.println("\n\n" +project + "\n\n" );
+			else{
+				for (JsonValue item : items) {
+					JsonObject repoData = (JsonObject) item;
+					FileInfo file = new FileInfo();
+					file.setPath(repoData.getString("path"));
+					file.setMode(repoData.getString("mode"));
+					file.setType(repoData.getString("type"));
+					file.setSha(repoData.getString("sha"));
+					if(!repoData.containsKey("size"))
+						file.setSize(0);
+					else
+						file.setSize(repoData.getInt("size"));
+					files.add(file);
+					if (file.getType().equalsIgnoreCase("blob"))
+						countFiles++;
+					else if (file.getType().equalsIgnoreCase("tree"))
+						countDirectories++;
+					countAll++;
+				}
+				System.out.format("%s - Files=%d, Directories=%d, All=%d\n",project.getFullName(), countFiles, countDirectories, countAll);
+			}
+			FileInfoAux fileInfo = new FileInfoAux(files, countFiles);
+			return fileInfo;
 
 	}
 	

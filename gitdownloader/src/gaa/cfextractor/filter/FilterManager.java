@@ -11,9 +11,10 @@ public class FilterManager {
 	List<ProjectFilter> filters;
 	public static void main(String[] args) throws Exception {
 		FilterManager filterManager =  new FilterManager(new ProjectInfoDAO().findAll(null));
-		filterManager.addFilter(new TeamProjectFilter(filterManager.getProjects(), 22));
-		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjects(), 241));
-		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjects(), 44));
+//		filterManager.addFilter(new NumberOfProjectFilter(filterManager.getProjects(), 500));
+		filterManager.addFilter(new TeamProjectFilter(filterManager.getProjects(), 32));
+		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjects(), 334));
+		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjects(), 45));
 		filterManager.addFilter(new MigrationProjectFilter(filterManager.getProjects(), 2, 0.5f, 20));
 		filterManager.cleanAndFilter();
 		filterManager.persistFiltredProjects();

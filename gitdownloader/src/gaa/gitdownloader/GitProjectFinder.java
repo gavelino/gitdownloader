@@ -28,7 +28,7 @@ public class GitProjectFinder {
 //	}
 	public GitProjectFinder() {
 		BasicConfigurator.configure();
-		LogManager.getRootLogger().setLevel(Level.INFO);
+		LogManager.getRootLogger().setLevel(Level.OFF);
 	}
 
 	public List<ProjectInfo> findRepos(Request request, String query) throws IOException {
