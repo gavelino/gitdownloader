@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 //	@NamedQuery(name = "projectGit.findByCloneUrl", query = "SELECT i FROM ProjectGit i where i.cloneUrl = :cloneUrl")
 //})
 @Table(name = "projectinfo")
-public class ProjectInfo extends AbstractEntity {
+public class ProjectInfo extends AbstractEntity implements Comparable<ProjectInfo>{
 
 	/**
 	 * 
@@ -78,6 +78,9 @@ public class ProjectInfo extends AbstractEntity {
 
 	@OneToMany(cascade = { CascadeType.ALL })
 	private List<LanguageInfo> languages;
+	
+	@OneToMany(cascade = { CascadeType.ALL })
+	private List<FileInfo> files;
 
 //	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //	private List<RevisionGit> revisionGitList = new ArrayList<RevisionGit>();
@@ -336,6 +339,19 @@ public class ProjectInfo extends AbstractEntity {
 
 	public void setNumFiles(int numFiles) {
 		this.numFiles = numFiles;
+	}
+
+	public List<FileInfo> getFiles() {
+		return files;
+	}
+
+	public void setFiles(List<FileInfo> files) {
+		this.files = files;
+	}
+
+	@Override
+	public int compareTo(ProjectInfo o) {
+		return Integer.compare(this.stargazers_count, o.stargazers_count);
 	}
 
 }
