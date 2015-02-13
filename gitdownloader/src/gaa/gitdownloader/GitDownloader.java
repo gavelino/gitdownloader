@@ -10,16 +10,10 @@ import java.io.IOException;
 import java.util.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.Status;
@@ -45,8 +39,6 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
 import com.jcabi.github.Github;
 import com.jcabi.github.Github.Time;
 import com.jcabi.github.RtGithub;
-import com.jcabi.http.Request;
-import com.jcabi.http.response.JsonResponse;
 
 public class GitDownloader {
 	public static void main(String[] args) throws Exception {
@@ -78,37 +70,32 @@ public class GitDownloader {
 		
 		List<ProjectInfo> projectsInfo = null;
 		ProjectInfoDAO projectDAO = new ProjectInfoDAO();
+		GitServiceImpl gitService = new GitServiceImpl(github);
 		if (op.equals("1")){
-			projectsInfo = searchRepositories(numRepository, github, query);
+			projectsInfo = gitService.searchRepositories(numRepository, query);
 			DownloaderUtil.persistProjects(projectsInfo);
+			new UpdateRepositoriesInfoThread(github, projectsInfo).start();
 		}
 		else 
 			projectsInfo = projectDAO.findAll(null); 
 				
 		
-		
 		for (ProjectInfo projectInfo : projectsInfo) {
+			
 			if (op.equals("3")){
-				List<LanguageInfo> languages = getRepositoriesLanguages(projectInfo, github);
-				projectInfo.setLanguages(languages);
-				LanguageInfo mainLanguage = getMainLanguage(languages);
-				projectInfo.setMainLanguage(mainLanguage!=null?mainLanguage.getLanguage():"");
+				addProjectLanguages(gitService, projectInfo);
 				projectDAO.update(projectInfo);
 			}
 			else if(op.equals("4")){
-				FileInfoAux fileAux =  getRepositoriesFiles(projectInfo, github);;
-				List<FileInfo> files = fileAux.files;
-				projectInfo.setFiles(files);
-				//TODO remover comentário quando for refazer download dos projetos
-				projectInfo.setNumFiles(fileAux.numFiles);
+				addProjectFilesInfo(gitService, projectInfo);
 				projectDAO.update(projectInfo);
 			}
 			else{
 			if (projectInfo.getStatus() == ProjectStatus.NULL) {
 				try {
+					
 					System.out.println("Clonando " + projectInfo.getName());
-					GitServiceImpl s = new GitServiceImpl();
-					Repository repository = s.cloneIfNotExists(projectInfo);
+					Repository repository = gitService.cloneIfNotExists(projectInfo);
 					System.out.println("Clonou");
 					if (projectInfo.hasUpdated()) {
 						Iterable<RevCommit> logs = new Git(repository).log()
@@ -159,113 +146,24 @@ public class GitDownloader {
 	}
 
 
-	private static LanguageInfo getMainLanguage(List<LanguageInfo> languages) {
-		LanguageInfo mainLanguage = null;
-		long maxValue=0;
-		for (LanguageInfo languageInfo : languages) {
-			if (languageInfo.getSize()>maxValue){
-				maxValue = languageInfo.getSize();
-				mainLanguage = languageInfo;
-			}
-		}
-		return mainLanguage;
+	private static void addProjectFilesInfo(GitServiceImpl gitService, ProjectInfo projectInfo)
+			throws IOException {
+		FileInfoAux fileAux =  gitService.getRepositoriesFiles(projectInfo);;
+		List<FileInfo> files = fileAux.files;
+		projectInfo.setFiles(files);
+		projectInfo.setNumFiles(fileAux.numFiles);
 	}
 
 
-	private static List<ProjectInfo> searchRepositories(int numRepository,
-			Github github, String query) throws IOException {
-		Request request = github.entry()
-				.uri().path("/search/repositories")
-				//				.queryParam("q", "language:Java created:<=2014-06-01")
-				.queryParam("q", query )
-								.queryParam("sort", "stars")
-								.queryParam("order", "desc")
-								.queryParam("per_page", numRepository>100?"100":String.valueOf(numRepository))
-				.back()
-				.method(Request.GET);
-
-		int page=1;
-		List<ProjectInfo> projectsInfo = new ArrayList<ProjectInfo>();
-		GitProjectFinder projectFinder = new GitProjectFinder();
-		while (projectsInfo.size()<numRepository){
-			request = github.entry()
-					.uri().path("/search/repositories")
-					//				.queryParam("q", "language:Java created:<=2014-06-01")
-					.queryParam("q", query )
-									.queryParam("sort", "stars")
-									.queryParam("order", "desc")
-									.queryParam("per_page", numRepository>100?"100":String.valueOf(numRepository))
-									.queryParam("page", String.valueOf(page++))
-					.back()
-					.method(Request.GET);
-			projectsInfo.addAll(projectFinder.findRepos(request, query));
-		}
-		return projectsInfo;
+	private static void addProjectLanguages(GitServiceImpl gitService, ProjectInfo projectInfo)
+			throws IOException {
+		List<LanguageInfo> languages = gitService.getRepositoriesLanguages(projectInfo);
+		projectInfo.setLanguages(languages);
+		LanguageInfo mainLanguage = gitService.getMainLanguage(languages);
+		projectInfo.setMainLanguage(mainLanguage!=null?mainLanguage.getLanguage():"");
 	}
 
-	private static List<LanguageInfo> getRepositoriesLanguages(ProjectInfo project,  Github github) throws IOException {
-		Request request;
-		
-			request = github.entry()
-					.uri().path("/repos/"+ project.getFullName()+"/languages")
-					.back()
-					.method(Request.GET);
-//			JsonArray items = (JsonArray) request.fetch().as(JsonResponse.class).json().readObject();
-			JsonObject jsonObject = request.fetch().as(JsonResponse.class).json().readObject();
-			System.out.println(jsonObject);
-			List<LanguageInfo> languages = new ArrayList<LanguageInfo>();
-			for (Entry<String, JsonValue> entry : jsonObject.entrySet()) {
-				if (entry.getKey().equalsIgnoreCase("message")||entry.getKey().equalsIgnoreCase("documentation_url"))
-					return new ArrayList<LanguageInfo>();
-				languages.add(new LanguageInfo(entry.getKey(), Long.parseLong(entry.getValue().toString())));
-			}
-		
-			return languages;
 
-	}
-	
-	private static FileInfoAux getRepositoriesFiles(ProjectInfo project,  Github github) throws IOException {
-		Request request;
-		
-			request = github.entry()
-					.uri().path("/repos/"+ project.getFullName()+"/git/trees/"+project.getDefault_branch())
-					.queryParam("recursive", "1")
-					.back()
-					.method(Request.GET);
-//			JsonArray items = (JsonArray) request.fetch().as(JsonResponse.class).json().readObject();
-			JsonArray items = request.fetch().as(JsonResponse.class).json().readObject().getJsonArray("tree");
-			List<FileInfo> files = new ArrayList<FileInfo>();
-			int countFiles = 0;
-			int countDirectories = 0;
-			int countAll = 0;
-			if (items == null)
-				System.err.println("\n\n" +project + "\n\n" );
-			else{
-				for (JsonValue item : items) {
-					JsonObject repoData = (JsonObject) item;
-					FileInfo file = new FileInfo();
-					file.setPath(repoData.getString("path"));
-					file.setMode(repoData.getString("mode"));
-					file.setType(repoData.getString("type"));
-					file.setSha(repoData.getString("sha"));
-					if(!repoData.containsKey("size"))
-						file.setSize(0);
-					else
-						file.setSize(repoData.getInt("size"));
-					files.add(file);
-					if (file.getType().equalsIgnoreCase("blob"))
-						countFiles++;
-					else if (file.getType().equalsIgnoreCase("tree"))
-						countDirectories++;
-					countAll++;
-				}
-				System.out.format("%s - Files=%d, Directories=%d, All=%d\n",project.getFullName(), countFiles, countDirectories, countAll);
-			}
-			FileInfoAux fileInfo = new FileInfoAux(files, countFiles);
-			return fileInfo;
-
-	}
-	
 	static void printDiff(Repository repository, String oldHead, String head) throws AmbiguousObjectException, IOException, GitAPIException{
 
 		// the diff works on TreeIterators, we prepare two for the two branches
