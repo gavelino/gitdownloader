@@ -96,7 +96,7 @@ public class GitDownloader {
 					
 					System.out.println("Clonando " + projectInfo.getName());
 					Repository repository = gitService.cloneIfNotExists(projectInfo);
-					System.out.println("Clonou");
+//					System.out.println("Clonou");
 					if (projectInfo.hasUpdated()) {
 						Iterable<RevCommit> logs = new Git(repository).log()
 								.call();
@@ -111,9 +111,9 @@ public class GitDownloader {
 										.getWhen();
 
 						}
-						System.out.println("Had " + count
-								+ " commits overall in repository "
-								+ lastCommitDate);
+//						System.out.println("Had " + count
+//								+ " commits overall in repository "
+//								+ lastCommitDate);
 						projectInfo.setCommits_count(count);
 						projectInfo.setLastCommit(lastCommitDate);
 						projectInfo.setStatus(ProjectStatus.DOWNLOADED);

@@ -130,7 +130,7 @@ public class GitServiceImpl implements GitService {
 							countDirectories++;
 						countAll++;
 					}
-					System.out.format("%s - Files=%d, Directories=%d, All=%d\n",project.getFullName(), countFiles, countDirectories, countAll);
+//					System.out.format("%s - Files=%d, Directories=%d, All=%d\n",project.getFullName(), countFiles, countDirectories, countAll);
 				}
 				FileInfoAux fileInfo = new FileInfoAux(files, countFiles);
 				return fileInfo;
@@ -158,7 +158,6 @@ public class GitServiceImpl implements GitService {
 						.method(Request.GET);
 	//			JsonArray items = (JsonArray) request.fetch().as(JsonResponse.class).json().readObject();
 				JsonObject jsonObject = request.fetch().as(JsonResponse.class).json().readObject();
-				System.out.println(jsonObject);
 				List<LanguageInfo> languages = new ArrayList<LanguageInfo>();
 				for (Entry<String, JsonValue> entry : jsonObject.entrySet()) {
 					if (entry.getKey().equalsIgnoreCase("message")||entry.getKey().equalsIgnoreCase("documentation_url"))
