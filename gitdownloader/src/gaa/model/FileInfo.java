@@ -14,6 +14,8 @@ import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.eclipse.persistence.annotations.Index;
+
 @Entity
 public class FileInfo extends AbstractEntity{
 
@@ -21,6 +23,7 @@ public class FileInfo extends AbstractEntity{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Long id;
 
+	@Index(name="FILEPATHINDEX")
 	private String path;
 	private int size;
 	private String mode;
