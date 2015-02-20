@@ -12,18 +12,20 @@
     <class>gaa.model.CommitFileInfo</class>
     <class>gaa.model.LanguageInfo</class>
     <class>gaa.model.FileInfo</class>
+    <class>gaa.model.LogCommitFileInfo</class>
+    
 <!--     <class>gaa.model.GitRepository</class> -->
 
     <properties>
 		<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
 		
-<!-- 		<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/gitdownloader" /> -->
-<!-- 		<property name="javax.persistence.jdbc.user" value="git" /> -->
-<!-- 		<property name="javax.persistence.jdbc.password" value="git" /> -->
+		<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/gitdownloader" />
+		<property name="javax.persistence.jdbc.user" value="git" />
+		<property name="javax.persistence.jdbc.password" value="git" />
 		
-		<property name="javax.persistence.jdbc.url" value="jdbc:mysql://icse.labsoft.dcc.ufmg.br:3306/gitdownloader" />
-		<property name="javax.persistence.jdbc.user" value="gitdownloader" />
-		<property name="javax.persistence.jdbc.password" value="gitdownloader" />
+<!-- 		<property name="javax.persistence.jdbc.url" value="jdbc:mysql://icse.labsoft.dcc.ufmg.br:3306/gitdownloader" /> -->
+<!-- 		<property name="javax.persistence.jdbc.user" value="gitdownloader" /> -->
+<!-- 		<property name="javax.persistence.jdbc.password" value="gitdownloader" /> -->
 		
 		<property name="eclipselink.logging.level" value="INFO"/>
 		

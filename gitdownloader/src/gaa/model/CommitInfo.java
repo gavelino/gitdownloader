@@ -37,7 +37,10 @@ public class CommitInfo extends AbstractEntity implements Comparable<CommitInfo>
 		private Date date;
 		@OneToMany(cascade = { CascadeType.ALL })
 		private List<CommitFileInfo> commitFiles;
-		
+
+		@OneToMany(cascade = { CascadeType.ALL })
+		private List<LogCommitFileInfo> logCommitFiles;
+
 		public CommitInfo() {
 			// TODO Auto-generated constructor stub
 		}
@@ -113,6 +116,18 @@ public class CommitInfo extends AbstractEntity implements Comparable<CommitInfo>
 
 		public void setRepositoryName(String repositoryName) {
 			this.repositoryName = repositoryName;
+		}
+		
+		public List<LogCommitFileInfo> getLogCommitFiles() {
+			return logCommitFiles;
+		}
+
+		public void setLogCommitFiles(List<LogCommitFileInfo> logCommitFiles) {
+			this.logCommitFiles = logCommitFiles;
+		}
+
+		public Long getId() {
+			return id;
 		}
 		
 		

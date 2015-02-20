@@ -27,6 +27,13 @@ public class CommitInfoDAO extends GenericDAO<CommitInfo> {
 		return super.findAll(CommitInfo.class);
 	}
 	
+	public CommitInfo find(String repositoryName, String sha){
+		String hql = "select a from " +  CommitInfo.class.getSimpleName() + " a " + 
+					 " WHERE a.repositoryName = \""+repositoryName+"\"" +  " AND a.sha = \"" + sha +"\"";
+		Query q = em.createQuery(hql);
+		return (CommitInfo)q.getSingleResult();
+	}
+	
 	public List<CommitInfo> findAllOrderByRepositoryName() {
 		String hql = "select a from " +  CommitInfo.class.getSimpleName() + " a order by a.repositoryName";
 		Query q = em.createQuery(hql);
@@ -62,8 +69,20 @@ public class CommitInfoDAO extends GenericDAO<CommitInfo> {
 		}
 		thread.run();
 	}
-	private void update(CommitInfo o){
-		
+	
+	public void update(CommitInfo o){
+		CommitInfo persistedCommit = this.em.find(CommitInfo.class, o.getId());
+		if (persistedCommit != null){
+			persistedCommit.setCommitFiles(o.getCommitFiles());			
+			persistedCommit.setDate(o.getDate());
+			persistedCommit.setEmail(o.getEmail());
+			persistedCommit.setLogCommitFiles(o.getLogCommitFiles());
+			persistedCommit.setMessage(o.getMessage());
+			persistedCommit.setName(o.getName());
+			persistedCommit.setRepositoryName(o.getRepositoryName());
+			persistedCommit.setSha(o.getSha());
+			super.merge(persistedCommit);
+		}
 	}
 
 	@Override
