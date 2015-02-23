@@ -14,6 +14,8 @@ import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.eclipse.persistence.annotations.Index;
+
 @Entity
 public class LogCommitFileInfo extends AbstractEntity{
 
@@ -21,37 +23,32 @@ public class LogCommitFileInfo extends AbstractEntity{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Long id;
 
+
+	@Index(name="REPOSITORYNAMELOGFILEINDEX")
+	private String repositoryName;
+	@Index(name="SHALOGFILEINDEX")
+	private String sha;
+	
 	@Column(length = 1000)
 	private String oldFileName;
 	@Column(length = 1000)
 	private String newFileName;
 	@Enumerated(EnumType.STRING)
 	private Status status;
-//	private int additions;
-//	private int deletions;
-//	private int commitId;
 
 	public LogCommitFileInfo() {
 		// TODO Auto-generated constructor stub
 	}
 
 
-	public LogCommitFileInfo(String status, String oldFileName, String newFileName) {
+	public LogCommitFileInfo(String repositoryName, String sha, String status, String oldFileName, String newFileName) {
 		super();
+		this.repositoryName = repositoryName;
+		this.sha = sha;
 		this.oldFileName = oldFileName;
 		this.newFileName = newFileName;
 		this.status = Status.getStatus(status);
-//		setShaKey(commitSha+oldFileSha+newFileSHA);
 	}
-
-//	public Long getId() {
-//		id = null;
-//		return id;
-//	}
-//
-//	public void setId(final Long id) {
-//		this.id = null;
-//	}
 
 	@Override
 	public String toString() {
@@ -98,6 +95,26 @@ public class LogCommitFileInfo extends AbstractEntity{
 	}
 
 
+	public String getRepositoryName() {
+		return repositoryName;
+	}
+
+
+	public void setRepositoryName(String repositoryName) {
+		this.repositoryName = repositoryName;
+	}
+
+
+	public String getSha() {
+		return sha;
+	}
+
+
+	public void setSha(String sha) {
+		this.sha = sha;
+	}
+
+	
 
 
 }

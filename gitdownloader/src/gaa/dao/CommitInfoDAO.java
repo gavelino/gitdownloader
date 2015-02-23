@@ -69,14 +69,14 @@ public class CommitInfoDAO extends GenericDAO<CommitInfo> {
 		}
 		thread.run();
 	}
-	
+
 	public void update(CommitInfo o){
 		CommitInfo persistedCommit = this.em.find(CommitInfo.class, o.getId());
 		if (persistedCommit != null){
 			persistedCommit.setCommitFiles(o.getCommitFiles());			
 			persistedCommit.setDate(o.getDate());
 			persistedCommit.setEmail(o.getEmail());
-			persistedCommit.setLogCommitFiles(o.getLogCommitFiles());
+//			persistedCommit.setLogCommitFiles(o.getLogCommitFiles());
 			persistedCommit.setMessage(o.getMessage());
 			persistedCommit.setName(o.getName());
 			persistedCommit.setRepositoryName(o.getRepositoryName());
@@ -84,6 +84,17 @@ public class CommitInfoDAO extends GenericDAO<CommitInfo> {
 			super.merge(persistedCommit);
 		}
 	}
+	
+//	public void updateOnlyLogFiles(CommitInfo o){
+//		CommitInfo persistedCommit = this.em.find(CommitInfo.class, o.getId());
+//		if (persistedCommit.equals(o)){
+//			super.merge(o);
+//		}
+//		if (persistedCommit != null){
+//			persistedCommit.setLogCommitFiles(o.getLogCommitFiles());
+//			super.merge(persistedCommit);
+//		}
+//	}
 
 	@Override
 	public boolean exist(CommitInfo entity) {
