@@ -25,7 +25,7 @@ public class GitLogerExtractor {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		GitLogerExtractor gitLogerExtractor = new GitLogerExtractor("C:/temp/_commitfileinfo/");
+		GitLogerExtractor gitLogerExtractor = new GitLogerExtractor(args[0]);
 		System.out.println("BEGIN at "+ new Date() + "\n\n");
 		gitLogerExtractor.simpleExtract();
 		System.out.println("\n\nEND at "+ new Date());

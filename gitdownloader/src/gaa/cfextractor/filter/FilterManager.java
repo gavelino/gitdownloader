@@ -43,7 +43,8 @@ public class FilterManager {
 		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjectsByLanguage("c/c++"), 446));
 		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjectsByLanguage("c/c++"), 130));
 
-		filterManager.setMainFilter(new NewMigrationProjectFilter(filterManager.getProjects(), 1, 0.5f, 20));
+//		filterManager.setMainFilter(new NewMigrationProjectFilter(filterManager.getProjects(), 1, 0.5f, 20));
+		filterManager.setMainFilter(new MigrationProjectFilterUsingLogFilesInfo(filterManager.getProjects(), 1, 0.5f, 20));
 		filterManager.addFilter(filterManager.getMainFilter());
 		
 		filterManager.cleanAndFilter();
