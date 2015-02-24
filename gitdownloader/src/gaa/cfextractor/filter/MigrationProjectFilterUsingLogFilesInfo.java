@@ -38,14 +38,12 @@ public class MigrationProjectFilterUsingLogFilesInfo extends ProjectFilter {
 				List<Long> listNumAddCommitFiles;
 				if (type == 1)
 					listNumAddCommitFiles = lcfiDAO
-							.newGetAddsCommitFileOrderByNumberOfCFs(projectInfo
+							.getAddsCommitFileOrderByNumberOfCFs(projectInfo
 									.getFullName());
-				else{
-					System.err.println("Nao implementado ainda");
-					listNumAddCommitFiles = null;
-//					listNumAddCommitFiles = lcfiDAO
-//							.getAddsCommitFileOrderByDate(projectInfo
-//									.getFullName());
+				else{				
+					listNumAddCommitFiles = lcfiDAO
+							.getAddsCommitFileOrderByDate(projectInfo
+									.getFullName());
 				}
 				int sum = 0;
 				int count = 0;
