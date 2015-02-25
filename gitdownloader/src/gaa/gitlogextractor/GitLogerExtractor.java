@@ -95,4 +95,30 @@ public class GitLogerExtractor {
 		
 		
 	}
+	
+	
+	static public Map<String, List<LogCommitFileInfo>> extractProject(String localPath, String projectName) throws IOException{
+		Map<String, List<LogCommitFileInfo>> map = new HashMap<String, List<LogCommitFileInfo>>();
+		List<LogCommitFileInfo> logCommitFiles;
+		int countcfs = 0;
+		System.out.println(projectName+": Extracting logCommitFiles...");
+		String fileName = projectName.replace('/', '-')+".txt";
+		BufferedReader br = new BufferedReader(new FileReader(localPath+fileName));
+		String sCurrentLine;
+		String[] values;
+
+		while ((sCurrentLine = br.readLine()) != null) {
+			values = sCurrentLine.split(";");
+			String sha = values[0];
+			if (map.containsKey(sha))
+				logCommitFiles = map.get(sha);
+			else{
+				logCommitFiles = new ArrayList<LogCommitFileInfo>();
+				map.put(sha, logCommitFiles);
+			}
+			logCommitFiles.add(new LogCommitFileInfo(values[1], values[2], values[3]));
+		}
+		
+		return map;
+	}
 }

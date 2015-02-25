@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,16 +38,18 @@ public class CommitInfo extends AbstractEntity implements Comparable<CommitInfo>
 		private Date date;
 		@OneToMany(cascade = { CascadeType.ALL })
 		private List<CommitFileInfo> commitFiles;
+		@ElementCollection
+		private List<String> parentsSha;
 
-//		@OneToMany(cascade = { CascadeType.ALL })
-//		private List<LogCommitFileInfo> logCommitFiles;
+		@OneToMany(cascade = { CascadeType.ALL })
+		private List<LogCommitFileInfo> logCommitFiles;
 
 		public CommitInfo() {
 			// TODO Auto-generated constructor stub
 		}
 
 		public CommitInfo(String repositoryName, String sha, String message, String name,
-				String email, Date date, List<CommitFileInfo> commitFiles) {
+				String email, Date date, List<CommitFileInfo> commitFiles, List<String> parentsSha) {
 			super();
 			this.repositoryName = repositoryName;
 			this.sha = sha;
@@ -55,8 +58,23 @@ public class CommitInfo extends AbstractEntity implements Comparable<CommitInfo>
 			this.email = email;
 			this.date = date;
 			this.commitFiles = commitFiles;
+			this.parentsSha = parentsSha;
 		}
-
+		
+		
+		public CommitInfo(Date date, String repositoryName, String sha, String message, String name,
+				String email, List<LogCommitFileInfo> logCommitFiles, List<String> parentsSha) {
+			super();
+			this.repositoryName = repositoryName;
+			this.sha = sha;
+			this.message = message;
+			this.name = name;
+			this.email = email;
+			this.date = date;
+			this.logCommitFiles = logCommitFiles;
+			this.parentsSha = parentsSha;
+		}
+		
 		public String getSha() {
 			return sha;
 		}
@@ -118,16 +136,24 @@ public class CommitInfo extends AbstractEntity implements Comparable<CommitInfo>
 			this.repositoryName = repositoryName;
 		}
 		
-//		public List<LogCommitFileInfo> getLogCommitFiles() {
-//			return logCommitFiles;
-//		}
-//
-//		public void setLogCommitFiles(List<LogCommitFileInfo> logCommitFiles) {
-//			this.logCommitFiles = logCommitFiles;
-//		}
+		public List<LogCommitFileInfo> getLogCommitFiles() {
+			return logCommitFiles;
+		}
+
+		public void setLogCommitFiles(List<LogCommitFileInfo> logCommitFiles) {
+			this.logCommitFiles = logCommitFiles;
+		}
 
 		public Long getId() {
 			return id;
+		}
+
+		public List<String> getParentsSha() {
+			return parentsSha;
+		}
+
+		public void setParentsSha(List<String> parentsSha) {
+			this.parentsSha = parentsSha;
 		}
 		
 		
