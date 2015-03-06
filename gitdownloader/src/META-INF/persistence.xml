@@ -21,13 +21,13 @@
 
 		<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
 		
-		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gitdownloader" />
-		<property name="javax.persistence.jdbc.user" value="git" />
-		<property name="javax.persistence.jdbc.password" value="git" />
+<!-- 		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gitdownloader" /> -->
+<!-- 		<property name="javax.persistence.jdbc.user" value="git" /> -->
+<!-- 		<property name="javax.persistence.jdbc.password" value="git" /> -->
 		
-<!-- 		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://icse.labsoft.dcc.ufmg.br:5432/gitdownloader" /> -->
-<!-- 		<property name="javax.persistence.jdbc.user" value="gitdownloader" /> -->
-<!-- 		<property name="javax.persistence.jdbc.password" value="gitdownloader" /> -->
+		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://icse.labsoft.dcc.ufmg.br:5432/gitdownloader" />
+		<property name="javax.persistence.jdbc.user" value="gitdownloader" />
+		<property name="javax.persistence.jdbc.password" value="gitdownloader" />
 		
 <!-- 		<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" /> -->
 		

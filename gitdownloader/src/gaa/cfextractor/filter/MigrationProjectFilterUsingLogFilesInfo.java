@@ -40,9 +40,14 @@ public class MigrationProjectFilterUsingLogFilesInfo extends ProjectFilter {
 					listNumAddCommitFiles = lcfiDAO
 							.getAddsCommitFileOrderByNumberOfCFs(projectInfo
 									.getFullName());
-				else{				
+				else if (type == 2){				
 					listNumAddCommitFiles = lcfiDAO
 							.getAddsCommitFileOrderByDate(projectInfo
+									.getFullName());
+				}
+				else{
+					listNumAddCommitFiles = lcfiDAO
+							.newGetAddsCommitFileOrderByNumberOfCFs(projectInfo
 									.getFullName());
 				}
 				int sum = 0;

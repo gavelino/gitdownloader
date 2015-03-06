@@ -19,32 +19,32 @@ public class FilterManager {
 //		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjects(), 45));
 //		filterManager.addFilter(new MigrationProjectFilter(filterManager.getProjects(), 2, 0.5f, 20));
 
-		filterManager.addFilter(new TeamProjectFilter(filterManager.getProjectsByLanguage("java"), 17));
-		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjectsByLanguage("java"), 230));
-		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjectsByLanguage("java"), 100));
+		filterManager.addFilter(new TeamProjectFilter(filterManager.getProjectsByLanguage("java"), 18));
+		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjectsByLanguage("java"), 241));
+		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjectsByLanguage("java"), 102));
 		
 		filterManager.addFilter(new TeamProjectFilter(filterManager.getProjectsByLanguage("javascript"), 40));
-		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjectsByLanguage("javascript"), 395));
-		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjectsByLanguage("javascript"), 41));
+		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjectsByLanguage("javascript"), 388));
+		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjectsByLanguage("javascript"), 43));
 
 		filterManager.addFilter(new TeamProjectFilter(filterManager.getProjectsByLanguage("php"), 29));
-		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjectsByLanguage("php"), 380));
+		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjectsByLanguage("php"), 403));
 		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjectsByLanguage("php"), 65));
 
 		filterManager.addFilter(new TeamProjectFilter(filterManager.getProjectsByLanguage("python"), 26));
 		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjectsByLanguage("python"), 295));
 		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjectsByLanguage("python"), 39));
 		
-		filterManager.addFilter(new TeamProjectFilter(filterManager.getProjectsByLanguage("ruby"), 71));
-		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjectsByLanguage("ruby"), 781));
+		filterManager.addFilter(new TeamProjectFilter(filterManager.getProjectsByLanguage("ruby"), 72));
+		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjectsByLanguage("ruby"), 788));
 		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjectsByLanguage("ruby"), 95));
 		
 		filterManager.addFilter(new TeamProjectFilter(filterManager.getProjectsByLanguage("c/c++"), 23));
-		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjectsByLanguage("c/c++"), 446));
-		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjectsByLanguage("c/c++"), 130));
+		filterManager.addFilter(new HistoryProjectFilter(filterManager.getProjectsByLanguage("c/c++"), 467));
+		filterManager.addFilter(new SizeProjectFilter(filterManager.getProjectsByLanguage("c/c++"), 133));
 
 //		filterManager.setMainFilter(new NewMigrationProjectFilter(filterManager.getProjects(), 1, 0.5f, 20));
-		filterManager.setMainFilter(new MigrationProjectFilterUsingLogFilesInfo(filterManager.getProjects(), 2, 0.5f, 20));
+		filterManager.setMainFilter(new MigrationProjectFilterUsingLogFilesInfo(filterManager.getProjects(), 1, 0.5f, 20));
 		filterManager.addFilter(filterManager.getMainFilter());
 		
 		filterManager.cleanAndFilter();
