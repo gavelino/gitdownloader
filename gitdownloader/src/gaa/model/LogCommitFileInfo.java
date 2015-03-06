@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.eclipse.persistence.annotations.Index;
 
@@ -22,12 +23,16 @@ public class LogCommitFileInfo extends AbstractEntity{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Long id;
-
-
-	@Index(name="REPOSITORYNAMELOGFILEINDEX")
+	
+	@Transient
 	private String repositoryName;
-	@Index(name="SHALOGFILEINDEX")
+	@Transient
 	private String sha;
+	
+//	@Index(name="REPOSITORYNAMELOGFILEINDEX")
+//	private String repositoryName;
+//	@Index(name="SHALOGFILEINDEX")
+//	private String sha;
 	
 	@Column(length = 1000)
 	private String oldFileName;
@@ -49,7 +54,14 @@ public class LogCommitFileInfo extends AbstractEntity{
 		this.newFileName = newFileName;
 		this.status = Status.getStatus(status);
 	}
-
+	
+	public LogCommitFileInfo(String status, String oldFileName, String newFileName) {
+		super();
+		this.oldFileName = oldFileName;
+		this.newFileName = newFileName;
+		this.status = Status.getStatus(status);
+	}
+	
 	@Override
 	public String toString() {
 		return newFileName + ", " + status; //+ ", " + additions  + ", " + deletions + ", " + " + commitId + ", " + message; 

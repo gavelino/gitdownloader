@@ -17,11 +17,13 @@ import java.util.Map.Entry;
 
 public class CFExtractor {
 	public static void main(String[] args) throws Exception {
+		String logFilesPath = null;
 		if (args.length>0)
 			DownloaderUtil.PATH = args[0];
+		if (args.length>1)
+			logFilesPath = args[1];
 		List<ProjectInfo> projectsInfo =  DownloaderUtil.getProjects();
 		GitRepositoryDAO grDAO = new GitRepositoryDAO();
-		String especificProject = "altercation/vim-colors-solarized";
 		ProjectInfoDAO projectDAO = new ProjectInfoDAO();
 		for (ProjectInfo projectInfo : projectsInfo) {
 //			if (especificProject !=null && projectInfo.getFullName().equalsIgnoreCase(especificProject)) {
@@ -31,7 +33,7 @@ public class CFExtractor {
 					projectInfo.setStatus(ProjectStatus.ANALYZING);
 					projectDAO.update(projectInfo);
 					System.out.println(projectInfo + ": Persisting CommitFiles...");
-					DownloaderUtil.getAndPersistCommitsBlock(projectInfo);
+					DownloaderUtil.getAndPersistCommitsUsingLogFiles(logFilesPath, projectInfo);
 					System.out.println(projectInfo + ": CommitFiles were persisted");
 					projectInfo.setStatus(ProjectStatus.ANALYZED);
 					projectDAO.update(projectInfo);

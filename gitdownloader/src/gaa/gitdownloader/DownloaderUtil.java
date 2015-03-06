@@ -2,8 +2,10 @@ package gaa.gitdownloader;
 
 import gaa.dao.CommitInfoDAO;
 import gaa.dao.ProjectInfoDAO;
+import gaa.gitlogextractor.GitLogerExtractor;
 import gaa.model.CommitFileInfo;
 import gaa.model.CommitInfo;
+import gaa.model.LogCommitFileInfo;
 import gaa.model.ProjectInfo;
 
 import java.io.IOException;
@@ -53,7 +55,7 @@ public class DownloaderUtil {
 						   currentCommit.getAuthorIdent().getName(), 
 						   currentCommit.getAuthorIdent().getEmailAddress(),
 						   new Timestamp(currentCommit.getAuthorIdent().getWhen().getTime()), 
-						   getDiff(repository, currentCommit, projectInfo.getFullName())));
+						   getDiff(repository, currentCommit, projectInfo.getFullName()),getParentsSha(currentCommit.getParents())));
 				count++;
 			}
 			System.out.println(projectInfo.getName() + "/"+projectInfo.getDefault_branch()+" = "+count);
@@ -88,7 +90,7 @@ public class DownloaderUtil {
 						   name, 
 						   currentCommit.getAuthorIdent().getEmailAddress(),
 						   new Timestamp(currentCommit.getAuthorIdent().getWhen().getTime()), 
-						   commitFiles));
+						   commitFiles, getParentsSha(currentCommit.getParents())));
 				countcfs+=commitFiles.size();
 				count++;
 //				if (count%MAXBUFEER == 0){
@@ -108,6 +110,59 @@ public class DownloaderUtil {
 	}
 	
 	
+	public static void getAndPersistCommitsUsingLogFiles(String path, ProjectInfo projectInfo) throws Exception {
+		Map<String, List<LogCommitFileInfo>> mapLogFiles = GitLogerExtractor.extractProject(path, projectInfo.getFullName());
+		GitServiceImpl s = new GitServiceImpl();
+		Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
+		RevCommit currentCommit = null;
+		RevWalk walk = new RevWalk(repository);
+		CommitInfoDAO commitDAO = new CommitInfoDAO();
+		List<CommitInfo> commitsInfo =  new ArrayList<CommitInfo>();
+		try {			
+			walk.markStart(walk.parseCommit(repository.resolve("HEAD")));
+			Iterator<RevCommit> i = walk.iterator();
+			int count = 0;
+			int countcfs = 0;
+			while (i.hasNext()) {
+				currentCommit = i.next();
+				List<LogCommitFileInfo> commitFiles = mapLogFiles.containsKey(currentCommit.name()) ? mapLogFiles.get(currentCommit.name()) : new ArrayList<LogCommitFileInfo>() {
+				};
+				//TODO workaroud pare resolver problema de persistencia no projeto jessesquires/JSQMessagesViewController
+				String name = currentCommit.getAuthorIdent().getName();
+				if(projectInfo.getFullName().equals("jessesquires/JSQMessagesViewController") && name.contains("Simon R")){
+					name = "Simon Rader - Workaround DownloaderUtilL.java";					
+				}				
+				commitsInfo.add(new CommitInfo(new Timestamp(currentCommit.getAuthorIdent().getWhen().getTime()), 
+						   projectInfo.getFullName(), currentCommit.getName(), 
+						   currentCommit.getShortMessage(), 
+						   name, 
+						   currentCommit.getAuthorIdent().getEmailAddress(),
+						   commitFiles, getParentsSha(currentCommit.getParents())));
+				countcfs+=commitFiles.size();
+				count++;
+//				if (count%MAXBUFEER == 0){
+				if (countcfs >= MAXBUFEER){
+					System.out.println("entrou Commits = "+count+" CommitFiles = "+countcfs);
+					countcfs = 0;
+					commitDAO.persistAll(commitsInfo);					
+					commitsInfo = new ArrayList<CommitInfo>();
+				}
+			}
+			if (commitsInfo.size()>0)
+				commitDAO.persistAll(commitsInfo);	
+			System.out.println(projectInfo.getName() + "/"+projectInfo.getDefault_branch()+" = "+count);
+		} finally {
+			walk.dispose();
+		}
+	}
+	
+	private static List<String> getParentsSha(RevCommit[] parents) {
+		List<String> parentSha = new ArrayList<String>();
+		for (int i = 0; i < parents.length; i++) {
+			parentSha.add(parents[i].name());
+		}
+		return parentSha;
+	}
 	public static void getAndPersistCommits(ProjectInfo projectInfo) throws Exception {
 		GitServiceImpl s = new GitServiceImpl();
 		Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
@@ -125,7 +180,7 @@ public class DownloaderUtil {
 						   currentCommit.getAuthorIdent().getName(), 
 						   currentCommit.getAuthorIdent().getEmailAddress(),
 						   new Timestamp(currentCommit.getAuthorIdent().getWhen().getTime()), 
-						   getDiff(repository, currentCommit, projectInfo.getFullName())));
+						   getDiff(repository, currentCommit, projectInfo.getFullName()), getParentsSha(currentCommit.getParents())));
 				count++;
 			}
 			System.out.println(projectInfo.getName() + "/"+projectInfo.getDefault_branch()+" = "+count);

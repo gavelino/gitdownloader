@@ -58,9 +58,11 @@ public class LogCommitFileDAO extends GenericDAO<LogCommitFileInfo>{
 	
 	public List<Long> getAddsCommitFileOrderByNumberOfCFs(String repositoryName) {
 		
-		String hql = "SELECT COUNT(*) FROM LOGCOMMITFILEINFO lcfi	"
-				+ "WHERE lcfi.REPOSITORYNAME = \"" +  repositoryName +"\"" + " AND lcfi.STATUS = \"ADDED\"    "
-						+ "GROUP BY lcfi.SHA    "
+		String hql = "SELECT COUNT(*) FROM COMMITINFO_LOGCOMMITFILEINFO ci_lcfi	"
+				+ "JOIN COMMITINFO ci ON ci_lcfi.commitinfo_id = ci.ID "
+				+ "JOIN LOGCOMMITFILEINFO lcfi ON ci_lcfi.logcommitfiles_id = lcfi.ID "
+				+ "WHERE ci.REPOSITORYNAME = \'" +  repositoryName +"\'" + " AND lcfi.STATUS = \'ADDED\'    "
+						+ "GROUP BY ci.SHA    "
 						+ "ORDER BY COUNT(*) DESC;";
 		Query q = em.createNativeQuery(hql);
 		
@@ -69,9 +71,11 @@ public class LogCommitFileDAO extends GenericDAO<LogCommitFileInfo>{
 	
 	public List<Long> newGetAddsCommitFileOrderByNumberOfCFs(String repositoryName) {
 		
-		String hql = "SELECT COUNT(*) FROM projectinfo_fileinfo pi_fi	"
-				+ "JOIN logcommitfileinfo lcfi ON pi_fi.ProjectInfo_FULLNAME = lcfi.REPOSITORYNAME    "
-				+ "JOIN fileinfo fi ON pi_fi.files_ID = fi.ID    "
+		String hql = "SELECT COUNT(*) FROM COMMITINFO_LOGCOMMITFILEINFO ci_lcfi	"
+				+ "JOIN COMMITINFO ci ON ci_lcfi.commitinfo_id = ci.ID "
+				+ "JOIN LOGCOMMITFILEINFO lcfi ON ci_lcfi.logcommitfiles_id = lcfi.ID "
+				+ "JOIN projectInfo_fileinfo pi_fi on pi_fi.projectinfo_fullname = ci.repositoryname "
+				+ "JOIN fileinfo fi ON pi_fi.files_ID = fi.ID"
 				+ "WHERE lcfi.REPOSITORYNAME = \"" +  repositoryName +"\"" + " AND lcfi.STATUS = \"ADDED\" AND lcfi.NEWFILENAME = fi.PATH   "
 						+ "GROUP BY lcfi.SHA    "
 						+ "ORDER BY COUNT(*) DESC;";
@@ -81,16 +85,16 @@ public class LogCommitFileDAO extends GenericDAO<LogCommitFileInfo>{
 	}
 	
 	public List<Long> getAddsCommitFileOrderByDate(String repositoryName) {
-		
 		String hql = "SELECT COUNT(*) FROM COMMITINFO_LOGCOMMITFILEINFO ci_lcfi	"
-				+ "JOIN COMMITINFO ci ON ci_lcfi.commitinfo_id = ci.ID    "
-				+ "JOIN LOGCOMMITFILEINFO lcfi ON ci_lcfi.logcommitfileinfo_id = lcfi.ID    "
-				+ "WHERE ci.REPOSITORYNAME = \"" +  repositoryName +"\"" + " AND lcfi.STATUS = \"ADDED\"    "
-						+ "GROUP BY ci.SHA    "
+				+ "JOIN COMMITINFO ci ON ci_lcfi.commitinfo_id = ci.ID "
+				+ "JOIN LOGCOMMITFILEINFO lcfi ON ci_lcfi.logcommitfiles_id = lcfi.ID "
+				+ "WHERE ci.REPOSITORYNAME = \'" +  repositoryName +"\'" + " AND lcfi.STATUS = \'ADDED\'    "
+						+ "GROUP BY ci.SHA, ci.date    "
 						+ "ORDER BY ci.DATE;";
 		Query q = em.createNativeQuery(hql);
 		
 		return q.getResultList();
+		
 	}
 	
 	public List<Long> newGetAddsCommitFileOrderByDate(String repositoryName) {
