@@ -1,4 +1,4 @@
-package gaa.cfextractor.filter;
+package gaa.filter.projectfilter;
 
 import gaa.dao.ProjectInfoDAO;
 import gaa.model.GitRepository;

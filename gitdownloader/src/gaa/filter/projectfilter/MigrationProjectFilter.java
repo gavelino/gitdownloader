@@ -1,4 +1,4 @@
-package gaa.cfextractor.filter;
+package gaa.filter.projectfilter;
 
 import gaa.dao.CommitFileDAO;
 import gaa.dao.ProjectInfoDAO;
@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class NewMigrationProjectFilter extends ProjectFilter {
+public class MigrationProjectFilter extends ProjectFilter {
 
 	private float percFilesThreshold;
 	private int nCommitsThreshold;
 	private int type;
 	
-	public NewMigrationProjectFilter(List<ProjectInfo> projects, int type, float percFilesThreshold, int nCommitsThreshold) throws Exception {
-		super(projects, ("*NEWMIGRATION-" + (type==1?"BIGGEST*":"FIRSTEST*")));
+	public MigrationProjectFilter(List<ProjectInfo> projects, int type, float percFilesThreshold, int nCommitsThreshold) throws Exception {
+		super(projects, ("*MIGRATION-" + (type==1?"BIGGEST*":"FIRSTEST*")));
 		this.type = type;
 		if (type!= 1 && type != 2)
 			throw new Exception("Parameter type has a wrong value!");
@@ -33,9 +33,9 @@ public class NewMigrationProjectFilter extends ProjectFilter {
 			if (!projectInfo.isFiltered()) {
 				List<Long> listNumAddCommitFiles;
 				if (type == 1)
-					listNumAddCommitFiles = cfiDAO.newGetAddsCommitFileOrderByNumberOfCFs(projectInfo.getFullName());
+					listNumAddCommitFiles = cfiDAO.getAddsCommitFileOrderByNumberOfCFs(projectInfo.getFullName());
 				else 
-					listNumAddCommitFiles = cfiDAO.newGetAddsCommitFileOrderByDate(projectInfo.getFullName());
+					listNumAddCommitFiles = cfiDAO.getAddsCommitFileOrderByDate(projectInfo.getFullName());
 				int sum = 0;
 				int count = 0;
 				long totalCommitFiles = getNumCommitFiles(listNumAddCommitFiles);

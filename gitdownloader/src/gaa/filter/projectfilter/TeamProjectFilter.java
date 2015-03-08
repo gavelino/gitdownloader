@@ -1,4 +1,4 @@
-package gaa.cfextractor.filter;
+package gaa.filter.projectfilter;
 
 import gaa.dao.ProjectInfoDAO;
 import gaa.model.ProjectInfo;
@@ -6,15 +6,15 @@ import gaa.model.ProjectInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryProjectFilter extends ProjectFilter {
+public class TeamProjectFilter extends ProjectFilter {
 	
-	private float historyThreshold;
+	private float teamThreshold;
 	
 	
 	
-	public HistoryProjectFilter(List<ProjectInfo> projects, float historyThreshold) {
-		super(projects, "*HISTORY*");
-		this.historyThreshold = historyThreshold;
+	public TeamProjectFilter(List<ProjectInfo> projects, float teamThreshold) {
+		super(projects, "*TEAM*");
+		this.teamThreshold = teamThreshold;
 	}
 
 	@Override
@@ -22,26 +22,26 @@ public class HistoryProjectFilter extends ProjectFilter {
 		List<ProjectInfo> newList = new ArrayList<ProjectInfo>();
 		for (ProjectInfo projectInfo : projects) {
 			if (!projectInfo.isFiltered()) {
-				if (projectInfo.getCommits_count()<historyThreshold){
+				if (projectInfo.getNumAuthors() < teamThreshold) {
 					projectInfo.setFiltered(true);
 					String filterInfo = projectInfo.getFilterinfo();
-					projectInfo.setFilterinfo(filterInfo==null || filterInfo.isEmpty()?filterStamp:filterInfo+filterStamp);
-				}	
-				else
+					projectInfo.setFilterinfo(filterInfo == null
+							|| filterInfo.isEmpty() ? filterStamp : filterInfo
+							+ filterStamp);
+				} else
 					newList.add(projectInfo);
 			}
 		}
 		return newList;
 	}
 	
-	
 
 	public float getTeamThreshold() {
-		return historyThreshold;
+		return teamThreshold;
 	}
 
 	public void setTeamThreshold(float teamThreshold) {
-		this.historyThreshold = teamThreshold;
+		this.teamThreshold = teamThreshold;
 	}
 
 

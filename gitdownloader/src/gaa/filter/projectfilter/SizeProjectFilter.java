@@ -1,4 +1,4 @@
-package gaa.cfextractor.filter;
+package gaa.filter.projectfilter;
 
 import gaa.dao.ProjectInfoDAO;
 import gaa.model.ProjectInfo;
@@ -6,14 +6,14 @@ import gaa.model.ProjectInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TeamProjectFilter extends ProjectFilter {
+public class SizeProjectFilter extends ProjectFilter {
 	
-	private float teamThreshold;
+	private int teamThreshold;
 	
 	
 	
-	public TeamProjectFilter(List<ProjectInfo> projects, float teamThreshold) {
-		super(projects, "*TEAM*");
+	public SizeProjectFilter(List<ProjectInfo> projects, int teamThreshold) {
+		super(projects, "*SIZE*");
 		this.teamThreshold = teamThreshold;
 	}
 
@@ -22,7 +22,7 @@ public class TeamProjectFilter extends ProjectFilter {
 		List<ProjectInfo> newList = new ArrayList<ProjectInfo>();
 		for (ProjectInfo projectInfo : projects) {
 			if (!projectInfo.isFiltered()) {
-				if (projectInfo.getNumAuthors() < teamThreshold) {
+				if (projectInfo.getNumFiles() < teamThreshold) {
 					projectInfo.setFiltered(true);
 					String filterInfo = projectInfo.getFilterinfo();
 					projectInfo.setFilterinfo(filterInfo == null
@@ -36,11 +36,11 @@ public class TeamProjectFilter extends ProjectFilter {
 	}
 	
 
-	public float getTeamThreshold() {
+	public int getTeamThreshold() {
 		return teamThreshold;
 	}
 
-	public void setTeamThreshold(float teamThreshold) {
+	public void setTeamThreshold(int teamThreshold) {
 		this.teamThreshold = teamThreshold;
 	}
 
