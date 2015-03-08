@@ -29,6 +29,8 @@ public class FileInfo extends AbstractEntity{
 	private String mode;
 	private String type;
 	private String sha;
+	private Boolean filtered;
+	private String filterInfo;
 	
 
 	public FileInfo() {
@@ -41,6 +43,8 @@ public class FileInfo extends AbstractEntity{
 		this.mode = mode;
 		this.type = type;
 		this.sha = sha;
+		this.filtered = false;
+		this.filterInfo = new String();
 	}
 	
 	public Long getId() {
@@ -105,6 +109,22 @@ public class FileInfo extends AbstractEntity{
 
 	public void setSha(String sha) {
 		this.sha = sha;
+	}
+
+	public Boolean getFiltered() {
+		return filtered;
+	}
+
+	public void setFiltered(Boolean filtered) {
+		this.filtered = filtered;
+	}
+
+	public String getFilterInfo() {
+		return filterInfo;
+	}
+
+	public void setFilterInfo(String filterInfo) {
+		this.filterInfo = filterInfo;
 	}
 
 

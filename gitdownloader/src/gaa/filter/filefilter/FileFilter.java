@@ -1,4 +1,4 @@
-package gaa.filter.projectfilter;
+package gaa.filter.filefilter;
 
 import gaa.dao.ProjectInfoDAO;
 import gaa.model.GitRepository;
@@ -6,10 +6,10 @@ import gaa.model.ProjectInfo;
 
 import java.util.List;
 
-public abstract class ProjectFilter {
+public abstract class FileFilter {
 	List<ProjectInfo> projects;
 	String filterStamp;
-	public ProjectFilter(List<ProjectInfo> projects, String filterStamp) {
+	public FileFilter(List<ProjectInfo> projects, String filterStamp) {
 		this.projects = projects;
 		this.filterStamp = filterStamp;
 	}
@@ -17,8 +17,6 @@ public abstract class ProjectFilter {
 	
 	public void persistFilterInformations() {
 		ProjectInfoDAO piDAO = new ProjectInfoDAO();
-		
-		
 		for (ProjectInfo projectInfo : projects) {
 			piDAO.update(projectInfo);
 		}
@@ -26,6 +24,7 @@ public abstract class ProjectFilter {
 	}
 	public void clean() {
 		for (ProjectInfo projectInfo : projects) {
+			
 			if (projectInfo.isFiltered()){
 				projectInfo.getFilterinfo().replace(filterStamp, "");
 				if (projectInfo.getFilterinfo().isEmpty())
