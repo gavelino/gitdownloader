@@ -3,6 +3,7 @@ package gaa.model;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -32,12 +34,20 @@ public class FileInfo extends AbstractEntity{
 	private Boolean filtered;
 	private String filterInfo;
 	
-
+	@ManyToOne(cascade = {CascadeType.REFRESH})
+	private ProjectInfo projectInfo;
+	
 	public FileInfo() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public FileInfo(ProjectInfo projectInfo) {
+		this.projectInfo = projectInfo;
 	}
 	
-	public FileInfo(String path, int size, String mode, String type, String sha) {
+	public FileInfo(ProjectInfo projectInfo, String path, int size, String mode, String type, String sha) {
 		super();
+		this.projectInfo = projectInfo;
 		this.path = path;
 		this.size = size;
 		this.mode = mode;
@@ -125,6 +135,14 @@ public class FileInfo extends AbstractEntity{
 
 	public void setFilterInfo(String filterInfo) {
 		this.filterInfo = filterInfo;
+	}
+
+	public ProjectInfo getProjectInfo() {
+		return projectInfo;
+	}
+
+	public void setProjectInfo(ProjectInfo projectInfo) {
+		this.projectInfo = projectInfo;
 	}
 
 

@@ -114,7 +114,7 @@ public class GitServiceImpl implements GitService {
 				else{
 					for (JsonValue item : items) {
 						JsonObject repoData = (JsonObject) item;
-						FileInfo file = new FileInfo();
+						FileInfo file = new FileInfo(project);
 						file.setPath(repoData.getString("path"));
 						file.setMode(repoData.getString("mode"));
 						file.setType(repoData.getString("type"));
