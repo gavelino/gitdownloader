@@ -3,31 +3,34 @@ package gaa.filter.filefilter;
 import gaa.model.FileInfo;
 import gaa.model.ProjectInfo;
 
+import java.util.Date;
 import java.util.List;
 
 public class RemoveFileFilter extends FileFilter{
 	
-	public static void main(String[] args) {
-		RemoveFileFilter removeFileFilter  = new RemoveFileFilter("%.min.css");
-		removeFileFilter.filterAndPersist();
-	}
+	
 	private String pattern;
-	public RemoveFileFilter(String pattern) {
-		super("#Remove: "+pattern+"#");
-		this.setPattern(pattern);
+	public RemoveFileFilter() {
+		super("#Remove");
 		// TODO Auto-generated constructor stub
 	}
-	
 
 	@Override
-	public List<ProjectInfo> filterAndPersist() {
-		this.files = fiDAO.findFileInfos("Ruby", pattern);
-		for (FileInfo fileInfo : files) {
-			System.out.println(fileInfo);
-//			fiDAO.update(fileInfo);
+	public int filterAndPersist(String language, String pattern) {
+		String localFilterStamp = filterStamp+"("+language+"): "+pattern+"#";
+		
+		String whereClauses = "";
+		if (language != null && !language.isEmpty()&&!language.equalsIgnoreCase("all")){
+			whereClauses += " AND pi.language = \'" + language + "\'";
 		}
-		return null;
+		whereClauses += " AND fi.path LIKE \'" + pattern + "\'";
+		
+		int nRows = fiDAO.filterAndUpdateFilesInfo(whereClauses, localFilterStamp);
+		System.out.println(new Date() + " - Updated "+ nRows);
+		return nRows;
 	}
+	
+	
 		
 	public String getPattern() {
 		return pattern;
@@ -35,8 +38,6 @@ public class RemoveFileFilter extends FileFilter{
 	public void setPattern(String pattern) {
 		this.pattern = pattern;
 	}
-
-
 
 
 }

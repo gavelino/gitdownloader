@@ -35,40 +35,26 @@ public class FileInfoDAO extends GenericDAO<FileInfo>{
 		}
 	}
 	
-	public List<FileInfo> findFileInfos(String language, String pattern){
-//		String custom = "";
-//		
-//		if (language != null && !language.isEmpty()){
-//			custom += " AND pi.language = \'" + language + "\'";
-//		}
-//		
-//		custom += " AND fi.path LIKE \'" + pattern + "\'";
-//		
-//		String hql = "SELECT fi.* FROM projectinfo_fileinfo pi_fi	"
-//				+ "JOIN projectinfo pi ON pi_fi.projectinfo_fullname = pi.fullname    "
-//				+ "JOIN fileinfo fi on pi_fi.files_id = fi.id    "
-//				+ "WHERE  pi.filtered = \'FALSE\' "
-//				+ custom
-//				+ ";";
-//				
-//				
-//		Query q = em.createNativeQuery(hql);
-//		 SELECT f from Student f LEFT JOIN f.classTbls s WHERE s.ClassName = 'abc'
+	public int filterAndUpdateFilesInfo(String whereClauses, String filterStamp){
+		String custom = "";
 		
-		String hql = "SELECT fi FROM FileInfo fi JOIN fi.projectInfo pi WHERE pi.name = \'ajaxorg-ace\'";
-		Query q = em.createQuery(hql);
-		return q.getResultList();
-			
-	}
-	
-	public void updateList(List<FileInfo> files){
 		
+		
+		     
+		String hql = "UPDATE  fileinfo AS fi "
+				+ "SET filtered = \'TRUE\', filterinfo = \'"+ filterStamp +"\'  "
+				+ "FROM projectinfo_fileinfo AS pi_fi, projectinfo AS pi    "
+				+ "WHERE pi.filtered = \'FALSE\' AND pi_fi.projectinfo_fullname = pi.fullname AND pi_fi.files_id = fi.id "
+				+ whereClauses
+				+ ";";
+				
+				
+		Query q = em.createNativeQuery(hql);
+		int rows =0 ;
 		EntityTransaction tx = this.em.getTransaction();
 		try {
 			tx.begin();
-			for (Object t : files) {
-				this.em.persist(t);
-			}
+			rows = q.executeUpdate();
 			tx.commit();
 		} catch (RuntimeException e) {
 			if(tx != null && tx.isActive()) 
@@ -78,6 +64,34 @@ public class FileInfoDAO extends GenericDAO<FileInfo>{
 		finally{
 			this.em.clear();
 		}
+		return rows;
+			
 	}
+	
+	public int cleanFilter(){
+			     
+		String hql = "UPDATE  fileinfo "
+				+ "SET filtered = \'FALSE', filterinfo = \'\';";
+				
+				
+		Query q = em.createNativeQuery(hql);
+		int rows =0 ;
+		EntityTransaction tx = this.em.getTransaction();
+		try {
+			tx.begin();
+			rows = q.executeUpdate();
+			tx.commit();
+		} catch (RuntimeException e) {
+			if(tx != null && tx.isActive()) 
+				tx.rollback();
+			throw e;
+		} 
+		finally{
+			this.em.clear();
+		}
+		return rows;
+			
+	}
+	
 
 }
