@@ -39,7 +39,7 @@
 <!-- 		<property name="javax.persistence.jdbc.user" value="gitdownloader" /> -->
 <!-- 		<property name="javax.persistence.jdbc.password" value="gitdownloader" /> -->
 		
-		<property name="eclipselink.logging.level" value="INFO"/>
+		<property name="eclipselink.logging.level" value="ALL"/>
 		
 		<property name="eclipselink.ddl-generation.output-mode" value="database" />
 <!-- 		<property name="eclipselink.ddl-generation" value="create-or-extend-tables" /> -->
