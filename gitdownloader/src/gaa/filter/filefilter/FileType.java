@@ -7,7 +7,9 @@ import java.util.List;
 import com.jcabi.immutable.Array;
 
 public enum FileType {
-	JAVA, JAVASCRIPT, PHP, RUBY, PYTHON, C_LIKE, DOCUMENTATION, EXAMPLES, JSON, HTML, CSS, OTHERLANGUAGES, LIBRARY, NOTIDENTIFIED;
+	JAVA, JAVASCRIPT, PHP, RUBY, PYTHON, C_LIKE, DOCUMENTATION, EXAMPLES, JSON, HTML, CSS, OTHERLANGUAGES, LIBRARY, NOTIDENTIFIED, OTHER, THIRD;
+
+	
 	//Usar preferencialmente por ter melhor desempenho
 	static String patters[][] = { 
 		/*JAVA*/ {"%.java", "%.jsp"},
@@ -16,62 +18,69 @@ public enum FileType {
 		/*RUBY*/ {"%.rb", "%.erb"},
 		/*PYTHON*/ {"%.py","%.py_"},
 		/*CLIKE*/ {"%.c","%.cpp","%.c++","%.cc","%.cp","%.cxx","%.h","%.h++","%.hh","%.hpp","%.hxx"},
-		/*DOCUMENTATION*/ {"docs/%","%/docs/%","documentation/%","%/documentation/%","javadoc/%","%/javadoc/%","man/%"},
-		/*EXAMPLES*/ {"examples/%", "%/examples/%"},
 		/*JSON*/ {"%.json", "%.json5", "%.jsonld"},
 		/*HTML*/ {"%.html", "%.htm", "%.xhtml"},
 		/*CSS*/ {"%.css", "%.scss"},
 		/*OTHERLANGUAGES*/ {"%.js.coffee"},
-		/*LIBRARIES*/ {"%.min.css","%.min.js","vendor/%","vendors/%","extern/%","external/%"}
-		};
-	
-	//Usar apenas quando não for possível usar padrão LIKE
-	static String POSIXpatters[][] = { 
-		/*JAVA*/ {},
-		/*JAVASCRIPT*/ {},
-		/*PHP*/ {},
-		/*RUBY*/ {},
-		/*PYTHON*/ {},
-		/*CLIKE*/ {},
-		/*DOCUMENTATION*/ {},
-		/*EXAMPLES*/ {},
-		/*JSON*/ {},
-		/*HTML*/ {},
-		/*CSS*/ {},
-		/*OTHERLANGUAGES*/ {},
-		/*LIBRARIES*/ {"(^|/)jquery([^.]*)\\.js$", "(^|/)jquery\\-\\d\\.\\d+(\\.\\d+)?\\.js$"}
+		/*DOCUMENTATION*/ {"docs/%","%/docs/%","documentation/%","%/documentation/%","javadoc/%","%/javadoc/%","man/%"},
+		/*EXAMPLES*/ {"examples/%", "%/examples/%"},
+		/*LIBRARY*/ {"vendor/%","vendors/%","extern/%","external/%"}
 		};
 	
 	public static List<String> getPatterns(FileType fTypes){
 		String result[] = null;
 		if (fTypes == FileType.JAVA)
 			result = patters[0];
-		if (fTypes == FileType.JAVASCRIPT)
+		else if (fTypes == FileType.JAVASCRIPT)
 			result = patters[1];
-		if (fTypes == FileType.PHP)
+		else if (fTypes == FileType.PHP)
 			result = patters[2];
-		if (fTypes == FileType.RUBY)
+		else if (fTypes == FileType.RUBY)
 			result = patters[3];
-		if (fTypes == FileType.PYTHON)
+		else if (fTypes == FileType.PYTHON)
 			result = patters[4];
-		if (fTypes == FileType.C_LIKE)
+		else if (fTypes == FileType.C_LIKE)
 			result = patters[5];
-		if (fTypes == FileType.DOCUMENTATION)
+		else if (fTypes == FileType.JSON)
 			result = patters[6];
-		if (fTypes == FileType.EXAMPLES)
+		else if (fTypes == FileType.HTML)
 			result = patters[7];
-		if (fTypes == FileType.JSON)
+		else if (fTypes == FileType.CSS)
 			result = patters[8];
-		if (fTypes == FileType.HTML)
+		else if (fTypes == FileType.OTHERLANGUAGES)
 			result = patters[9];
-		if (fTypes == FileType.CSS)
+		else if (fTypes == FileType.DOCUMENTATION)
 			result = patters[10];
-		if (fTypes == FileType.OTHERLANGUAGES)
+		else if (fTypes == FileType.EXAMPLES)
 			result = patters[11];
-		if (fTypes == FileType.LIBRARY)
+		else if (fTypes == FileType.LIBRARY)
 			result = patters[12];
+		else 
+			return null;
 		return Arrays.asList(result);
 	}
+	
+	//Usar apenas quando nï¿½o for possï¿½vel usar padrï¿½o LIKE
+	static String POSIXpatters[][] = { 
+//		/*JAVA*/ {},
+//		/*JAVASCRIPT*/ {},
+//		/*PHP*/ {},
+//		/*RUBY*/ {},
+//		/*PYTHON*/ {},
+//		/*CLIKE*/ {},
+//		/*DOCUMENTATION*/ {},
+//		/*EXAMPLES*/ {},
+//		/*JSON*/ {},
+//		/*HTML*/ {},
+//		/*CSS*/ {},
+//		/*OTHERLANGUAGES*/ {},
+//		/*LIBRARIES - Jquery*/ {"(^|/)jquery([^.]*)\\.js$", "(^|/)jquery\\-\\d\\.\\d+(\\.\\d+)?\\.js$",
+//		/*LIBRARIES - Jquery*/ 	
+//		/*LIBRARIES - Jquery*/ 	
+//		/*LIBRARIES - Jquery*/ 	
+//		/*LIBRARIES - Jquery*/ 	
+//				}
+		};
 	
 	public static List<String> getPosixPatterns(FileType fTypes){
 		String result[] = null;
