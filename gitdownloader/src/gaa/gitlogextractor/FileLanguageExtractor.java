@@ -28,7 +28,7 @@ public class FileLanguageExtractor {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		FileLanguageExtractor gitLogerExtractor = new FileLanguageExtractor("C:/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/_linguistfiles/");
+		FileLanguageExtractor gitLogerExtractor = new FileLanguageExtractor("_linguistfiles/");
 		System.out.println("BEGIN at "+ new Date() + "\n\n");
 		gitLogerExtractor.simpleExtract();
 		System.out.println("\n\nEND at "+ new Date());

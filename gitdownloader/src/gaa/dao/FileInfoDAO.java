@@ -124,12 +124,7 @@ public class FileInfoDAO extends GenericDAO<FileInfo>{
 	}
 
 	public int updateLanguageFileInfo(String projectName, String language, List<String> paths) {
-		String custom = "";
-	    
 		FileType fileType = FileType.getType(language);
-		
-		
-		
 		List<Query> queries = new ArrayList<Query>();
 		for (String path : paths) {			
 			String hql = "UPDATE  fileinfo AS fi "
@@ -138,8 +133,9 @@ public class FileInfoDAO extends GenericDAO<FileInfo>{
 					+ "\'  , language = \'"
 					+ language
 					+ "\', filtered = \'FALSE\' "
+					+ ", filterinfo = \'\' "
 					+ "FROM projectinfo_fileinfo AS pi_fi, projectinfo AS pi    "
-					+ "WHERE pi.filtered = \'FALSE\' AND pi_fi.projectinfo_fullname = pi.fullname AND pi_fi.files_id = fi.id and fi.path =  \'"
+					+ "WHERE pi.fullname = \'" + projectName + "\' AND pi_fi.projectinfo_fullname = pi.fullname AND pi_fi.files_id = fi.id and fi.path =  \'"
 					+ path + "\' " + ";";
 			queries.add(em.createNativeQuery(hql));
 		}
