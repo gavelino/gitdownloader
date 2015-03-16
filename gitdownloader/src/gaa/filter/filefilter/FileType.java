@@ -113,4 +113,28 @@ public enum FileType {
 		return Arrays.asList(result);
 	}
 	
+	public static FileType getType(String name){
+		if (name.equalsIgnoreCase("java"))
+			return JAVA;
+		else if (name.equalsIgnoreCase("javascript"))
+			return JAVASCRIPT;
+		else if (name.equalsIgnoreCase("php"))
+			return PHP;
+		else if (name.equalsIgnoreCase("ruby"))
+			return RUBY;
+		else if (name.equalsIgnoreCase("python"))
+			return PYTHON;
+		else if (name.equalsIgnoreCase("c"))
+			return C_LIKE;
+		else if (name.equalsIgnoreCase("c++"))
+			return C_LIKE;
+		else if (name.equalsIgnoreCase("json"))
+			return JSON;
+		else if (name.equalsIgnoreCase("html"))
+			return HTML;
+		else if (name.equalsIgnoreCase("css"))
+			return CSS;
+		else
+			return OTHERLANGUAGES;
+	}
 }

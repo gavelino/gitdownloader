@@ -1,6 +1,7 @@
 package gaa.dao;
 
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityTransaction;
@@ -32,6 +33,7 @@ public class FileInfoDAO extends GenericDAO<FileInfo>{
 //			persistedProject.setSha(o.getSha());
 //			persistedProject.setSize(o.getSize());
 //			persistedProject.setType(o.getType());
+//			persistedProject.setLanguage(o.getLanguage());
 //			super.merge(persistedProject);
 //		}
 //	}
@@ -119,6 +121,46 @@ public class FileInfoDAO extends GenericDAO<FileInfo>{
 		}
 		return rows;
 			
+	}
+
+	public int updateLanguageFileInfo(String projectName, String language, List<String> paths) {
+		String custom = "";
+	    
+		FileType fileType = FileType.getType(language);
+		
+		
+		
+		List<Query> queries = new ArrayList<Query>();
+		for (String path : paths) {			
+			String hql = "UPDATE  fileinfo AS fi "
+					+ "SET kind = \'"
+					+ fileType
+					+ "\'  , language = \'"
+					+ language
+					+ "\', filtered = \'FALSE\' "
+					+ "FROM projectinfo_fileinfo AS pi_fi, projectinfo AS pi    "
+					+ "WHERE pi.filtered = \'FALSE\' AND pi_fi.projectinfo_fullname = pi.fullname AND pi_fi.files_id = fi.id and fi.path =  \'"
+					+ path + "\' " + ";";
+			queries.add(em.createNativeQuery(hql));
+		}
+		int rows =0 ;
+		EntityTransaction tx = this.em.getTransaction();
+		try {
+			tx.begin();
+			for (Query query : queries) {
+				rows += query.executeUpdate();
+			}			
+			tx.commit();
+		} catch (RuntimeException e) {
+			if(tx != null && tx.isActive()) 
+				tx.rollback();
+			throw e;
+		} 
+		finally{
+			this.em.clear();
+		}
+		return rows;
+		
 	}
 	
 

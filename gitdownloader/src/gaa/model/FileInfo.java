@@ -37,8 +37,8 @@ public class FileInfo extends AbstractEntity{
 	private String filterInfo;
 	@Enumerated(EnumType.STRING)
 	private FileType kind;
+	private String language;
 	
-	@ManyToOne(cascade = {CascadeType.REFRESH})
 	private ProjectInfo projectInfo;
 	
 	public FileInfo() {
@@ -49,7 +49,7 @@ public class FileInfo extends AbstractEntity{
 		this.projectInfo = projectInfo;
 	}
 	
-	public FileInfo(ProjectInfo projectInfo, String path, int size, String mode, String type, String sha, FileType kind) {
+	public FileInfo(ProjectInfo projectInfo, String path, int size, String mode, String type, String sha, FileType kind, String language) {
 		super();
 		this.projectInfo = projectInfo;
 		this.path = path;
@@ -60,6 +60,7 @@ public class FileInfo extends AbstractEntity{
 		this.filtered = false;
 		this.filterInfo = new String();
 		this.kind = kind;
+		this.setLanguage(language);
 	}
 	
 	public Long getId() {
@@ -156,6 +157,14 @@ public class FileInfo extends AbstractEntity{
 
 	public void setKind(FileType kind) {
 		this.kind = kind;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 
 
