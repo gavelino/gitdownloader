@@ -26,7 +26,10 @@ public class RemoveFileFilter extends FileFilter{
 		whereClauses += " AND fi.path LIKE \'" + pattern + "\'";
 		
 		int nRows = fiDAO.filterAndUpdateFilesInfo(whereClauses, localFilterStamp);
-		System.out.println(new Date() + " - " + pattern +" - Updated "+ nRows);
+		if (nRows>0)
+			System.out.println(new Date() + " - " + pattern +" - Updated "+ nRows);
+		else
+			System.err.println(new Date() + " - " + pattern +" - Updated "+ nRows);
 		return nRows;
 	}
 	
@@ -38,7 +41,10 @@ public class RemoveFileFilter extends FileFilter{
 		whereClauses += " AND fi.path LIKE \'" + pattern + "\'";
 		
 		int nRows = fiDAO.filterAndUpdateFilesInfo(whereClauses, localFilterStamp);
-		System.out.println(new Date() + " - " + pattern +" - Updated "+ nRows);
+		if (nRows>0)
+			System.out.println(new Date() + " - " + pattern +" - Updated "+ nRows);
+		else
+			System.err.println(new Date() + " - " + pattern +" - Updated "+ nRows);
 		return nRows;
 	}
 	
