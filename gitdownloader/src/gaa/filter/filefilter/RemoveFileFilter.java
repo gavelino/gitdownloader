@@ -26,7 +26,7 @@ public class RemoveFileFilter extends FileFilter{
 		whereClauses += " AND fi.path LIKE \'" + pattern + "\'";
 		
 		int nRows = fiDAO.filterAndUpdateFilesInfo(whereClauses, localFilterStamp);
-		System.out.println(new Date() + " - Updated "+ nRows);
+		System.out.println(new Date() + " - " + pattern +" - Updated "+ nRows);
 		return nRows;
 	}
 	

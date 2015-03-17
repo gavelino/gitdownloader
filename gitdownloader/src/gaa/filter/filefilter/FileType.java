@@ -12,49 +12,57 @@ public enum FileType {
 	
 	//Usar preferencialmente por ter melhor desempenho
 	static String patters[][] = { 
-		/*JAVA*/ {"%.java", "%.jsp"},
-		/*JAVASCRIPT*/ {"%.js"},
-		/*PHP*/ {"%.php", "%.php_","%.phtml"},
-		/*RUBY*/ {"%.rb", "%.erb"},
-		/*PYTHON*/ {"%.py","%.py_"},
-		/*CLIKE*/ {"%.c","%.cpp","%.c++","%.cc","%.cp","%.cxx","%.h","%.h++","%.hh","%.hpp","%.hxx"},
-		/*JSON*/ {"%.json", "%.json5", "%.jsonld"},
-		/*HTML*/ {"%.html", "%.htm", "%.xhtml"},
-		/*CSS*/ {"%.css", "%.scss"},
-		/*OTHERLANGUAGES*/ {"%.js.coffee"},
-		/*DOCUMENTATION*/ {"docs/%","%/docs/%","documentation/%","%/documentation/%","javadoc/%","%/javadoc/%","man/%"},
+//		/*JAVA*/ {"%.java", "%.jsp"},
+//		/*JAVASCRIPT*/ {"%.js"},
+//		/*PHP*/ {"%.php", "%.php_","%.phtml"},
+//		/*RUBY*/ {"%.rb", "%.erb"},
+//		/*PYTHON*/ {"%.py","%.py_"},
+//		/*CLIKE*/ {"%.c","%.cpp","%.c++","%.cc","%.cp","%.cxx","%.h","%.h++","%.hh","%.hpp","%.hxx"},
+//		/*JSON*/ {"%.json", "%.json5", "%.jsonld"},
+//		/*HTML*/ {"%.html", "%.htm", "%.xhtml"},
+//		/*CSS*/ {"%.css", "%.scss"},
+//		/*OTHERLANGUAGES*/ {"%.js.coffee"},
+		/*DOCUMENTATION*/ {"%/docs/%"},
 		/*EXAMPLES*/ {"examples/%", "%/examples/%"},
-		/*LIBRARY*/ {"vendor/%","vendors/%","extern/%","external/%"}
 		};
 	
 	public static List<String> getPatterns(FileType fTypes){
 		String result[] = null;
-		if (fTypes == FileType.JAVA)
+//		if (fTypes == FileType.JAVA)
+//			result = patters[0];
+//		else if (fTypes == FileType.JAVASCRIPT)
+//			result = patters[1];
+//		else if (fTypes == FileType.PHP)
+//			result = patters[2];
+//		else if (fTypes == FileType.RUBY)
+//			result = patters[3];
+//		else if (fTypes == FileType.PYTHON)
+//			result = patters[4];
+//		else if (fTypes == FileType.C_LIKE)
+//			result = patters[5];
+//		else if (fTypes == FileType.JSON)
+//			result = patters[6];
+//		else if (fTypes == FileType.HTML)
+//			result = patters[7];
+//		else if (fTypes == FileType.CSS)
+//			result = patters[8];
+//		else if (fTypes == FileType.OTHERLANGUAGES)
+//			result = patters[9];
+//		else if (fTypes == FileType.DOCUMENTATION)
+//			result = patters[10];
+//		else if (fTypes == FileType.EXAMPLES)
+//			result = patters[11];
+//		else if (fTypes == FileType.LIBRARY)
+//			result = patters[12];
+//		else 
+//			return null;
+		
+		if (fTypes == FileType.DOCUMENTATION)
 			result = patters[0];
-		else if (fTypes == FileType.JAVASCRIPT)
-			result = patters[1];
-		else if (fTypes == FileType.PHP)
-			result = patters[2];
-		else if (fTypes == FileType.RUBY)
-			result = patters[3];
-		else if (fTypes == FileType.PYTHON)
-			result = patters[4];
-		else if (fTypes == FileType.C_LIKE)
-			result = patters[5];
-		else if (fTypes == FileType.JSON)
-			result = patters[6];
-		else if (fTypes == FileType.HTML)
-			result = patters[7];
-		else if (fTypes == FileType.CSS)
-			result = patters[8];
-		else if (fTypes == FileType.OTHERLANGUAGES)
-			result = patters[9];
-		else if (fTypes == FileType.DOCUMENTATION)
-			result = patters[10];
 		else if (fTypes == FileType.EXAMPLES)
-			result = patters[11];
+			result = patters[1];
 		else if (fTypes == FileType.LIBRARY)
-			result = patters[12];
+			result = patters[2];
 		else 
 			return null;
 		return Arrays.asList(result);

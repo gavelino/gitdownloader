@@ -44,7 +44,7 @@ public class FileInfoDAO extends GenericDAO<FileInfo>{
 		String hql = "UPDATE  fileinfo AS fi "
 				+ "SET filtered = \'TRUE\', filterinfo = \'"+ filterStamp +"\'  "
 				+ "FROM projectinfo_fileinfo AS pi_fi, projectinfo AS pi    "
-				+ "WHERE pi.filtered = \'FALSE\' AND pi_fi.projectinfo_fullname = pi.fullname AND pi_fi.files_id = fi.id "
+				+ "WHERE pi.filtered = \'FALSE\' AND fi.filtered = \'FALSE\' AND pi_fi.projectinfo_fullname = pi.fullname AND pi_fi.files_id = fi.id "
 				+ whereClauses
 				+ ";";
 				
