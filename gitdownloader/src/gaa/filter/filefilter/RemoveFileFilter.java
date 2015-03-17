@@ -48,6 +48,21 @@ public class RemoveFileFilter extends FileFilter{
 		return nRows;
 	}
 	
+	public int removeEspecifcfilterAndPersistByProject(String projectName, String pattern) {
+		String localFilterStamp = filterStamp+"("+projectName+"): "+pattern+"#";
+		
+		String whereClauses = "";
+		whereClauses += " AND pi.fullname = \'" + projectName + "\'";
+		whereClauses += " AND fi.path LIKE \'" + pattern + "\'";
+		
+		int nRows = fiDAO.removeFilterAndUpdateFilesInfo(whereClauses, localFilterStamp);
+		if (nRows>0)
+			System.out.println(new Date() + " - " + pattern +" - Updated "+ nRows);
+		else
+			System.err.println(new Date() + " - " + pattern +" - Updated "+ nRows);
+		return nRows;
+	}
+	
 		
 	public String getPattern() {
 		return pattern;

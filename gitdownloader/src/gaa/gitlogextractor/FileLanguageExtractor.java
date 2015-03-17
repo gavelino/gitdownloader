@@ -28,7 +28,8 @@ public class FileLanguageExtractor {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		FileLanguageExtractor gitLogerExtractor = new FileLanguageExtractor("_linguistfiles/");
+		FileLanguageExtractor gitLogerExtractor = new FileLanguageExtractor("C:/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/_linguistfiles/");
+//		FileLanguageExtractor gitLogerExtractor = new FileLanguageExtractor("_linguistfiles/");
 		System.out.println("BEGIN at "+ new Date() + "\n\n");
 		gitLogerExtractor.simpleExtract();
 		System.out.println("\n\nEND at "+ new Date());
@@ -39,7 +40,7 @@ public class FileLanguageExtractor {
 		FileInfoDAO fiDAO = new FileInfoDAO();
 		List<ProjectInfo> projects =  piDAO.findAll(ProjectInfo.class);
 		for (ProjectInfo projectInfo : projects) {
-			if (projectInfo.getFullName().equals("sandstorm-io/capnproto")) {
+			if (!projectInfo.isFiltered()) {
 				try {
 					Map<String, List<String>> languageMap = new HashMap<String, List<String>>();
 					System.out.format(

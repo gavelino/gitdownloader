@@ -5,9 +5,8 @@ import org.eclipse.jgit.api.CleanCommand;
 public class FileFilterManager {
 	public static void main(String[] args) {
 		RemoveFileFilter removeFileFilter  = new RemoveFileFilter();
-//		removeFileFilter.clean();
 		
-//		*********************** REGRAS GERAIS ***********************
+		/*********************** REGRAS GERAIS ***********************/
 		
 		//F1
 		removeFileFilter.filterAndPersistByLanguage("all", "%/docs/%");
@@ -35,7 +34,7 @@ public class FileFilterManager {
 		removeFileFilter.filterAndPersistByLanguage("Python", "bin/%");
 
 
-//		*********************** REGRAS ESPECIFICAS POR PROJETOS ***********************
+		/*********************** REGRAS ESPECIFICAS POR PROJETOS ***********************/
 		
 		
 		//F14
@@ -127,10 +126,7 @@ public class FileFilterManager {
 
 		//F74		
 		removeFileFilter.filterAndPersistByProject("chef/chef", "distro/common/html/_static/%");
-
-		//F76		
-		removeFileFilter.filterAndPersistByProject("rails/rails", "actionpack/test/fixtures/public/gzip/%");
-
+		
 		//F77		
 		removeFileFilter.filterAndPersistByProject("rails/rails", "actionview/test/fixtures/public/%");
 
@@ -179,20 +175,14 @@ public class FileFilterManager {
 		//F106		
 		removeFileFilter.filterAndPersistByProject("joomla/joomla-cms", "images/%");
 
-		//F107		
-		removeFileFilter.filterAndPersistByProject("silexphp/Silex", "web/assets/vendor/%");
-
 		//F113		
 		removeFileFilter.filterAndPersistByProject("ThinkUpLLC/ThinkUp", "webapp/assets/js/jqBootstrapValidation.js");
 
 	
-//		****************** EXCEÇÕES A SEREM TRATADAS INDIVIDUALMENTE *******************
+		/****************** EXCECOES A SEREM TRATADAS INDIVIDUALMENTE *******************/
 		
 		
-//		//F39		
-//		removeFileFilter.filterAndPersistByProject("mitchellh/vagrant", "website/www/source/javascripts (Except vagrantup.js)");
-//
-//		//F40		
-//		removeFileFilter.filterAndPersistByProject("mitchellh/vagrant", "website/docs/source/javascripts (Except vagrantup.js)");
+		//F39 e F$)		
+		removeFileFilter.removeEspecifcfilterAndPersistByProject("mitchellh/vagrant", "%vagrantup.js");
 	}
 }
