@@ -16,7 +16,7 @@ public class RemoveFileFilter extends FileFilter{
 	}
 
 	@Override
-	public int filterAndPersist(String language, String pattern) {
+	public int filterAndPersistByLanguage(String language, String pattern) {
 		String localFilterStamp = filterStamp+"("+language+"): "+pattern+"#";
 		
 		String whereClauses = "";
@@ -30,6 +30,17 @@ public class RemoveFileFilter extends FileFilter{
 		return nRows;
 	}
 	
+	public int filterAndPersistByProject(String projectName, String pattern) {
+		String localFilterStamp = filterStamp+"("+projectName+"): "+pattern+"#";
+		
+		String whereClauses = "";
+		whereClauses += " AND pi.fullname = \'" + projectName + "\'";
+		whereClauses += " AND fi.path LIKE \'" + pattern + "\'";
+		
+		int nRows = fiDAO.filterAndUpdateFilesInfo(whereClauses, localFilterStamp);
+		System.out.println(new Date() + " - " + pattern +" - Updated "+ nRows);
+		return nRows;
+	}
 	
 		
 	public String getPattern() {

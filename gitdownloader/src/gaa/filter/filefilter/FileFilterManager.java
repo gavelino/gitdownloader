@@ -6,39 +6,29 @@ public class FileFilterManager {
 	public static void main(String[] args) {
 		RemoveFileFilter removeFileFilter  = new RemoveFileFilter();
 //		removeFileFilter.clean();
+		
 //		//F1
-//		removeFileFilter.filterAndPersist("all", "%/docs/%");
-
+//		removeFileFilter.filterAndPersistByLanguage("all", "%/docs/%");
+//
 //		//F2
-//		removeFileFilter.filterAndPersist("all", "examples/%");
-//		removeFileFilter.filterAndPersist("all", "%/examples/%");
-
+//		removeFileFilter.filterAndPersistByLanguage("all", "examples/%");
+//		removeFileFilter.filterAndPersistByLanguage("all", "%/examples/%");
+//
 //		//F3
-//		removeFileFilter.filterAndPersist("Ruby", "lib/assets/javascripts/%");
-
+//		removeFileFilter.filterAndPersistByLanguage("Ruby", "lib/assets/javascripts/%");
+//
 //		//F7
-//		removeFileFilter.filterAndPersist("all", "build/%");
-
+//		removeFileFilter.filterAndPersistByLanguage("all", "build/%");
+//
 //		//F9
-//		removeFileFilter.filterAndPersist("all", "%/require.js");
-
+//		removeFileFilter.filterAndPersistByLanguage("all", "%/require.js");
+//
 //		//F11
-		removeFileFilter.filterAndPersist("all", "benchmarks/%");
+//		removeFileFilter.filterAndPersistByLanguage("all", "benchmarks/%");
+//		
+//		//F14
+//		removeFileFilter.filterAndPersistByProject("mrdoob/three.js", "test/unit/qunit-1.10.0.js");
 
-//		//F7
-//		removeFileFilter.filterAndPersist("all", "build/%");
-
-//		//F7
-//		removeFileFilter.filterAndPersist("all", "build/%");
-
-//		//F7
-//		removeFileFilter.filterAndPersist("all", "build/%");
-
-//		//F7
-//		removeFileFilter.filterAndPersist("all", "build/%");
-
-//		//F7
-//		removeFileFilter.filterAndPersist("all", "build/%");
 		
 	}
 }

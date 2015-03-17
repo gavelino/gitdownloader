@@ -17,7 +17,7 @@ public abstract class FileFilter {
 		fiDAO =  new FileInfoDAO();
 	}
 	
-	public abstract int filterAndPersist(String language, String pattern);
+	public abstract int filterAndPersistByLanguage(String language, String pattern);
 	
 	public void clean(){
 		fiDAO.cleanFilter();
