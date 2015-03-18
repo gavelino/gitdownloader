@@ -1,4 +1,4 @@
-package authorship;
+package gaa.authorship;
 
 public class DOACalculator {
 

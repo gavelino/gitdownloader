@@ -1,4 +1,4 @@
-package authorship.model;
+package gaa.authorship.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

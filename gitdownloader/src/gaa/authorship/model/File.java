@@ -1,4 +1,4 @@
-package authorship.model;
+package gaa.authorship.model;
 
 import java.util.List;
 
