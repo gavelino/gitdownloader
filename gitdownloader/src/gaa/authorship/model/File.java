@@ -1,5 +1,7 @@
 package gaa.authorship.model;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,10 +19,11 @@ public class File {
 	protected Long id;
 	
 	private String path;
+	private String oldFileName;
 	
-	@javax.persistence.OneToMany(cascade = CascadeType.ALL)
-	@javax.persistence.MapKey(name = "name")
-	private Map<String, AuthorshipInfo> authorshipInfos;
+
+	@OneToMany(cascade = { CascadeType.ALL })
+	private List<AuthorshipInfo> authorshipInfos = new ArrayList<AuthorshipInfo>();
 	
 	public File() {
 	}
@@ -29,6 +32,8 @@ public class File {
 		super();
 		this.path = path;
 	}
+	
+	
 
 	public Long getId() {
 		return id;
@@ -46,9 +51,29 @@ public class File {
 		this.path = path;
 	}
 
-	public Map<String, AuthorshipInfo> getAuthorshipInfos() {
+
+	public String getOldFileName() {
+		return oldFileName;
+	}
+
+	public void setOldFileName(String oldFileName) {
+		this.oldFileName = oldFileName;
+	}
+
+	public List<AuthorshipInfo> getAuthorshipInfos() {
 		return authorshipInfos;
 	}
+
+	public void setAuthorshipInfos(List<AuthorshipInfo> authorshipInfos) {
+		this.authorshipInfos = authorshipInfos;
+	}
+
+	public void addAuthorshipInfo(AuthorshipInfo authorshipInfo) {
+		this.authorshipInfos.add(authorshipInfo);
+		
+	}
+	
+
 	
 	
 }

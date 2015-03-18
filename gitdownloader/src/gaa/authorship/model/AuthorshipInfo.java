@@ -20,23 +20,21 @@ public class AuthorshipInfo {
 	}
 	
 	
-	
 
-	public AuthorshipInfo(File file, Developer developer, boolean firstAdd) {
+	public AuthorshipInfo(File file, Developer developer) {
 		super();
 		this.file = file;
 		this.developer = developer;
-		this.firstAdd = firstAdd;
 		this.nDeliveries = 0;
 		this.nAcceptances = 0;
+
+		developer.addAuthorshipInfo(this);
+		file.addAuthorshipInfo(this);
 	}
 
 
 	public void addNewDelivery(){
 		this.nDeliveries++;
-	}
-	public void addNewAcceptance(){
-		this.nAcceptances++;
 	}
 
 	public Long getId() {
@@ -57,7 +55,7 @@ public class AuthorshipInfo {
 	public void setDeveloper(Developer developer) {
 		this.developer = developer;
 	}
-	public boolean isFirstAdd() {
+	public boolean isFirstAuthor() {
 		return firstAdd;
 	}
 	public void setFirstAdd(boolean firstAdd) {
@@ -75,6 +73,12 @@ public class AuthorshipInfo {
 	public void setnAcceptances(int nAcceptances) {
 		this.nAcceptances = nAcceptances;
 	}
-	
+
+
+	public void setAsFirstAuthor() {
+		this.firstAdd = true;		
+	}
+
+
 	
 }
