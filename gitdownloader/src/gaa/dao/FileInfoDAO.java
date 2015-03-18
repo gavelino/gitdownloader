@@ -37,6 +37,19 @@ public class FileInfoDAO extends GenericDAO<FileInfo>{
 //			super.merge(persistedProject);
 //		}
 //	}
+	public List<String> getPathsOfNotFilteredProjectFiles(String projectName){
+		String custom = "";
+		     
+		String hql = "SELECT fi.path FROM projectinfo_fileinfo pi_fi "
+				+ "JOIN projectinfo pi ON pi_fi.projectinfo_fullname = pi.fullname "
+				+ "JOIN fileinfo fi on pi_fi.files_id = fi.id "
+				+ "WHERE pi.fullname = \'"+projectName+"\' AND fi.filtered = 'FALSE' "
+				+ ";";
+				
+		Query q = em.createNativeQuery(hql);
+		return q.getResultList();
+			
+	}
 	
 	public int filterAndUpdateFilesInfo(String whereClauses, String filterStamp){
 		String custom = "";

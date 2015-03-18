@@ -2,6 +2,8 @@ package gaa.dao;
 
 import java.util.List;
 
+import javax.persistence.Query;
+
 import gaa.model.ProjectInfo;
 
 
@@ -26,6 +28,12 @@ public class ProjectInfoDAO extends GenericDAO<ProjectInfo> {
 		// TODO Auto-generated method stub
 		return super.findAll(ProjectInfo.class);
 	}
+	public List<ProjectInfo> findNotFiltered() {
+		String hql = "select a from " +  ProjectInfo.class.getSimpleName() + " a where a.filtered = \'FALSE\' ";
+		Query q = em.createQuery(hql);
+		return q.getResultList();
+	}
+	
 	
 	@Override
 	public void merge(ProjectInfo o) {

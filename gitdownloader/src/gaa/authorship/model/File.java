@@ -1,6 +1,7 @@
 package gaa.authorship.model;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -17,8 +18,9 @@ public class File {
 	
 	private String path;
 	
-	@OneToMany(cascade = { CascadeType.ALL })
-	private List<AuthorshipInfo> authorshipInfos;
+	@javax.persistence.OneToMany(cascade = CascadeType.ALL)
+	@javax.persistence.MapKey(name = "name")
+	private Map<String, AuthorshipInfo> authorshipInfos;
 	
 	public File() {
 	}
@@ -44,12 +46,8 @@ public class File {
 		this.path = path;
 	}
 
-	public List<AuthorshipInfo> getAuthorshipInfos() {
+	public Map<String, AuthorshipInfo> getAuthorshipInfos() {
 		return authorshipInfos;
-	}
-
-	public void setAuthorshipInfos(List<AuthorshipInfo> authorshipInfos) {
-		this.authorshipInfos = authorshipInfos;
 	}
 	
 	
