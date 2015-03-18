@@ -40,7 +40,7 @@ public class FileLanguageExtractor {
 		FileInfoDAO fiDAO = new FileInfoDAO();
 		List<ProjectInfo> projects =  piDAO.findAll(ProjectInfo.class);
 		for (ProjectInfo projectInfo : projects) {
-			if (!projectInfo.isFiltered()) {
+			if (projectInfo.getFullName().equals("sandstorm-io/capnproto")) {
 				try {
 					Map<String, List<String>> languageMap = new HashMap<String, List<String>>();
 					System.out.format(
@@ -55,6 +55,8 @@ public class FileLanguageExtractor {
 					while ((sCurrentLine = br.readLine()) != null) {
 						values = sCurrentLine.split(";");
 						String language = values[0];
+						if (language.contains("\'"))
+							language = language.replace("'", "''");
 						String path = values[1];
 						List<String> paths;
 						if (languageMap.containsKey(language))

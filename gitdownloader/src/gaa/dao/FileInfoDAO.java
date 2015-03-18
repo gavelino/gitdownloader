@@ -157,6 +157,8 @@ public class FileInfoDAO extends GenericDAO<FileInfo>{
 		FileType fileType = FileType.getType(language);
 		List<Query> queries = new ArrayList<Query>();
 		for (String path : paths) {			
+			if (path.contains("\'"))
+				path = path.replace("'", "''");
 			String hql = "UPDATE  fileinfo AS fi "
 					+ "SET kind = \'"
 					+ fileType
