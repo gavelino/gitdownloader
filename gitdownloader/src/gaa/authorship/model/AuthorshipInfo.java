@@ -14,7 +14,6 @@ public class AuthorshipInfo {
 	private Developer developer;
 	private boolean firstAdd;
 	private int nDeliveries;
-	private int nAcceptances;
 	
 	public AuthorshipInfo() {
 	}
@@ -26,7 +25,6 @@ public class AuthorshipInfo {
 		this.file = file;
 		this.developer = developer;
 		this.nDeliveries = 0;
-		this.nAcceptances = 0;
 
 		developer.addAuthorshipInfo(this);
 		file.addAuthorshipInfo(this);
@@ -35,6 +33,10 @@ public class AuthorshipInfo {
 
 	public void addNewDelivery(){
 		this.nDeliveries++;
+	}
+	
+	public void incNDeliveries(int inc){
+		nDeliveries+=inc;
 	}
 
 	public Long getId() {
@@ -68,10 +70,7 @@ public class AuthorshipInfo {
 		this.nDeliveries = nDeliveries;
 	}
 	public int getnAcceptances() {
-		return nAcceptances;
-	}
-	public void setnAcceptances(int nAcceptances) {
-		this.nAcceptances = nAcceptances;
+		return this.file.getnChanges() - this.nDeliveries;
 	}
 
 

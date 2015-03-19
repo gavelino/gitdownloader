@@ -54,14 +54,13 @@ public class Repository {
 
 	public AuthorshipInfo getAuthorshipInfo(String name, String email, File file) {
 		Developer developer = this.addDeveloper(name, email);
-		String authorshipKey = file.getPath() + developer.getUserName();
+		String authorshipKey = (file.getPath() + developer.getUserName());
 		AuthorshipInfo authorshipInfo;
-		if(developerMap.containsKey(authorshipKey))
+		if(authorshipInfoMap.containsKey(authorshipKey))
 			authorshipInfo = authorshipInfoMap.get(authorshipKey);
 		else {
 			authorshipInfo =  new AuthorshipInfo(file, developer);
 			authorshipInfoMap.put(authorshipKey, authorshipInfo);
-			System.out.println(" *************** " + authorshipKey);
 		}
 		return authorshipInfo;		
 	}

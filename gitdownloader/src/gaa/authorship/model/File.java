@@ -20,7 +20,7 @@ public class File {
 	
 	private String path;
 	private String oldFileName;
-	
+	private int nChanges=0;
 
 	@OneToMany(cascade = { CascadeType.ALL })
 	private List<AuthorshipInfo> authorshipInfos = new ArrayList<AuthorshipInfo>();
@@ -33,8 +33,17 @@ public class File {
 		this.path = path;
 	}
 	
+	public int getnChanges() {
+		return nChanges;
+	}
 	
-
+	public void addNewChange(){
+		nChanges++;
+	}
+	
+	public void incNChanges(int inc){
+		nChanges+=inc;
+	}
 	public Long getId() {
 		return id;
 	}
@@ -70,6 +79,24 @@ public class File {
 
 	public void addAuthorshipInfo(AuthorshipInfo authorshipInfo) {
 		this.authorshipInfos.add(authorshipInfo);
+		
+	}
+
+	public void addRenamedHistory(File oldFile) {
+		for (AuthorshipInfo oldAuthorshipInfo : oldFile.getAuthorshipInfos()) {
+			boolean flag = true;
+			for (AuthorshipInfo newAuthorshipInfo : this.getAuthorshipInfos()) {
+				if (oldAuthorshipInfo.getDeveloper().getUserName().equalsIgnoreCase(newAuthorshipInfo.getDeveloper().getUserName())){
+					if (oldAuthorshipInfo.isFirstAuthor())
+						newAuthorshipInfo.setFirstAdd(true);
+					newAuthorshipInfo.incNDeliveries(oldAuthorshipInfo.getnDeliveries());
+					this.incNChanges(oldFile.getnChanges());
+					flag = false;
+				}
+			}
+			if (flag)
+				this.authorshipInfos.add(oldAuthorshipInfo);
+		}
 		
 	}
 	
