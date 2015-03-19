@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class AuthorshipInfo {
+public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Long id;
@@ -19,7 +19,7 @@ public class AuthorshipInfo {
 	}
 	
 	public double getDOA(){
-		return 3.293 + 1.098*(firstAdd?1:0) + 0.164*nDeliveries * Math.log(1 + this.getnAcceptances());
+		return 3.293 + 1.098*(firstAdd?1:0) + 0.164*nDeliveries - 0.332* Math.log(1 + this.getnAcceptances());
 	}
 
 	public AuthorshipInfo(File file, Developer developer) {
@@ -78,6 +78,11 @@ public class AuthorshipInfo {
 
 	public void setAsFirstAuthor() {
 		this.firstAdd = true;		
+	}
+
+	@Override
+	public int compareTo(AuthorshipInfo o) {
+		return Double.compare(this.getDOA(), o.getDOA());
 	}
 
 

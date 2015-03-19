@@ -2,6 +2,9 @@ package gaa.authorship;
 
 import java.io.BufferedReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +49,8 @@ public class DOACalculator {
 
 	private static void printFile(File file) {
 		System.out.println("--File: "+file.getPath());
+		Collections.sort(file.getAuthorshipInfos());
+		Collections.reverse(file.getAuthorshipInfos());
 		for (AuthorshipInfo authorshioinfo : file.getAuthorshipInfos()) {
 			printAuthorshipInfo(authorshioinfo);
 		}
@@ -53,11 +58,12 @@ public class DOACalculator {
 	}
 
 	private static void printAuthorshipInfo(AuthorshipInfo authorshioinfo) {
-		System.out.format("---- %s: %b - %d - %d\n", 
+		System.out.format("---- %s: %b - %d - %d - (%f)\n", 
 				authorshioinfo.getDeveloper().getUserName(),
 				authorshioinfo.isFirstAuthor(), 
 				authorshioinfo.getnDeliveries(),
-				authorshioinfo.getnAcceptances());
+				authorshioinfo.getnAcceptances(),
+				authorshioinfo.getDOA());
 		
 	}
 
@@ -96,6 +102,10 @@ public class DOACalculator {
 				file.addNewChange();					
 			}
 			else if (status == Status.RENAMED){
+				// Considering a rename as a new delivery
+				authorshipInfo.addNewDelivery();
+				file.addNewChange();				
+				
 				File oldFile = new File((String)objects[2]);
 				setFileHistory(oldFile, repository);
 				renamesBuffer.add(oldFile);
