@@ -18,7 +18,9 @@ public class AuthorshipInfo {
 	public AuthorshipInfo() {
 	}
 	
-	
+	public double getDOA(){
+		return 3.293 + 1.098*(firstAdd?1:0) + 0.164*nDeliveries * Math.log(1 + this.getnAcceptances());
+	}
 
 	public AuthorshipInfo(File file, Developer developer) {
 		super();
