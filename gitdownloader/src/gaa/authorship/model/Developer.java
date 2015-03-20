@@ -22,7 +22,7 @@ public class Developer {
 	private String userName;
 	
 
-	@OneToMany(cascade = { CascadeType.ALL })
+	@OneToMany(cascade = { CascadeType.REFRESH })
 	private List<AuthorshipInfo> authorshipInfos = new ArrayList<AuthorshipInfo>();
 	
 	public Developer() {

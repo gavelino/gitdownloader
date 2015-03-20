@@ -26,15 +26,14 @@ public class Repository {
 	
 
 	@javax.persistence.OneToMany(cascade = CascadeType.ALL)
-	@javax.persistence.MapKey(name = "name")
+	@javax.persistence.MapKey(name = "map_developer")
 	private Map<String, Developer> developerMap = new HashMap<String, Developer>(); 
 	
 	@javax.persistence.OneToMany(cascade = CascadeType.ALL)
-	@javax.persistence.MapKey(name = "name")
+	@javax.persistence.MapKey(name = "map_authorship")
 	private Map<String, AuthorshipInfo> authorshipInfoMap = new HashMap<String, AuthorshipInfo>();
 	
 	public Repository() {
-		// TODO Auto-generated constructor stub
 	}
 	public Repository(String fullName) {
 		this.fullName = fullName;

@@ -1,25 +1,33 @@
 package gaa.authorship.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Long id;
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	private File file;
+	@ManyToOne(cascade = { CascadeType.REFRESH })
 	private Developer developer;
-	private boolean firstAdd;
+	private boolean firstAuthor;
 	private int nDeliveries;
+	private double doa;
 	
 	public AuthorshipInfo() {
 	}
 	
 	public double getDOA(){
-		return 3.293 + 1.098*(firstAdd?1:0) + 0.164*nDeliveries - 0.332* Math.log(1 + this.getnAcceptances());
+		if (doa == 0 )
+			doa = 3.293 + 1.098*(firstAuthor?1:0) + 0.164*nDeliveries - 0.332* Math.log(1 + this.getnAcceptances());
+		return doa;
 	}
 
 	public AuthorshipInfo(File file, Developer developer) {
@@ -60,10 +68,10 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 		this.developer = developer;
 	}
 	public boolean isFirstAuthor() {
-		return firstAdd;
+		return firstAuthor;
 	}
-	public void setFirstAdd(boolean firstAdd) {
-		this.firstAdd = firstAdd;
+	public void setFirstAuthor(boolean firstAdd) {
+		this.firstAuthor = firstAdd;
 	}
 	public int getnDeliveries() {
 		return nDeliveries;
@@ -77,7 +85,7 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 
 
 	public void setAsFirstAuthor() {
-		this.firstAdd = true;		
+		this.firstAuthor = true;		
 	}
 
 	@Override

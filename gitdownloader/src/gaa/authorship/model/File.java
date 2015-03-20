@@ -22,7 +22,7 @@ public class File {
 	private String oldFileName;
 	private int nChanges=0;
 
-	@OneToMany(cascade = { CascadeType.ALL })
+	@OneToMany(cascade = { CascadeType.REFRESH })
 	private List<AuthorshipInfo> authorshipInfos = new ArrayList<AuthorshipInfo>();
 	
 	public File() {
@@ -88,7 +88,7 @@ public class File {
 			for (AuthorshipInfo newAuthorshipInfo : this.getAuthorshipInfos()) {
 				if (oldAuthorshipInfo.getDeveloper().getUserName().equalsIgnoreCase(newAuthorshipInfo.getDeveloper().getUserName())){
 					if (oldAuthorshipInfo.isFirstAuthor())
-						newAuthorshipInfo.setFirstAdd(true);
+						newAuthorshipInfo.setFirstAuthor(true);
 					newAuthorshipInfo.incNDeliveries(oldAuthorshipInfo.getnDeliveries());
 					this.incNChanges(oldFile.getnChanges());
 					flag = false;
