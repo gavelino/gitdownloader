@@ -84,7 +84,8 @@ public class DOACalculator {
 	private static void setFileHistory(File file, Repository repository) {
 		LogCommitFileDAO lcfDAO = new LogCommitFileDAO();
 		Map<String, AuthorshipInfo> authorshipInfoMap = new HashMap<String, AuthorshipInfo>();
-		List<Object[]> logFilesObjectInfo = lcfDAO.getLogCommitFileInfoOrderByDate(repository.getFullName(), file.getPath());
+		List<Object[]> logFilesObjectInfo = getExpendedLogFiles(lcfDAO.getLogCommitFileInfoOrderByDate(repository.getFullName(), file.getPath()),repository, lcfDAO);
+		
 		List<File> renamesBuffer = new ArrayList<File>();
 		int numDeliveries = 0;
 		for (Object[] objects : logFilesObjectInfo) {
@@ -106,9 +107,9 @@ public class DOACalculator {
 				authorshipInfo.addNewDelivery();
 				file.addNewChange();				
 				
-				File oldFile = new File((String)objects[2]);
-				setFileHistory(oldFile, repository);
-				renamesBuffer.add(oldFile);
+//				File oldFile = new File((String)objects[2]);
+//				setFileHistory(oldFile, repository);
+//				renamesBuffer.add(oldFile);
 			}
 			else System.out.println("Invalid Status");
 		}
@@ -121,6 +122,21 @@ public class DOACalculator {
 //		}
 		
 		
+	}
+
+	private static List<Object[]> getExpendedLogFiles(
+			List<Object[]> logCommitFileInfoOrderByDate, Repository repository, LogCommitFileDAO lcfDAO) {
+		List<Object[]> newList = new ArrayList<Object[]>();
+		for (Object[] objects : logCommitFileInfoOrderByDate) {
+			newList.add(objects);
+			Status status = Status.getStatus((String)objects[4]);
+			if (status == Status.RENAMED){
+				newList.addAll(getExpendedLogFiles(lcfDAO.getLogCommitFileInfoOrderByDate(repository.getFullName(), 
+																							(String)objects[2]), repository, lcfDAO));
+			}
+				
+		}
+		return newList;
 	}
 	
 	
