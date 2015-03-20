@@ -101,6 +101,9 @@ public class File {
 	}
 	
 
-	
+	@Override
+	public String toString() {
+		return path;
+	}
 	
 }

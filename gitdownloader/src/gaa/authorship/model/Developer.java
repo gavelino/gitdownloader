@@ -74,6 +74,9 @@ public class Developer {
 		this.authorshipInfos.add(authorshipInfo);		
 	}
 
-	
+	@Override
+	public String toString() {
+		return userName;
+	}
 	
 }

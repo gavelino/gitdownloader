@@ -33,9 +33,10 @@ public class LogCommitFileInfo extends AbstractEntity{
 //	private String repositoryName;
 //	@Index(name="SHALOGFILEINDEX")
 //	private String sha;
-	
+	@Index(name="OLDFILENAMEINDEX")
 	@Column(length = 1000)
 	private String oldFileName;
+	@Index(name="NEWFILENAMEINDEX")
 	@Column(length = 1000)
 	private String newFileName;
 	@Enumerated(EnumType.STRING)

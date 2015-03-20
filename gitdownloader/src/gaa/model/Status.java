@@ -2,7 +2,7 @@ package gaa.model;
 
 
 public enum Status {
-	ADDED, MODIFIED, RENAMED, REMOVED, COPIED, DELETED;
+	ADDED, MODIFIED, RENAMED, REMOVED, COPIED, DELETED, RENAMED_TREATED;
 	
 	public static Status getStatus(String str){
 		if (str.equalsIgnoreCase("added")||str.equalsIgnoreCase("add"))
@@ -17,6 +17,8 @@ public enum Status {
 			return COPIED;
 		if (str.equalsIgnoreCase("delete"))
 			return DELETED;
+		if (str.equalsIgnoreCase("RENAMED_TREATED"))
+			return RENAMED_TREATED;
 		
 		return null;				
 	}

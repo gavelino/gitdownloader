@@ -1,19 +1,17 @@
 package gaa.authorship;
 
-import java.io.BufferedReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 import gaa.authorship.model.AuthorshipInfo;
-import gaa.authorship.model.Developer;
 import gaa.authorship.model.File;
 import gaa.authorship.model.Repository;
-import gaa.dao.CommitFileDAO;
 import gaa.dao.FileInfoDAO;
 import gaa.dao.LogCommitFileDAO;
 import gaa.dao.ProjectInfoDAO;
@@ -29,6 +27,7 @@ public class DOACalculator {
 	private static List<Repository> getRepositories(List<ProjectInfo> projects) {
 		List<Repository> repositories = new ArrayList<>();
 		for (ProjectInfo projectInfo : projects) {
+			System.out.println("\n\n\n" +new Date());
 			Repository repo = new Repository(projectInfo.getFullName());
 			repo.setFiles(getFiles(repo));
 			//printRepository(repo);
@@ -83,13 +82,11 @@ public class DOACalculator {
 
 	private static void setFileHistory(File file, Repository repository) {
 		LogCommitFileDAO lcfDAO = new LogCommitFileDAO();
-		Map<String, AuthorshipInfo> authorshipInfoMap = new HashMap<String, AuthorshipInfo>();
-		List<Object[]> logFilesObjectInfo = getExpendedLogFiles(lcfDAO.getLogCommitFileInfoOrderByDate(repository.getFullName(), file.getPath()),repository, lcfDAO);
+		List<Object[]> logFilesObjectInfo = getExpendedLogFiles(lcfDAO.getLogCommitFileInfoOrderByDate(repository.getFullName(), file.getPath()),repository, lcfDAO, file);
 		
 		List<File> renamesBuffer = new ArrayList<File>();
-		int numDeliveries = 0;
 		for (Object[] objects : logFilesObjectInfo) {
-			//ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status
+			//ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id
 			AuthorshipInfo authorshipInfo = repository.getAuthorshipInfo((String)objects[0], (String)objects[1], file);
 			Status status = Status.getStatus((String)objects[4]);
 			
@@ -102,7 +99,7 @@ public class DOACalculator {
 				authorshipInfo.addNewDelivery();
 				file.addNewChange();					
 			}
-			else if (status == Status.RENAMED){
+			else if (status == Status.RENAMED_TREATED){
 				// Considering a rename as a new delivery
 				authorshipInfo.addNewDelivery();
 				file.addNewChange();				
@@ -111,7 +108,7 @@ public class DOACalculator {
 //				setFileHistory(oldFile, repository);
 //				renamesBuffer.add(oldFile);
 			}
-			else System.out.println("Invalid Status");
+			else System.err.println("Invalid Status: "+ status);
 		}
 		
 		for (File oldFile : renamesBuffer) {
@@ -125,18 +122,40 @@ public class DOACalculator {
 	}
 
 	private static List<Object[]> getExpendedLogFiles(
-			List<Object[]> logCommitFileInfoOrderByDate, Repository repository, LogCommitFileDAO lcfDAO) {
-		List<Object[]> newList = new ArrayList<Object[]>();
-		for (Object[] objects : logCommitFileInfoOrderByDate) {
-			newList.add(objects);
-			Status status = Status.getStatus((String)objects[4]);
-			if (status == Status.RENAMED){
-				newList.addAll(getExpendedLogFiles(lcfDAO.getLogCommitFileInfoOrderByDate(repository.getFullName(), 
-																							(String)objects[2]), repository, lcfDAO));
-			}
+			List<Object[]> logCommitFiles, Repository repository, LogCommitFileDAO lcfDAO, File file) {
+		
+ 		Map<String, Object[]> map =  new HashMap<String, Object[]>();
+
+		for (Object[] objects : logCommitFiles)
+			map.put(objects[5].toString(), objects);
+ 		
+ 		while (hasRenamed(map.values())) {
+ 			List<Object[]> tempObjects = new ArrayList<Object[]>(map.values());
+			for (Object[] objects : tempObjects) {
 				
+				Status status = Status.getStatus((String) objects[4]);
+				if (status == Status.RENAMED) {
+					List<Object[]> newList = lcfDAO.getLogCommitFileInfoOrderByDate(
+							repository.getFullName(), (String) objects[2]);
+					for (Object[] newObjects : newList) {
+						if (!map.containsKey(newObjects[5].toString()))
+							map.put(newObjects[5].toString(), newObjects);
+					}
+					objects[4] = Status.RENAMED_TREATED.toString();
+				}
+
+			}
 		}
-		return newList;
+		return new ArrayList<>(map.values());
+	}
+
+	private static boolean hasRenamed(Collection<Object[]> values) {
+		for (Object[] objects : values) {
+			Status status = Status.getStatus((String) objects[4]);
+			if (status== Status.RENAMED)
+				return true;
+		}
+		return false;
 	}
 	
 	

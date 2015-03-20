@@ -114,10 +114,10 @@ public class LogCommitFileDAO extends GenericDAO<LogCommitFileInfo>{
 	}
 	
 	public List<Object[]> getLogCommitFileInfoOrderByDate(String repositoryName, String path) {
-		String hql = "SELECT ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status FROM commitinfo_logcommitfileinfo ci_lcfi	"
+		String hql = "SELECT ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id FROM commitinfo_logcommitfileinfo ci_lcfi	"
 				+ "JOIN commitinfo ci ON ci_lcfi.commitinfo_id = ci.id "
 				+ "JOIN logcommitfileinfo lcfi ON ci_lcfi.logcommitfiles_id = lcfi.id "
-				+ "WHERE ci.REPOSITORYNAME = \'" +  repositoryName +"\'" + " AND lcfi.newfilename = \'" +  path +"\' "
+				+ "WHERE ci.REPOSITORYNAME = \'" +  repositoryName +"\'" + " AND (lcfi.newfilename = \'" +  path +"\'  OR lcfi.oldfilename = \'" +  path +"\' ) "
 						+ "ORDER BY ci.DATE;";
 		Query q = em.createNativeQuery(hql);
 		return q.getResultList();
