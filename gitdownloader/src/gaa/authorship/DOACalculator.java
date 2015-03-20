@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+import gaa.authorship.dao.RepositoryDAO;
 import gaa.authorship.model.AuthorshipInfo;
 import gaa.authorship.model.File;
 import gaa.authorship.model.Repository;
@@ -26,11 +26,16 @@ public class DOACalculator {
 
 	private static List<Repository> getRepositories(List<ProjectInfo> projects) {
 		List<Repository> repositories = new ArrayList<>();
+		RepositoryDAO reDAO = new RepositoryDAO();
 		for (ProjectInfo projectInfo : projects) {
-			System.out.println("\n\n\n" +new Date());
+			System.out.format("%s (%s): Extracting authorship information...\n",
+					projectInfo.getFullName(), new Date());
 			Repository repo = new Repository(projectInfo.getFullName());
 			repo.setFiles(getFiles(repo));
-			//printRepository(repo);
+			System.out.format("%s (%s): Persisting authorship information...\n",
+					projectInfo.getFullName(), new Date());
+			reDAO.merge(repo);
+//			printRepository(repo);
 		}
 		
 		
@@ -38,43 +43,20 @@ public class DOACalculator {
 		return repositories;
 	}
 
-	private static void printRepository(Repository repo) {
-		System.out.println("Repository: "+repo.getFullName());
-		for (File file : repo.getFiles()) {
-			printFile(file);
-		}
-		
-	}
-
-	private static void printFile(File file) {
-		System.out.println("--File: "+file.getPath());
-		Collections.sort(file.getAuthorshipInfos());
-		Collections.reverse(file.getAuthorshipInfos());
-		for (AuthorshipInfo authorshioinfo : file.getAuthorshipInfos()) {
-			printAuthorshipInfo(authorshioinfo);
-		}
-		
-	}
-
-	private static void printAuthorshipInfo(AuthorshipInfo authorshioinfo) {
-		System.out.format("---- %s: %b - %d - %d - (%f)\n", 
-				authorshioinfo.getDeveloper().getUserName(),
-				authorshioinfo.isFirstAuthor(), 
-				authorshioinfo.getnDeliveries(),
-				authorshioinfo.getnAcceptances(),
-				authorshioinfo.getDOA());
-		
-	}
+	
 
 	private static List<File> getFiles(Repository repository) {
 		FileInfoDAO fiDAO =  new FileInfoDAO();
 		List<File> files = new ArrayList<>();
 		List<String> paths = fiDAO.getPathsOfNotFilteredProjectFiles(repository.getFullName());
+		int count =0;
 		for (String path : paths) {
 			File file = new File(path);
 			setFileHistory(file, repository);
 			files.add(file);
-			printFile(file);
+//			printFile(file);
+//			if (count++>5)
+//				break;
 		}
 		
 		return files;
@@ -83,7 +65,7 @@ public class DOACalculator {
 	private static void setFileHistory(File file, Repository repository) {
 		LogCommitFileDAO lcfDAO = new LogCommitFileDAO();
 		List<Object[]> logFilesObjectInfo = getExpendedLogFiles(lcfDAO.getLogCommitFileInfoOrderByDate(repository.getFullName(), file.getPath()),repository, lcfDAO, file);
-		
+		String firstAuthor = null;
 		List<File> renamesBuffer = new ArrayList<File>();
 		for (Object[] objects : logFilesObjectInfo) {
 			//ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id
@@ -91,9 +73,13 @@ public class DOACalculator {
 			Status status = Status.getStatus((String)objects[4]);
 			
 			if (status == Status.ADDED){
-				if (authorshipInfo.isFirstAuthor())
-					System.err.println("New add for a file that already has fist author! file = "+file.getPath());
+				if (firstAuthor == null){
+					firstAuthor = authorshipInfo.getDeveloper().getUserName();
+				}
+				else
+					System.err.format("New add - %s - author: %s - newauthor: %s\n", file.getPath(), firstAuthor, authorshipInfo.getDeveloper().getUserName());
 				authorshipInfo.setAsFirstAuthor();
+				
 			}
 			else if (status == Status.MODIFIED){
 				authorshipInfo.addNewDelivery();
@@ -158,6 +144,33 @@ public class DOACalculator {
 		return false;
 	}
 	
+	private static void printRepository(Repository repo) {
+		System.out.println("Repository: "+repo.getFullName());
+		for (File file : repo.getFiles()) {
+			printFile(file);
+		}
+		
+	}
+
+	private static void printFile(File file) {
+		System.out.println("--File: "+file.getPath());
+		Collections.sort(file.getAuthorshipInfos());
+		Collections.reverse(file.getAuthorshipInfos());
+		for (AuthorshipInfo authorshioinfo : file.getAuthorshipInfos()) {
+			printAuthorshipInfo(authorshioinfo);
+		}
+		
+	}
+
+	private static void printAuthorshipInfo(AuthorshipInfo authorshioinfo) {
+		System.out.format("---- %s: %b - %d - %d - (%f)\n", 
+				authorshioinfo.getDeveloper().getUserName(),
+				authorshioinfo.isFirstAuthor(), 
+				authorshioinfo.getnDeliveries(),
+				authorshioinfo.getnAcceptances(),
+				authorshioinfo.getDOA());
+		
+	}
 	
 	
 }

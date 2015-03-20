@@ -11,7 +11,7 @@ import javax.persistence.Query;
 import org.eclipse.persistence.sessions.Session;
 
 
-abstract class GenericDAO<T> {
+public abstract class GenericDAO<T> {
 	protected final EntityManager em =  Persistence.createEntityManagerFactory("main").createEntityManager();
 
 	public GenericDAO() {
