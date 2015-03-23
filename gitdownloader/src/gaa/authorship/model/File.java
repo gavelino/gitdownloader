@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class File {
@@ -24,6 +25,9 @@ public class File {
 
 	@OneToMany(cascade = { CascadeType.REFRESH })
 	private List<AuthorshipInfo> authorshipInfos = new ArrayList<AuthorshipInfo>();
+	
+	@OneToOne
+	private AuthorshipInfo bestAuthorshipInfo;
 	
 	public File() {
 	}
@@ -104,6 +108,14 @@ public class File {
 	@Override
 	public String toString() {
 		return path;
+	}
+
+	public AuthorshipInfo getBestAuthorshipInfo() {
+		return bestAuthorshipInfo;
+	}
+
+	public void setBestAuthorshipInfo(AuthorshipInfo bestAuthorshipInfo) {
+		this.bestAuthorshipInfo = bestAuthorshipInfo;
 	}
 	
 }

@@ -66,7 +66,6 @@ public class DOACalculator {
 		LogCommitFileDAO lcfDAO = new LogCommitFileDAO();
 		List<Object[]> logFilesObjectInfo = getExpendedLogFiles(lcfDAO.getLogCommitFileInfoOrderByDate(repository.getFullName(), file.getPath()),repository, lcfDAO, file);
 		String firstAuthor = null;
-		List<File> renamesBuffer = new ArrayList<File>();
 		for (Object[] objects : logFilesObjectInfo) {
 			//ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id
 			AuthorshipInfo authorshipInfo = repository.getAuthorshipInfo((String)objects[0], (String)objects[1], file);
@@ -97,12 +96,14 @@ public class DOACalculator {
 			else System.err.println("Invalid Status: "+ status);
 		}
 		
-		for (File oldFile : renamesBuffer) {
-			file.addRenamedHistory(oldFile);
+		double bestDoaValue = 0;
+		for (AuthorshipInfo authorshipInfo : file.getAuthorshipInfos()) {
+			double auhtorshipDoa = authorshipInfo.getDOA();
+			if (auhtorshipDoa > bestDoaValue){
+				bestDoaValue = auhtorshipDoa;
+				file.setBestAuthorshipInfo(authorshipInfo);
+			}	
 		}
-//		for (AuthorshipInfo authorshipInfo : file.getAuthorshipInfos()) {
-//			authorshipInfo.setnAcceptances(numDeliveries-authorshipInfo.getnDeliveries());
-//		}
 		
 		
 	}
