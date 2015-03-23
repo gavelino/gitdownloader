@@ -28,11 +28,16 @@ public class DeveloperAuthorshipInfo {
 	public Double focus;
 	public int spread;
 
-	public DeveloperAuthorshipInfo(String userName, int index, Set<String> fileNames) {
+	public DeveloperAuthorshipInfo() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public DeveloperAuthorshipInfo(String userName, int index, Set<String> fileNames, String repositoryName) {
 		super();
 		this.userName = userName;
 		this.index = index;
 		this.fileNames = fileNames;
+		this.repositoryName = repositoryName;
 	}
 
 	public String getUserName() {
@@ -65,6 +70,10 @@ public class DeveloperAuthorshipInfo {
 
 	public int getnFiles() {
 		return fileNames.size();
+	}
+	
+	public Long getId() {
+		return id;
 	}
 
 }

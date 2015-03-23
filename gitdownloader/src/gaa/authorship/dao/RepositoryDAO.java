@@ -69,4 +69,10 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 		}
 		return maps;
 	}
+	
+	public List<String> getAllRepositoryNames(){
+		String hql = "SELECT fullname FROM repository;";
+		Query q = em.createNativeQuery(hql);
+		return q.getResultList();
+	}
 }

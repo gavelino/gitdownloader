@@ -1,5 +1,6 @@
 package gaa.authorship;
 
+import gaa.authorship.dao.DeveloperAuthorshipInfoDAO;
 import gaa.authorship.dao.RepositoryDAO;
 import gaa.authorship.model.DeveloperAuthorshipInfo;
 import gaa.prototype.UserInfoData;
@@ -24,19 +25,26 @@ public class DistributionCalculator {
 
 	public static void main(String[] args) {
 		RepositoryDAO repoDAO = new RepositoryDAO();
-		String repoName = "ThinkUpLLC/ThinkUp";
-		distributionMap(repoDAO.getFilesAuthor(repoName), repoName, "Rank "
-				+ repoName);
+		DeveloperAuthorshipInfoDAO daiDAO =  new DeveloperAuthorshipInfoDAO();
+		for (String repoName : repoDAO.getAllRepositoryNames()) {
+			if (repoName.equalsIgnoreCase("ThinkUpLLC/ThinkUp")){
+				HashSet<DeveloperAuthorshipInfo> developersAuthoship = distributionMap(repoDAO.getFilesAuthor(repoName), repoName, "Rank "	+ repoName);
+				for (DeveloperAuthorshipInfo developerAuthorshipInfo : developersAuthoship) {
+					daiDAO.merge(developerAuthorshipInfo);
+				}
+			}
+			
+		}
 	}
 	
 	static Map<String, HashSet<DeveloperAuthorshipInfo>> usersInfo = new HashMap<String, HashSet<DeveloperAuthorshipInfo>>();
-	static void distributionMap(Map<String, Set<String>> maps, String projectName, String mapName){
-		HashSet<DeveloperAuthorshipInfo> projectUsersInfo;
+	static HashSet<DeveloperAuthorshipInfo> distributionMap(Map<String, Set<String>> maps, String projectName, String mapName){
+		HashSet<DeveloperAuthorshipInfo> developerAuthoshipSet;
 		if (usersInfo.containsKey(projectName))
-			projectUsersInfo = usersInfo.get(projectName);
+			developerAuthoshipSet = usersInfo.get(projectName);
 		else{
-			projectUsersInfo = new HashSet<DeveloperAuthorshipInfo>();
-			usersInfo.put(projectName, projectUsersInfo);
+			developerAuthoshipSet = new HashSet<DeveloperAuthorshipInfo>();
+			usersInfo.put(projectName, developerAuthoshipSet);
 		}
 			
 		
@@ -59,14 +67,14 @@ public class DistributionCalculator {
 				dm.put(getPackageName(name).replace("/", "."), className, index, 0.0);
 			}
 			index++;
-			projectUsersInfo.add(new DeveloperAuthorshipInfo(entry.getKey(), stCount, entry.getValue()));
+			developerAuthoshipSet.add(new DeveloperAuthorshipInfo(entry.getKey(), stCount, entry.getValue(), projectName));
 			semanticTopics[stCount++] = sTopics;
 
 		}
 		try {
 			dm = DistributionMapCalculator.addSemanticClustersMetrics(dm, maps.size());
 			DistributionMapPanel dmPanel = new DistributionMapPanel(dm,semanticTopics);
-			calcDMValues(dm, projectUsersInfo);
+			calcDMValues(dm, developerAuthoshipSet);
 //			JFrame frame = new JFrame("DistributionMap - "+mapName);
 //			JScrollPane scrollPane = new JScrollPane(dmPanel);  
 //			frame.setContentPane(scrollPane);
@@ -74,6 +82,7 @@ public class DistributionCalculator {
 		} catch (UnsufficientNumberOfColorsException e1) {
 			e1.printStackTrace();
 		}
+		return developerAuthoshipSet;
 	}
 	
 	private static Queue<Entry<String, Set<String>>> getOrderedMap(
