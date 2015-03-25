@@ -124,4 +124,16 @@ public class LogCommitFileDAO extends GenericDAO<LogCommitFileInfo>{
 		
 	}
 	
+	public List<Object[]> getLogCommitFileInfoForAllFiles(String repositoryName) {
+		String hql = "SELECT fi.path, ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id FROM commitinfo_logcommitfileinfo ci_lcfi	"
+				+ "JOIN commitinfo ci ON ci_lcfi.commitinfo_id = ci.id "
+				+ "JOIN logcommitfileinfo lcfi ON ci_lcfi.logcommitfiles_id = lcfi.id "
+				+ "JOIN fileinfo fi on (fi.path = lcfi.newfilename or fi.path = lcfi.oldfilename) "
+				+ "WHERE ci.REPOSITORYNAME = \'" +  repositoryName +"\'" + " AND fi.filtered = \'FALSE\' "
+						+ "ORDER BY lcfi.newfilename, ci.DATE;";
+		Query q = em.createNativeQuery(hql);
+		return q.getResultList();
+		
+	}
+	
 }

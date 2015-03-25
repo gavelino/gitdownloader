@@ -5,9 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import gaa.authorship.dao.FileDAO;
 import gaa.authorship.dao.RepositoryDAO;
 import gaa.authorship.model.AuthorshipInfo;
 import gaa.authorship.model.File;
@@ -27,7 +31,10 @@ public class DOACalculator {
 	private static List<Repository> getRepositories(List<ProjectInfo> projects) {
 		List<Repository> repositories = new ArrayList<>();
 		RepositoryDAO reDAO = new RepositoryDAO();
+		Set<String> repositoriesPersisted = new HashSet<String>(reDAO.getAllRepositoryNames());
 		for (ProjectInfo projectInfo : projects) {
+//			if (!repositoriesPersisted.contains(projectInfo.getFullName())){
+			if (projectInfo.getFullName().equalsIgnoreCase("sparklemotion/nokogiri")){
 			System.out.format("%s (%s): Extracting authorship information...\n",
 					projectInfo.getFullName(), new Date());
 			Repository repo = new Repository(projectInfo.getFullName());
@@ -36,6 +43,10 @@ public class DOACalculator {
 					projectInfo.getFullName(), new Date());
 			reDAO.merge(repo);
 //			printRepository(repo);
+			repositoriesPersisted.add(repo.getFullName());
+			}
+			else
+				System.out.println(projectInfo.getFullName() + " already analysed!");
 		}
 		
 		
@@ -47,19 +58,101 @@ public class DOACalculator {
 
 	private static List<File> getFiles(Repository repository) {
 		FileInfoDAO fiDAO =  new FileInfoDAO();
+		FileDAO fileDAO = new FileDAO();
+		LogCommitFileDAO lcfDAO = new LogCommitFileDAO();
+
 		List<File> files = new ArrayList<>();
-		List<String> paths = fiDAO.getPathsOfNotFilteredProjectFiles(repository.getFullName());
-		int count =0;
-		for (String path : paths) {
-			File file = new File(path);
-			setFileHistory(file, repository);
+		
+		List<Object[]> allFilesObjectInfo = lcfDAO.getLogCommitFileInfoForAllFiles(repository.getFullName());
+		Map<String,List<Object[]>> mapFiles = getMapFiles(allFilesObjectInfo);
+		for (Entry<String, List<Object[]>> entry : mapFiles.entrySet()) {
+			File file = new File(entry.getKey());
+			setFileHistory(file, repository, entry.getValue());
 			files.add(file);
-//			printFile(file);
-//			if (count++>5)
-//				break;
 		}
 		
+//		List<String> paths = fiDAO.getPathsOfNotFilteredProjectFiles(repository.getFullName());
+//		int count =0;
+//		List<File> tempFiles = new ArrayList<File>();
+//		int persistCount = 10;
+//		for (String path : paths) {
+//			File file = new File(path);
+//			setFileHistory(file, repository);
+//			tempFiles.add(file);
+//			if (++count%persistCount == 0){
+//				fileDAO.persistAll(tempFiles);
+//				files.addAll(tempFiles);
+//				tempFiles = new ArrayList<File>();
+//			}
+////			printFile(file);
+//		}
+//		if (tempFiles.size()>0){
+//			fileDAO.persistAll(tempFiles);
+//			files.addAll(tempFiles);
+//		}
+//		System.out.format("History generated for %d files\n",count);
+//		fileDAO.persistAll(files);
 		return files;
+	}
+
+	private static Map<String, List<Object[]>> getMapFiles(
+			List<Object[]> allFilesObjectInfo) {
+		Map<String, List<Object[]>> map = new HashMap<String, List<Object[]>>();
+		for (Object[] objects : allFilesObjectInfo) {
+			//fi.path, ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id
+			String fileName = objects[0].toString();
+			if (!map.containsKey(fileName))
+					map.put(fileName, new ArrayList<Object[]>());
+			Object[] auxObjects = {objects[1], objects[2], objects[3], objects[4], objects[5], objects[6]};
+			map.get(fileName).add(auxObjects);
+			
+		}
+		return map;
+	}
+
+	private static void setFileHistory(File file, Repository repository, List<Object[]> values) {
+		List<Object[]> logFilesObjectInfo = getExpendedLogFiles(values, repository, new LogCommitFileDAO(), file);
+		String firstAuthor = null;
+		for (Object[] objects : logFilesObjectInfo) {
+			//ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id
+			AuthorshipInfo authorshipInfo = repository.getAuthorshipInfo((String)objects[0], (String)objects[1], file);
+			Status status = Status.getStatus((String)objects[4]);
+			
+			if (status == Status.ADDED){
+				if (firstAuthor == null){
+					firstAuthor = authorshipInfo.getDeveloper().getUserName();
+				}
+				else
+					System.err.format("New add - %s - author: %s - newauthor: %s\n", file.getPath(), firstAuthor, authorshipInfo.getDeveloper().getUserName());
+				authorshipInfo.setAsFirstAuthor();
+				
+			}
+			else if (status == Status.MODIFIED){
+				authorshipInfo.addNewDelivery();
+				file.addNewChange();					
+			}
+			else if (status == Status.RENAMED_TREATED){
+				// Considering a rename as a new delivery
+				authorshipInfo.addNewDelivery();
+				file.addNewChange();				
+				
+//				File oldFile = new File((String)objects[2]);
+//				setFileHistory(oldFile, repository);
+//				renamesBuffer.add(oldFile);
+			}
+			else System.err.println("Invalid Status: "+ status);
+		}
+		
+		double bestDoaValue = 0;
+		for (AuthorshipInfo authorshipInfo : file.getAuthorshipInfos()) {
+			double auhtorshipDoa = authorshipInfo.getDOA();
+			if (auhtorshipDoa > bestDoaValue){
+				bestDoaValue = auhtorshipDoa;
+				file.setBestAuthorshipInfo(authorshipInfo);
+			}	
+		}
+		
+		
 	}
 
 	private static void setFileHistory(File file, Repository repository) {
