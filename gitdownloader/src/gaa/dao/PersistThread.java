@@ -1,19 +1,20 @@
 package gaa.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityTransaction;
 
 public class PersistThread <T> extends Thread{
-	List<T> list;
+	Collection<T> list;
 	GenericDAO<T> persistDAO;
-	public PersistThread(List<T> list, GenericDAO<T> persistDAO) {
+	public PersistThread(Collection<T> list, GenericDAO<T> persistDAO) {
 		this.list = list;
 		this.persistDAO = persistDAO; 
 	}
 	@Override
 	public void run() {
-		System.out.println("Thread iniciada = "+this.getName() + " persisting objects: "+ list.size());
+		System.out.println("Thread iniciada = "+this.getName() + " persisting objects: "+  list.size());
 		EntityTransaction tx = persistDAO.em.getTransaction();
 		try {
 			tx.begin();
@@ -33,7 +34,7 @@ public class PersistThread <T> extends Thread{
 		System.out.println("Thread Finalizada = "+this.getName());		
 	}
 
-	public void setList(List<T> list) {
+	public void setList(Collection<T> list) {
 		this.list = list;
 	}
 }

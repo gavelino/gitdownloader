@@ -27,6 +27,7 @@ public class DeveloperAuthorshipInfo {
 	public Set<String> fileNames;
 	public Double focus;
 	public int spread;
+	public int numFiles;
 
 	public DeveloperAuthorshipInfo() {
 		// TODO Auto-generated constructor stub
@@ -74,6 +75,22 @@ public class DeveloperAuthorshipInfo {
 	
 	public Long getId() {
 		return id;
+	}
+
+	public int getNumFiles() {
+		return numFiles;
+	}
+
+	public void setNumFiles(int numFiles) {
+		this.numFiles = numFiles;
+	}
+
+	public String getRepositoryName() {
+		return repositoryName;
+	}
+
+	public void setRepositoryName(String repositoryName) {
+		this.repositoryName = repositoryName;
 	}
 
 }

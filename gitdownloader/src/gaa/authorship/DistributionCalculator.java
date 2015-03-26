@@ -5,6 +5,7 @@ import gaa.authorship.dao.RepositoryDAO;
 import gaa.authorship.model.DeveloperAuthorshipInfo;
 import gaa.prototype.UserInfoData;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -27,18 +28,21 @@ public class DistributionCalculator {
 		RepositoryDAO repoDAO = new RepositoryDAO();
 		DeveloperAuthorshipInfoDAO daiDAO =  new DeveloperAuthorshipInfoDAO();
 		for (String repoName : repoDAO.getAllRepositoryNames()) {
-			if (repoName.equalsIgnoreCase("ThinkUpLLC/ThinkUp")){
-				HashSet<DeveloperAuthorshipInfo> developersAuthoship = distributionMap(repoDAO.getFilesAuthor(repoName), repoName, "Rank "	+ repoName);
-				for (DeveloperAuthorshipInfo developerAuthorshipInfo : developersAuthoship) {
-					daiDAO.merge(developerAuthorshipInfo);
-				}
+			if (daiDAO.numDevelopers(repoName)==0){
+				System.out.format("%s (%s): Extracting authorship distribution information...\n", repoName, new Date());
+				HashSet<DeveloperAuthorshipInfo> developersAuthoship = distributionMap(repoDAO.getFilesAuthor(repoName), repoName, "Rank "	+ repoName, false);
+				System.out.format("%s (%s): Persisting authorship distribution information...\n", repoName, new Date());				
+				daiDAO.persistAll(developersAuthoship);
+//				for (DeveloperAuthorshipInfo developerAuthorshipInfo : developersAuthoship) {
+//					daiDAO.merge(developerAuthorshipInfo);
+//				}
 			}
 			
 		}
 	}
 	
 	static Map<String, HashSet<DeveloperAuthorshipInfo>> usersInfo = new HashMap<String, HashSet<DeveloperAuthorshipInfo>>();
-	static HashSet<DeveloperAuthorshipInfo> distributionMap(Map<String, Set<String>> maps, String projectName, String mapName){
+	static HashSet<DeveloperAuthorshipInfo> distributionMap(Map<String, Set<String>> maps, String projectName, String mapName, boolean showDM){
 		HashSet<DeveloperAuthorshipInfo> developerAuthoshipSet;
 		if (usersInfo.containsKey(projectName))
 			developerAuthoshipSet = usersInfo.get(projectName);
@@ -73,12 +77,15 @@ public class DistributionCalculator {
 		}
 		try {
 			dm = DistributionMapCalculator.addSemanticClustersMetrics(dm, maps.size());
-			DistributionMapPanel dmPanel = new DistributionMapPanel(dm,semanticTopics);
 			calcDMValues(dm, developerAuthoshipSet);
-//			JFrame frame = new JFrame("DistributionMap - "+mapName);
-//			JScrollPane scrollPane = new JScrollPane(dmPanel);  
-//			frame.setContentPane(scrollPane);
-//			frame.setVisible(true);
+			if (showDM) {
+				DistributionMapPanel dmPanel = new DistributionMapPanel(dm,
+						semanticTopics);
+				JFrame frame = new JFrame("DistributionMap - " + mapName);
+				JScrollPane scrollPane = new JScrollPane(dmPanel);
+				frame.setContentPane(scrollPane);
+				frame.setVisible(true);
+			}
 		} catch (UnsufficientNumberOfColorsException e1) {
 			e1.printStackTrace();
 		}
@@ -129,7 +136,9 @@ public class DistributionCalculator {
 		for (DeveloperAuthorshipInfo userInfo : projectUsersInfo) {
 			userInfo.setFocus(dm.getFocus(userInfo.getIndex()));
 			userInfo.setSpread(dm.getSpread(userInfo.getIndex()).intValue());
-			System.out.format("%S - files:%d, spread: %d , focus: %f, INDEX: %d\n", userInfo.userName, userInfo.getnFiles(), userInfo.getSpread(), userInfo.getFocus(), userInfo.getIndex());
+			userInfo.setNumFiles(userInfo.getnFiles());
+//			System.out.format("%S - files:%d, spread: %d , focus: %f, INDEX: %d\n", userInfo.userName, userInfo.getnFiles(), userInfo.getSpread(), userInfo.getFocus(), userInfo.getIndex());
+//			System.out.format("%s;%d;%d;%f\n", userInfo.userName, userInfo.getnFiles(), userInfo.getSpread(), userInfo.getFocus());
 		}
 	}
 }

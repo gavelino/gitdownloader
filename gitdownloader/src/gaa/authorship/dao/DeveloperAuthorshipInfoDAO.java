@@ -6,7 +6,10 @@ import gaa.authorship.model.File;
 import gaa.dao.GenericDAO;
 import gaa.dao.PersistThread;
 
+import java.util.Collection;
 import java.util.List;
+
+import javax.persistence.Query;
 
 
 public class DeveloperAuthorshipInfoDAO extends GenericDAO<DeveloperAuthorshipInfo> {
@@ -46,7 +49,7 @@ public class DeveloperAuthorshipInfoDAO extends GenericDAO<DeveloperAuthorshipIn
 	}
 
 	PersistThread<DeveloperAuthorshipInfo> thread = null;
-	public void persistAll(List<DeveloperAuthorshipInfo> developerAuthors){
+	public void persistAll(Collection<DeveloperAuthorshipInfo> developerAuthors){
 		if (thread == null)
 			thread = new PersistThread<DeveloperAuthorshipInfo>(developerAuthors, this);
 		else {
@@ -60,5 +63,17 @@ public class DeveloperAuthorshipInfoDAO extends GenericDAO<DeveloperAuthorshipIn
 		}
 		thread.start();
 	}
+
+	public List<String> projectsAlreadyCalculated(){
+		String hql = "SELECT dai.repositoryname FROM developerauthorshipinfo dai GROUP BY dai.repositoryname;";
+		Query q = em.createNativeQuery(hql);
+		return q.getResultList();
+	}
 	
+	public int numDevelopers(String repositoryName){
+		String hql = "SELECT COUNT(*) FROM developerauthorshipinfo dai WHERE dai.repositoryname = \'"+repositoryName+"\';";
+		Query q = em.createNativeQuery(hql);
+		
+		return Integer.parseInt(q.getSingleResult().toString());
+	}
 }
