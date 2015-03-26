@@ -33,8 +33,8 @@ public class DOACalculator {
 		RepositoryDAO reDAO = new RepositoryDAO();
 		Set<String> repositoriesPersisted = new HashSet<String>(reDAO.getAllRepositoryNames());
 		for (ProjectInfo projectInfo : projects) {
-//			if (!repositoriesPersisted.contains(projectInfo.getFullName())){
-			if (projectInfo.getFullName().equalsIgnoreCase("rails/rails")){
+			if (!repositoriesPersisted.contains(projectInfo.getFullName())){
+//			if (projectInfo.getFullName().equalsIgnoreCase("rails/rails")){
 			System.out.format("%s (%s): Extracting authorship information...\n",
 					projectInfo.getFullName(), new Date());
 			Repository repo = new Repository(projectInfo.getFullName());
