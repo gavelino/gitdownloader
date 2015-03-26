@@ -21,10 +21,12 @@ public class FileDAO extends GenericDAO<File> {
 	
 	@Override
 	public void persist(File o) {
-		File persistedFile = this.em.find(File.class, o.getId());
-		if (persistedFile == null)
-			super.persist(o);
-		
+		if (o.getId()!=null){
+			File persistedFile = this.em.find(File.class, o.getId());
+			if (persistedFile != null)
+				return;
+		}
+		super.persist(o);
 	}
 
 	@Override

@@ -34,14 +34,14 @@ public class DOACalculator {
 		Set<String> repositoriesPersisted = new HashSet<String>(reDAO.getAllRepositoryNames());
 		for (ProjectInfo projectInfo : projects) {
 //			if (!repositoriesPersisted.contains(projectInfo.getFullName())){
-			if (projectInfo.getFullName().equalsIgnoreCase("sparklemotion/nokogiri")){
+			if (projectInfo.getFullName().equalsIgnoreCase("rails/rails")){
 			System.out.format("%s (%s): Extracting authorship information...\n",
 					projectInfo.getFullName(), new Date());
 			Repository repo = new Repository(projectInfo.getFullName());
 			repo.setFiles(getFiles(repo));
 			System.out.format("%s (%s): Persisting authorship information...\n",
 					projectInfo.getFullName(), new Date());
-			reDAO.merge(repo);
+			reDAO.persist(repo);
 //			printRepository(repo);
 			repositoriesPersisted.add(repo.getFullName());
 			}
@@ -62,14 +62,28 @@ public class DOACalculator {
 		LogCommitFileDAO lcfDAO = new LogCommitFileDAO();
 
 		List<File> files = new ArrayList<>();
+		List<File> tempFiles = new ArrayList<>();
 		
 		List<Object[]> allFilesObjectInfo = lcfDAO.getLogCommitFileInfoForAllFiles(repository.getFullName());
+		System.out.format("%s (%s): All %d filesInfo loaded ...\n",
+				repository.getFullName(), new Date(), allFilesObjectInfo.size());
 		Map<String,List<Object[]>> mapFiles = getMapFiles(allFilesObjectInfo);
+//		int count =0;
+//		int persistCount = 100;
 		for (Entry<String, List<Object[]>> entry : mapFiles.entrySet()) {
 			File file = new File(entry.getKey());
 			setFileHistory(file, repository, entry.getValue());
+//			tempFiles.add(file);
+//			if (++count%persistCount == 0){
+//				fileDAO.persistAll(tempFiles);
+//				files.addAll(tempFiles);
+//				tempFiles = new ArrayList<File>();
+//			}
 			files.add(file);
 		}
+//		fileDAO.persistAll(tempFiles);
+//		files.addAll(tempFiles);
+//		System.out.format("History generated for %d files\n",count);
 		
 //		List<String> paths = fiDAO.getPathsOfNotFilteredProjectFiles(repository.getFullName());
 //		int count =0;
@@ -134,11 +148,7 @@ public class DOACalculator {
 			else if (status == Status.RENAMED_TREATED){
 				// Considering a rename as a new delivery
 				authorshipInfo.addNewDelivery();
-				file.addNewChange();				
-				
-//				File oldFile = new File((String)objects[2]);
-//				setFileHistory(oldFile, repository);
-//				renamesBuffer.add(oldFile);
+				file.addNewChange();		
 			}
 			else System.err.println("Invalid Status: "+ status);
 		}
@@ -155,51 +165,51 @@ public class DOACalculator {
 		
 	}
 
-	private static void setFileHistory(File file, Repository repository) {
-		LogCommitFileDAO lcfDAO = new LogCommitFileDAO();
-		List<Object[]> logFilesObjectInfo = getExpendedLogFiles(lcfDAO.getLogCommitFileInfoOrderByDate(repository.getFullName(), file.getPath()),repository, lcfDAO, file);
-		String firstAuthor = null;
-		for (Object[] objects : logFilesObjectInfo) {
-			//ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id
-			AuthorshipInfo authorshipInfo = repository.getAuthorshipInfo((String)objects[0], (String)objects[1], file);
-			Status status = Status.getStatus((String)objects[4]);
-			
-			if (status == Status.ADDED){
-				if (firstAuthor == null){
-					firstAuthor = authorshipInfo.getDeveloper().getUserName();
-				}
-				else
-					System.err.format("New add - %s - author: %s - newauthor: %s\n", file.getPath(), firstAuthor, authorshipInfo.getDeveloper().getUserName());
-				authorshipInfo.setAsFirstAuthor();
-				
-			}
-			else if (status == Status.MODIFIED){
-				authorshipInfo.addNewDelivery();
-				file.addNewChange();					
-			}
-			else if (status == Status.RENAMED_TREATED){
-				// Considering a rename as a new delivery
-				authorshipInfo.addNewDelivery();
-				file.addNewChange();				
-				
-//				File oldFile = new File((String)objects[2]);
-//				setFileHistory(oldFile, repository);
-//				renamesBuffer.add(oldFile);
-			}
-			else System.err.println("Invalid Status: "+ status);
-		}
-		
-		double bestDoaValue = 0;
-		for (AuthorshipInfo authorshipInfo : file.getAuthorshipInfos()) {
-			double auhtorshipDoa = authorshipInfo.getDOA();
-			if (auhtorshipDoa > bestDoaValue){
-				bestDoaValue = auhtorshipDoa;
-				file.setBestAuthorshipInfo(authorshipInfo);
-			}	
-		}
-		
-		
-	}
+//	private static void setFileHistory(File file, Repository repository) {
+//		LogCommitFileDAO lcfDAO = new LogCommitFileDAO();
+//		List<Object[]> logFilesObjectInfo = getExpendedLogFiles(lcfDAO.getLogCommitFileInfoOrderByDate(repository.getFullName(), file.getPath()),repository, lcfDAO, file);
+//		String firstAuthor = null;
+//		for (Object[] objects : logFilesObjectInfo) {
+//			//ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id
+//			AuthorshipInfo authorshipInfo = repository.getAuthorshipInfo((String)objects[0], (String)objects[1], file);
+//			Status status = Status.getStatus((String)objects[4]);
+//			
+//			if (status == Status.ADDED){
+//				if (firstAuthor == null){
+//					firstAuthor = authorshipInfo.getDeveloper().getUserName();
+//				}
+//				else
+//					System.err.format("New add - %s - author: %s - newauthor: %s\n", file.getPath(), firstAuthor, authorshipInfo.getDeveloper().getUserName());
+//				authorshipInfo.setAsFirstAuthor();
+//				
+//			}
+//			else if (status == Status.MODIFIED){
+//				authorshipInfo.addNewDelivery();
+//				file.addNewChange();					
+//			}
+//			else if (status == Status.RENAMED_TREATED){
+//				// Considering a rename as a new delivery
+//				authorshipInfo.addNewDelivery();
+//				file.addNewChange();				
+//				
+////				File oldFile = new File((String)objects[2]);
+////				setFileHistory(oldFile, repository);
+////				renamesBuffer.add(oldFile);
+//			}
+//			else System.err.println("Invalid Status: "+ status);
+//		}
+//		
+//		double bestDoaValue = 0;
+//		for (AuthorshipInfo authorshipInfo : file.getAuthorshipInfos()) {
+//			double auhtorshipDoa = authorshipInfo.getDOA();
+//			if (auhtorshipDoa > bestDoaValue){
+//				bestDoaValue = auhtorshipDoa;
+//				file.setBestAuthorshipInfo(authorshipInfo);
+//			}	
+//		}
+//		
+//		
+//	}
 
 	private static List<Object[]> getExpendedLogFiles(
 			List<Object[]> logCommitFiles, Repository repository, LogCommitFileDAO lcfDAO, File file) {
@@ -223,10 +233,9 @@ public class DOACalculator {
 					}
 					objects[4] = Status.RENAMED_TREATED.toString();
 				}
-
 			}
 		}
-		return new ArrayList<>(map.values());
+		return new ArrayList<Object[]>(map.values());
 	}
 
 	private static boolean hasRenamed(Collection<Object[]> values) {
