@@ -11,6 +11,7 @@ import javax.persistence.Query;
 
 import gaa.authorship.model.Repository;
 import gaa.dao.GenericDAO;
+import gaa.dao.PersistThread;
 
 
 public class RepositoryDAO extends GenericDAO<Repository> {
@@ -18,10 +19,19 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 	
 	@Override
 	public void persist(Repository o) {
-		Repository persistedRepository = this.em.find(Repository.class, o.getId());
-		if (persistedRepository == null)
-			super.persist(o);
-		
+		if (o.getId()!=null){
+			Repository persistedRepository = this.em.find(Repository.class, o.getId());
+			if (persistedRepository != null)
+				return;
+		}
+		prePersist(o);
+		super.persist(o);
+	}
+
+	private void prePersist(Repository repository) {
+//		new DeveloperDAO().persistAll(repository.getDevelopers());
+//		new FileDAO().persistAll(repository.getFiles());
+//		new AuthorshipInfoDAO().persistAll(repository.getAuthorships());
 	}
 
 	@Override

@@ -13,7 +13,7 @@ public class PersistThread <T> extends Thread{
 	}
 	@Override
 	public void run() {
-//		System.out.println("Thread iniciada = "+this.getName());
+		System.out.println("Thread iniciada = "+this.getName() + " persisting objects: "+ list.size());
 		EntityTransaction tx = persistDAO.em.getTransaction();
 		try {
 			tx.begin();
@@ -30,7 +30,7 @@ public class PersistThread <T> extends Thread{
 			persistDAO.em.clear();
 		}
 			
-//		System.out.println("Thread Finalizada = "+this.getName());		
+		System.out.println("Thread Finalizada = "+this.getName());		
 	}
 
 	public void setList(List<T> list) {
