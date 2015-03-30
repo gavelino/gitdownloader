@@ -23,7 +23,7 @@ public class File {
 	private String oldFileName;
 	private int nChanges=0;
 
-	@OneToMany(cascade = { CascadeType.REFRESH })
+	@OneToMany(cascade = { CascadeType.ALL })
 	private List<AuthorshipInfo> authorshipInfos = new ArrayList<AuthorshipInfo>();
 	
 	@OneToOne

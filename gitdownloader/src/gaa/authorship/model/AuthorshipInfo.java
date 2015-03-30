@@ -15,7 +15,7 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 	protected Long id;
 	@ManyToOne(cascade = { CascadeType.REFRESH })
 	private File file;
-	@ManyToOne(cascade = { CascadeType.REFRESH })
+	@ManyToOne(cascade = { CascadeType.ALL })
 	private Developer developer;
 	private boolean firstAuthor;
 	private int nDeliveries;

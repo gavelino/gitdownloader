@@ -33,15 +33,23 @@ public class DOACalculator {
 		RepositoryDAO reDAO = new RepositoryDAO();
 		Set<String> repositoriesPersisted = new HashSet<String>(reDAO.getAllRepositoryNames());
 		for (ProjectInfo projectInfo : projects) {
+//			if (!repositoriesPersisted.contains(projectInfo.getFullName())&& !projectInfo.getFullName().equalsIgnoreCase("rails/rails")){
 			if (!repositoriesPersisted.contains(projectInfo.getFullName())){
-//			if (projectInfo.getFullName().equalsIgnoreCase("rails/rails")){
+//			if (projectInfo.getFullName().equalsIgnoreCase("Homebrew/homebrew")){
 			System.out.format("%s (%s): Extracting authorship information...\n",
 					projectInfo.getFullName(), new Date());
 			Repository repo = new Repository(projectInfo.getFullName());
 			repo.setFiles(getFiles(repo));
 			System.out.format("%s (%s): Persisting authorship information...\n",
 					projectInfo.getFullName(), new Date());
-			reDAO.persist(repo);
+			
+			try{
+				reDAO.persist(repo);
+			}
+			catch(Exception e){
+				System.err.println("Erro ao persistir projeto " + repo.getFullName() + "\n"+e.toString());
+			}
+			
 //			printRepository(repo);
 			repositoriesPersisted.add(repo.getFullName());
 			}

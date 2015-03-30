@@ -26,10 +26,10 @@ public class Repository {
 	
 	@OneToMany(cascade = { CascadeType.ALL })
 	private List<File> files;
-	@OneToMany(cascade = { CascadeType.ALL })
+	@OneToMany(cascade = { CascadeType.REFRESH })
 	private List<Developer> developers = new ArrayList<Developer>();
-	@OneToMany(cascade = { CascadeType.ALL })
-	private List<AuthorshipInfo> authorships = new ArrayList<AuthorshipInfo>();;
+//	@OneToMany(cascade = { CascadeType.ALL })
+//	private List<AuthorshipInfo> authorships = new ArrayList<AuthorshipInfo>();;
 	
 	
 
@@ -71,7 +71,7 @@ public class Repository {
 		else {
 			authorshipInfo =  new AuthorshipInfo(file, developer);
 			authorshipInfoMap.put(authorshipKey, authorshipInfo);
-			authorships.add(authorshipInfo);
+//			authorships.add(authorshipInfo);
 		}
 		return authorshipInfo;		
 	}
@@ -109,12 +109,12 @@ public class Repository {
 	public void setDevelopers(List<Developer> developers) {
 		this.developers = developers;
 	}
-	public List<AuthorshipInfo> getAuthorships() {
-		return authorships;
-	}
-	public void setAuthorships(List<AuthorshipInfo> authorships) {
-		this.authorships = authorships;
-	}
+//	public List<AuthorshipInfo> getAuthorships() {
+//		return authorships;
+//	}
+//	public void setAuthorships(List<AuthorshipInfo> authorships) {
+//		this.authorships = authorships;
+//	}
 	
 
 	
