@@ -20,15 +20,15 @@ public class DeveloperAuthorshipInfo {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Long id;
 	
-	public String repositoryName;
-	public String userName;
-	public int index;
+	private String repositoryName;
+	private String userName;
+	private int index;
 	@ElementCollection
-	public Set<String> fileNames;
-	public Double focus;
-	public int spread;
-	public int numFiles;
-
+	private Set<String> fileNames;
+	private Double focus;
+	private int spread;
+	private Double spreadNormalized;
+	private int numFiles;
 	public DeveloperAuthorshipInfo() {
 		// TODO Auto-generated constructor stub
 	}
@@ -91,6 +91,14 @@ public class DeveloperAuthorshipInfo {
 
 	public void setRepositoryName(String repositoryName) {
 		this.repositoryName = repositoryName;
+	}
+
+	public Double getSpreadNormalized() {
+		return spreadNormalized;
+	}
+
+	public void setSpreadNormalized(Double spreadNormalized) {
+		this.spreadNormalized = spreadNormalized;
 	}
 
 }

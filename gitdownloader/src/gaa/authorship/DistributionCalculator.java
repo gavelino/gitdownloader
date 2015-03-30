@@ -5,6 +5,10 @@ import gaa.authorship.dao.RepositoryDAO;
 import gaa.authorship.model.DeveloperAuthorshipInfo;
 import gaa.prototype.UserInfoData;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,24 +27,44 @@ import br.ufmg.aserg.topicviewer.gui.distribution.DistributionMapPanel;
 import br.ufmg.aserg.topicviewer.util.UnsufficientNumberOfColorsException;
 
 public class DistributionCalculator {
-
+	
+	static String filesPath ="devAuthoshipFiles/";
 	public static void main(String[] args) {
 		RepositoryDAO repoDAO = new RepositoryDAO();
 		DeveloperAuthorshipInfoDAO daiDAO =  new DeveloperAuthorshipInfoDAO();
 		for (String repoName : repoDAO.getAllRepositoryNames()) {
+//			if (repoName.equalsIgnoreCase("gruntjs/grunt")){
 			if (daiDAO.numDevelopers(repoName)==0){
 				System.out.format("%s (%s): Extracting authorship distribution information...\n", repoName, new Date());
 				HashSet<DeveloperAuthorshipInfo> developersAuthoship = distributionMap(repoDAO.getFilesAuthor(repoName), repoName, "Rank "	+ repoName, false);
+				
+				try {
+					saveInfile(repoName, developersAuthoship);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				System.out.format("%s (%s): Persisting authorship distribution information...\n", repoName, new Date());				
 				daiDAO.persistAll(developersAuthoship);
-//				for (DeveloperAuthorshipInfo developerAuthorshipInfo : developersAuthoship) {
-//					daiDAO.merge(developerAuthorshipInfo);
-//				}
 			}
 			
 		}
 	}
 	
+	private static void saveInfile(String repoName,
+			Collection<DeveloperAuthorshipInfo> developersAuthoship) throws IOException {
+		FileWriter fw;
+		fw = new FileWriter(new File(filesPath + repoName.replace('/', '-') + ".dof"));
+		String textFile = "";
+		for (DeveloperAuthorshipInfo userInfo : developersAuthoship) {
+			textFile += String.format("%s;%d;%d;%f;%f", userInfo.getUserName(), userInfo.getnFiles(), userInfo.getSpread(), userInfo.getSpreadNormalized(), userInfo.getFocus());
+			textFile += System.lineSeparator(); //new line
+		}
+		textFile = textFile.substring(0,textFile.length()-1);
+		fw.write(textFile);
+		fw.close();
+	}
+
 	static Map<String, HashSet<DeveloperAuthorshipInfo>> usersInfo = new HashMap<String, HashSet<DeveloperAuthorshipInfo>>();
 	static HashSet<DeveloperAuthorshipInfo> distributionMap(Map<String, Set<String>> maps, String projectName, String mapName, boolean showDM){
 		HashSet<DeveloperAuthorshipInfo> developerAuthoshipSet;
@@ -133,12 +157,20 @@ public class DistributionCalculator {
 			return "";
 	}
 	private static void calcDMValues(DistributionMap dm, HashSet<DeveloperAuthorshipInfo> projectUsersInfo) {
+		int numPackages = dm.getPackages().size();
+//		System.out.println("Total packages number: "+ numPackages);
 		for (DeveloperAuthorshipInfo userInfo : projectUsersInfo) {
 			userInfo.setFocus(dm.getFocus(userInfo.getIndex()));
 			userInfo.setSpread(dm.getSpread(userInfo.getIndex()).intValue());
 			userInfo.setNumFiles(userInfo.getnFiles());
+			double d = ((double)userInfo.getSpread())/numPackages;
+			userInfo.setSpreadNormalized(d);
 //			System.out.format("%S - files:%d, spread: %d , focus: %f, INDEX: %d\n", userInfo.userName, userInfo.getnFiles(), userInfo.getSpread(), userInfo.getFocus(), userInfo.getIndex());
-//			System.out.format("%s;%d;%d;%f\n", userInfo.userName, userInfo.getnFiles(), userInfo.getSpread(), userInfo.getFocus());
+//			System.out.format("%s;%d;%d;%f;%f\n", userInfo.getUserName(), userInfo.getnFiles(), userInfo.getSpread(), userInfo.getSpreadNormalized(), userInfo.getFocus());
+//			Total packages number: 8
+//			kyle@dontkry.com;1;1;0,125000;0,142857
+//			cowboy@rj3.net;22;8;1,000000;0,961039
 		}
+		
 	}
 }
