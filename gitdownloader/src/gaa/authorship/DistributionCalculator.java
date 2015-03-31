@@ -28,17 +28,17 @@ import br.ufmg.aserg.topicviewer.util.UnsufficientNumberOfColorsException;
 
 public class DistributionCalculator {
 	
-//	static String filesPath ="devAuthoshipFiles/";
-	static String filesPath ="C:/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/devauthorshipfiles/";
+	static String filesPath ="devAuthoshipFiles/";
+//	static String filesPath ="C:/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/devauthorshipfiles/";
 	
 	public static void main(String[] args) {
 		RepositoryDAO repoDAO = new RepositoryDAO();
 		DeveloperAuthorshipInfoDAO daiDAO =  new DeveloperAuthorshipInfoDAO();
 		for (String repoName : repoDAO.getAllRepositoryNames()) {
-//			if (repoName.equalsIgnoreCase("gruntjs/grunt")){
+//			if (repoName.equalsIgnoreCase("sferik/twitter")){
 			if (daiDAO.numDevelopers(repoName)==0){
 				System.out.format("%s (%s): Extracting authorship distribution information...\n", repoName, new Date());
-				HashSet<DeveloperAuthorshipInfo> developersAuthoship = distributionMap(repoDAO.getFilesAuthor(repoName), repoName, "Rank "	+ repoName, false);
+				HashSet<DeveloperAuthorshipInfo> developersAuthoship = distributionMap(repoDAO.getFilesAuthor(repoName), repoName, "Rank "	+ repoName, true);
 				
 				try {
 					saveInfile(repoName, developersAuthoship);
@@ -47,7 +47,7 @@ public class DistributionCalculator {
 					e.printStackTrace();
 				}
 				System.out.format("%s (%s): Persisting authorship distribution information...\n", repoName, new Date());				
-				daiDAO.persistAll(developersAuthoship);
+//				daiDAO.persistAll(developersAuthoship);
 			}
 			
 		}
@@ -85,25 +85,43 @@ public class DistributionCalculator {
 		DistributionMap dm = new DistributionMap(mapName);
 		String semanticTopics[][] = new String[maps.size()][];
 		int index = 0;
-		int stCount = 0;
-		Queue<Entry<String, Set<String>>> queuedMap = getOrderedMap(maps);
-		while (!queuedMap.isEmpty()){
-			Entry<String, Set<String>> entry = queuedMap.poll();
+//		int stCount = 0;
+		
+		for (Entry<String, Set<String>> entry : maps.entrySet()) {
+	
 			//		for (Entry<String, Set<String>> entry : getOrderedMap(maps).entrySet()) {
 			String sTopics[] = new String[entry.getValue().size()];
 			int i =0;
 			for (String name : entry.getValue()) {
 //				name = name.replace("/", ".");
-				String className = getClassName(name);
-				className = className.replace("/", ".");
+				String className = name;
+//				className = className.replace("/", ".");
 				sTopics[i++] = className;
 				dm.put(getPackageName(name).replace("/", "."), className, index, 0.0);
 			}
-			index++;
-			developerAuthoshipSet.add(new DeveloperAuthorshipInfo(entry.getKey(), stCount, entry.getValue(), projectName));
-			semanticTopics[stCount++] = sTopics;
+			developerAuthoshipSet.add(new DeveloperAuthorshipInfo(entry.getKey(), index, entry.getValue(), projectName));
+			semanticTopics[index++] = sTopics;
 
 		}
+		
+//		Queue<Entry<String, Set<String>>> queuedMap = getOrderedMap(maps);
+//		while (!queuedMap.isEmpty()){
+//			Entry<String, Set<String>> entry = queuedMap.poll();
+//			//		for (Entry<String, Set<String>> entry : getOrderedMap(maps).entrySet()) {
+//			String sTopics[] = new String[entry.getValue().size()];
+//			int i =0;
+//			for (String name : entry.getValue()) {
+////				name = name.replace("/", ".");
+//				String className = getClassName(name);
+//				className = className.replace("/", ".");
+//				sTopics[i++] = className;
+//				dm.put(getPackageName(name).replace("/", "."), className, index, 0.0);
+//			}
+//			index++;
+//			developerAuthoshipSet.add(new DeveloperAuthorshipInfo(entry.getKey(), stCount, entry.getValue(), projectName));
+//			semanticTopics[stCount++] = sTopics;
+//
+//		}
 			dm = DistributionMapCalculator.addSemanticClustersMetrics(dm, maps.size());
 			calcDMValues(dm, developerAuthoshipSet);
 			if (showDM) {
