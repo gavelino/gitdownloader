@@ -69,7 +69,6 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 		List<Object[]> authorsFiles = q.getResultList();
 		
 		Map<String, Set<String>> maps = new HashMap<String, Set<String>>();
-		String firstAuthor = null;
 		for (Object[] objects : authorsFiles) {
 			String developerName = (String)objects[0];
 			String fileName = (String)objects[1];

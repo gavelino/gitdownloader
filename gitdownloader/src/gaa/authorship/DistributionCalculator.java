@@ -28,7 +28,9 @@ import br.ufmg.aserg.topicviewer.util.UnsufficientNumberOfColorsException;
 
 public class DistributionCalculator {
 	
-	static String filesPath ="devAuthoshipFiles/";
+//	static String filesPath ="devAuthoshipFiles/";
+	static String filesPath ="C:/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/devauthorshipfiles/";
+	
 	public static void main(String[] args) {
 		RepositoryDAO repoDAO = new RepositoryDAO();
 		DeveloperAuthorshipInfoDAO daiDAO =  new DeveloperAuthorshipInfoDAO();
@@ -55,12 +57,15 @@ public class DistributionCalculator {
 			Collection<DeveloperAuthorshipInfo> developersAuthoship) throws IOException {
 		FileWriter fw;
 		fw = new FileWriter(new File(filesPath + repoName.replace('/', '-') + ".dof"));
-		String textFile = "";
+		String textFile = null;
 		for (DeveloperAuthorshipInfo userInfo : developersAuthoship) {
-			textFile += String.format("%s;%d;%d;%f;%f", userInfo.getUserName(), userInfo.getnFiles(), userInfo.getSpread(), userInfo.getSpreadNormalized(), userInfo.getFocus());
+			if (textFile == null)
+				textFile = String.format("%s;%d;%d;%f;%f", userInfo.getUserName(), userInfo.getnFiles(), userInfo.getSpread(), userInfo.getSpreadNormalized(), userInfo.getFocus());
+			else
+				textFile += String.format("%s;%d;%d;%f;%f", userInfo.getUserName(), userInfo.getnFiles(), userInfo.getSpread(), userInfo.getSpreadNormalized(), userInfo.getFocus());
 			textFile += System.lineSeparator(); //new line
 		}
-		textFile = textFile.substring(0,textFile.length()-1);
+//		fw.write(textFile.substring(0,textFile.lastIndexOf(System.lineSeparator())));
 		fw.write(textFile);
 		fw.close();
 	}
@@ -76,7 +81,7 @@ public class DistributionCalculator {
 		}
 			
 		
-		HashSet<UserInfoData> userInfo = new HashSet<UserInfoData>();
+//		HashSet<UserInfoData> userInfo = new HashSet<UserInfoData>();
 		DistributionMap dm = new DistributionMap(mapName);
 		String semanticTopics[][] = new String[maps.size()][];
 		int index = 0;
@@ -99,20 +104,21 @@ public class DistributionCalculator {
 			semanticTopics[stCount++] = sTopics;
 
 		}
-		try {
 			dm = DistributionMapCalculator.addSemanticClustersMetrics(dm, maps.size());
 			calcDMValues(dm, developerAuthoshipSet);
 			if (showDM) {
-				DistributionMapPanel dmPanel = new DistributionMapPanel(dm,
-						semanticTopics);
-				JFrame frame = new JFrame("DistributionMap - " + mapName);
-				JScrollPane scrollPane = new JScrollPane(dmPanel);
-				frame.setContentPane(scrollPane);
-				frame.setVisible(true);
+				try {
+					DistributionMapPanel dmPanel = new DistributionMapPanel(dm,
+							semanticTopics);
+					JFrame frame = new JFrame("DistributionMap - " + mapName);
+					JScrollPane scrollPane = new JScrollPane(dmPanel);
+					frame.setContentPane(scrollPane);
+					frame.setVisible(true);
+
+				} catch (UnsufficientNumberOfColorsException e1) {
+					e1.printStackTrace();
+				}
 			}
-		} catch (UnsufficientNumberOfColorsException e1) {
-			e1.printStackTrace();
-		}
 		return developerAuthoshipSet;
 	}
 	
