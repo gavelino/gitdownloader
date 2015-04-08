@@ -1,26 +1,16 @@
 package gaa.extractor;
 
-import gaa.dao.CommitInfoDAO;
-import gaa.dao.FileInfoDAO;
-import gaa.dao.LogCommitFileDAO;
 import gaa.dao.NewFileInfoDAO;
 import gaa.dao.ProjectInfoDAO;
-import gaa.model.CommitInfo;
-import gaa.model.FileInfo;
-import gaa.model.LogCommitFileInfo;
 import gaa.model.NewFileInfo;
 import gaa.model.ProjectInfo;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class FileInfoExtractor {
 	private String path;
