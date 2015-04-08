@@ -2,7 +2,7 @@ package gaa.gitdownloader;
 
 import gaa.dao.CommitInfoDAO;
 import gaa.dao.ProjectInfoDAO;
-import gaa.gitlogextractor.GitLogerExtractor;
+import gaa.extractor.GitLogerExtractor;
 import gaa.model.CommitFileInfo;
 import gaa.model.CommitInfo;
 import gaa.model.LogCommitFileInfo;
