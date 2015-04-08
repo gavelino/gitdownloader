@@ -1,16 +1,10 @@
 package gaa.extractor;
 
-import gaa.dao.CommitInfoDAO;
-import gaa.dao.FileInfoDAO;
-import gaa.dao.LogCommitFileDAO;
+import gaa.dao.NewFileInfoDAO;
 import gaa.dao.ProjectInfoDAO;
-import gaa.model.CommitInfo;
-import gaa.model.FileInfo;
-import gaa.model.LogCommitFileInfo;
 import gaa.model.ProjectInfo;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,7 +31,7 @@ public class FileLanguageExtractor {
 	
 	public void simpleExtract() throws IOException{
 		ProjectInfoDAO piDAO = new ProjectInfoDAO();
-		FileInfoDAO fiDAO = new FileInfoDAO();
+		NewFileInfoDAO fiDAO = new NewFileInfoDAO();
 		List<ProjectInfo> projects =  piDAO.findAll(ProjectInfo.class);
 		for (ProjectInfo projectInfo : projects) {
 			if (!projectInfo.isFiltered()) {

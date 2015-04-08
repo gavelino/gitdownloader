@@ -1,20 +1,17 @@
 package gaa.filter.filefilter;
 
-import gaa.dao.FileInfoDAO;
-import gaa.dao.ProjectInfoDAO;
+import gaa.dao.NewFileInfoDAO;
 import gaa.model.FileInfo;
-import gaa.model.GitRepository;
-import gaa.model.ProjectInfo;
 
 import java.util.List;
 
 public abstract class FileFilter {
 	List<FileInfo> files;
 	String filterStamp;
-	FileInfoDAO fiDAO;
+	NewFileInfoDAO fiDAO;
 	public FileFilter(String filterStamp) {
 		this.filterStamp = filterStamp;
-		fiDAO =  new FileInfoDAO();
+		fiDAO =  new NewFileInfoDAO();
 	}
 	
 	public abstract int filterAndPersistByLanguage(String language, String pattern);

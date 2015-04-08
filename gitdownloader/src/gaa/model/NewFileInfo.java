@@ -29,7 +29,7 @@ public class NewFileInfo extends AbstractEntity{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	protected Long id;
 
-	@Index(name="FILEPATHINDEX")
+	@Index(name="NEWFILEPATHINDEX")
 	private String path;
 	private Boolean filtered;
 	private String filterInfo;

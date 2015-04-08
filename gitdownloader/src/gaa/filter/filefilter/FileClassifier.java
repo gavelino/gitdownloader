@@ -1,7 +1,6 @@
 package gaa.filter.filefilter;
 
-import gaa.dao.FileInfoDAO;
-import gaa.model.LogCommitFileInfo;
+import gaa.dao.NewFileInfoDAO;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -16,7 +15,7 @@ import java.util.Map.Entry;
 
 public class FileClassifier {
 	public static void main(String[] args) throws IOException {
-		FileInfoDAO fiDAO = new FileInfoDAO();
+		NewFileInfoDAO fiDAO = new NewFileInfoDAO();
 		FileType fileTypes[] = FileType.values();
 		for (int i = 0; i < fileTypes.length; i++) {
 			FileType fileType = fileTypes[i];
@@ -74,7 +73,7 @@ public class FileClassifier {
 		System.out.println(new Date());
 	}
 	
-	static public void extractClassifierPatterns(FileInfoDAO fiDAO, String localPath) throws IOException{
+	static public void extractClassifierPatterns(NewFileInfoDAO fiDAO, String localPath) throws IOException{
 		Map<String, List<String>> mapLike = new HashMap<String, List<String>>();
 		Map<String, List<String>> mapPosix = new HashMap<String, List<String>>();
 		int countcfs = 0;
