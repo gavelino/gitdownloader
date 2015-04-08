@@ -1,4 +1,4 @@
-package gaa.cfextractor;
+package gaa.extractor;
 
 import gaa.dao.CommitInfoDAO;
 import gaa.dao.CommitFileDAO;

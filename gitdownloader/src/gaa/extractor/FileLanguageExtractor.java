@@ -1,4 +1,4 @@
-package gaa.gitlogextractor;
+package gaa.extractor;
 
 import gaa.dao.CommitInfoDAO;
 import gaa.dao.FileInfoDAO;
