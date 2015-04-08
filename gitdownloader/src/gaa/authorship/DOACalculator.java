@@ -1,5 +1,14 @@
 package gaa.authorship;
 
+import gaa.authorship.dao.RepositoryDAO;
+import gaa.authorship.model.AuthorshipInfo;
+import gaa.authorship.model.File;
+import gaa.authorship.model.Repository;
+import gaa.dao.LogCommitFileDAO;
+import gaa.dao.ProjectInfoDAO;
+import gaa.model.ProjectInfo;
+import gaa.model.Status;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,17 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import gaa.authorship.dao.FileDAO;
-import gaa.authorship.dao.RepositoryDAO;
-import gaa.authorship.model.AuthorshipInfo;
-import gaa.authorship.model.File;
-import gaa.authorship.model.Repository;
-import gaa.dao.FileInfoDAO;
-import gaa.dao.LogCommitFileDAO;
-import gaa.dao.ProjectInfoDAO;
-import gaa.model.ProjectInfo;
-import gaa.model.Status;
 
 public class DOACalculator {
 	public static void main(String[] args) {
@@ -65,13 +63,8 @@ public class DOACalculator {
 	
 
 	private static List<File> getFiles(Repository repository) {
-		FileInfoDAO fiDAO =  new FileInfoDAO();
-		FileDAO fileDAO = new FileDAO();
 		LogCommitFileDAO lcfDAO = new LogCommitFileDAO();
-
 		List<File> files = new ArrayList<>();
-		List<File> tempFiles = new ArrayList<>();
-		
 		List<Object[]> allFilesObjectInfo = lcfDAO.getLogCommitFileInfoForAllFiles(repository.getFullName());
 		System.out.format("%s (%s): All %d filesInfo loaded ...\n",
 				repository.getFullName(), new Date(), allFilesObjectInfo.size());
