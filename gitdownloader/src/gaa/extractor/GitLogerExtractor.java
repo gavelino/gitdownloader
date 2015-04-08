@@ -1,14 +1,11 @@
 package gaa.extractor;
 
-import gaa.dao.CommitInfoDAO;
 import gaa.dao.LogCommitFileDAO;
 import gaa.dao.ProjectInfoDAO;
-import gaa.model.CommitInfo;
 import gaa.model.LogCommitFileInfo;
 import gaa.model.ProjectInfo;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
