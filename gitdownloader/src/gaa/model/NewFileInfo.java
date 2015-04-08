@@ -45,8 +45,9 @@ public class NewFileInfo extends AbstractEntity{
 		// TODO Auto-generated constructor stub
 	}
 
-	public NewFileInfo(String repositoryName) {
+	public NewFileInfo(String repositoryName, String path) {
 		this.repositoryName = repositoryName;
+		this.path = path;
 	}
 	
 //	public NewFileInfo(String repositoryName, String path, FileType kind, String language) {

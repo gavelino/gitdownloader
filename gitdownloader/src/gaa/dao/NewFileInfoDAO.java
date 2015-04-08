@@ -2,11 +2,13 @@ package gaa.dao;
 
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
+import gaa.authorship.model.DeveloperAuthorshipInfo;
 import gaa.filter.filefilter.FileType;
 import gaa.model.FileInfo;
 import gaa.model.NewFileInfo;
@@ -14,6 +16,22 @@ import gaa.model.ProjectInfo;
 
 public class NewFileInfoDAO extends GenericDAO<NewFileInfo>{
 
+	@Override
+	public void persist(NewFileInfo o) {
+		if (o.getId()!=null){
+			NewFileInfo newFile = this.em.find(NewFileInfo.class, o.getId());
+			if (newFile != null)
+				return;
+		}
+		super.persist(o);
+		
+	}
+
+	@Override
+	public void merge(NewFileInfo o) {
+		super.merge(o);
+	}
+	
 	@Override
 	public NewFileInfo find(Object o) {
 		return this.em.find(NewFileInfo.class, o);
@@ -204,6 +222,20 @@ public class NewFileInfoDAO extends GenericDAO<NewFileInfo>{
 		return rows;
 		
 	}
-	
+	PersistThread<NewFileInfo> thread = null;
+	public void persistAll(Collection<NewFileInfo> newFiles){
+		if (thread == null)
+			thread = new PersistThread<NewFileInfo>(newFiles, this);
+		else {
+			try {
+				if (thread.isAlive())
+					thread.join();
+				thread = new PersistThread<NewFileInfo>(newFiles, this);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		thread.start();
+	}
 
 }

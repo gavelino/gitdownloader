@@ -12,6 +12,7 @@
     <class>gaa.model.CommitFileInfo</class>
     <class>gaa.model.LanguageInfo</class>
     <class>gaa.model.FileInfo</class>
+    <class>gaa.model.NewFileInfo</class>
     <class>gaa.model.LogCommitFileInfo</class>
     <class>gaa.authorship.model.Repository</class>
     <class>gaa.authorship.model.Developer</class>
