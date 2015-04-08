@@ -15,17 +15,33 @@ public class RemoveFileFilter extends FileFilter{
 		// TODO Auto-generated constructor stub
 	}
 
+	
+	public int filterAndPersistAllLanguages(String pattern) {
+		String localFilterStamp = filterStamp+"(all): "+pattern+"#";
+		
+		String whereClauses = " fi.path LIKE \'" + pattern + "\'";
+		
+		int nRows = fiDAO.filterAndUpdateFilesInfo(whereClauses, localFilterStamp);
+		if (nRows>0)
+			System.out.println(new Date() + " - " + pattern +" - Updated "+ nRows);
+		else
+			System.err.println(new Date() + " - " + pattern +" - Updated "+ nRows);
+		return nRows;
+	}
+	
 	@Override
 	public int filterAndPersistByLanguage(String language, String pattern) {
 		String localFilterStamp = filterStamp+"("+language+"): "+pattern+"#";
 		
 		String whereClauses = "";
 		if (language != null && !language.isEmpty()&&!language.equalsIgnoreCase("all")){
-			whereClauses += " AND pi.language = \'" + language + "\'";
+			whereClauses += " pi.language = \'" + language + "\'";
+			whereClauses += " AND fi.path LIKE \'" + pattern + "\'";
 		}
-		whereClauses += " AND fi.path LIKE \'" + pattern + "\'";
+		else
+			whereClauses += " fi.path LIKE \'" + pattern + "\'";
 		
-		int nRows = fiDAO.filterAndUpdateFilesInfo(whereClauses, localFilterStamp);
+		int nRows = fiDAO.filterAndUpdateFilesInfoByLanguage(whereClauses, localFilterStamp);
 		if (nRows>0)
 			System.out.println(new Date() + " - " + pattern +" - Updated "+ nRows);
 		else
@@ -36,8 +52,7 @@ public class RemoveFileFilter extends FileFilter{
 	public int filterAndPersistByProject(String projectName, String pattern) {
 		String localFilterStamp = filterStamp+"("+projectName+"): "+pattern+"#";
 		
-		String whereClauses = "";
-		whereClauses += " AND pi.fullname = \'" + projectName + "\'";
+		String whereClauses = " fi.repositoryname = \'" + projectName + "\'";
 		whereClauses += " AND fi.path LIKE \'" + pattern + "\'";
 		
 		int nRows = fiDAO.filterAndUpdateFilesInfo(whereClauses, localFilterStamp);
@@ -51,8 +66,7 @@ public class RemoveFileFilter extends FileFilter{
 	public int removeEspecifcfilterAndPersistByProject(String projectName, String pattern) {
 		String localFilterStamp = filterStamp+"("+projectName+"): "+pattern+"#";
 		
-		String whereClauses = "";
-		whereClauses += " AND pi.fullname = \'" + projectName + "\'";
+		String whereClauses = " fi.repositoryname = \'" + projectName + "\'";
 		whereClauses += " AND fi.path LIKE \'" + pattern + "\'";
 		
 		int nRows = fiDAO.removeFilterAndUpdateFilesInfo(whereClauses, localFilterStamp);

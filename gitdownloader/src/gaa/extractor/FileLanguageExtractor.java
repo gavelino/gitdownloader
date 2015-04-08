@@ -33,6 +33,7 @@ public class FileLanguageExtractor {
 		ProjectInfoDAO piDAO = new ProjectInfoDAO();
 		NewFileInfoDAO fiDAO = new NewFileInfoDAO();
 		List<ProjectInfo> projects =  piDAO.findAll(ProjectInfo.class);
+		fiDAO.setAllAsNotLinguist();
 		for (ProjectInfo projectInfo : projects) {
 			if (!projectInfo.isFiltered()) {
 				try {

@@ -20,7 +20,7 @@ public class FileClassifier {
 		for (int i = 0; i < fileTypes.length; i++) {
 			FileType fileType = fileTypes[i];
 			if (fileType != FileType.NOTIDENTIFIED) {
-				String whereClauses = "AND (";
+				String whereClauses = " (";
 				List<String> patterns = FileType.getPatterns(fileType);
 				if (patterns!=null && patterns.size()>0) {
 					Iterator<String> iterator = patterns.iterator();
