@@ -38,7 +38,7 @@ public class NewFileInfo extends AbstractEntity{
 	private FileType kind;
 	private String language;
 	
-	@Index(name="REPOSITORYNAMEINDEX")
+	@Index(name="NEWFILEREPOSITORYNAMEINDEX")
 	private String repositoryName;
 	
 	public NewFileInfo() {
