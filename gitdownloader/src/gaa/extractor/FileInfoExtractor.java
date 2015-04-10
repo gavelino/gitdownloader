@@ -20,8 +20,8 @@ public class FileInfoExtractor {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		FileInfoExtractor gitLogerExtractor = new FileInfoExtractor("C:/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/_filesinfo/");
-//		FileLanguageExtractor gitLogerExtractor = new FileLanguageExtractor("_linguistfiles/");
+//		FileInfoExtractor gitLogerExtractor = new FileInfoExtractor("C:/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/_filesinfo/");
+		FileInfoExtractor gitLogerExtractor = new FileInfoExtractor("/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/_filesinfo/");
 		System.out.println("BEGIN at "+ new Date() + "\n\n");
 		gitLogerExtractor.simpleExtract();
 		System.out.println("\n\nEND at "+ new Date());
@@ -51,7 +51,7 @@ public class FileInfoExtractor {
 					br.close();
 				} catch (Exception e) {
 					System.err.println("Error in project "+projectInfo.getFullName());
-					System.err.println(e.getMessage());
+					System.err.println(e.toString());
 				}
 			}
 			
