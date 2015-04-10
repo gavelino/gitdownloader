@@ -81,6 +81,8 @@ public class CommitInfoDAO extends GenericDAO<CommitInfo> {
 			persistedCommit.setName(o.getName());
 			persistedCommit.setRepositoryName(o.getRepositoryName());
 			persistedCommit.setSha(o.getSha());
+			persistedCommit.setNameCommiter(o.getNameCommiter());
+			persistedCommit.setEmaiCommiter(o.getEmaiCommiter());
 			super.merge(persistedCommit);
 		}
 	}

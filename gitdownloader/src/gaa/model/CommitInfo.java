@@ -34,6 +34,11 @@ public class CommitInfo extends AbstractEntity implements Comparable<CommitInfo>
 		private String message;
 		private String name;
 		private String email;
+		
+		private String nameCommiter;
+		private String emaiCommiter;
+		
+		
 		@Temporal(TemporalType.TIMESTAMP)
 		private Date date;
 		@OneToMany(cascade = { CascadeType.ALL })
@@ -154,6 +159,22 @@ public class CommitInfo extends AbstractEntity implements Comparable<CommitInfo>
 
 		public void setParentsSha(List<String> parentsSha) {
 			this.parentsSha = parentsSha;
+		}
+
+		public String getNameCommiter() {
+			return nameCommiter;
+		}
+
+		public void setNameCommiter(String nameCommiter) {
+			this.nameCommiter = nameCommiter;
+		}
+
+		public String getEmaiCommiter() {
+			return emaiCommiter;
+		}
+
+		public void setEmaiCommiter(String emaiCommiter) {
+			this.emaiCommiter = emaiCommiter;
 		}
 		
 		
