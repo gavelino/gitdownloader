@@ -56,11 +56,12 @@ public class Repository {
 	
 	private Developer addDeveloper(String name, String email) {
 		Developer developer;
-		if(developerMap.containsKey(email))
-			developer = developerMap.get(email);
+		String userName = Developer.createUserName(name, email);
+		if(developerMap.containsKey(userName))
+			developer = developerMap.get(userName);
 		else{
 			developer = new Developer(name, email);
-			developerMap.put(email, developer);
+			developerMap.put(userName, developer);
 			developers.add(developer);
 		}
 		return developer;

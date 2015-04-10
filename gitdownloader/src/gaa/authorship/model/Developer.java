@@ -33,9 +33,20 @@ public class Developer {
 		super();
 		this.name = name;
 		this.email = email;
-		this.userName = email;		
+		this.userName = createUserName(name, email);
 	}
 
+	public static String createUserName(String name, String email){
+		String userName;
+		if (!email.isEmpty())
+			userName = email;	
+		else{
+			userName = "[NoEmail]"+name;
+			if (name.isEmpty())
+				userName = "[NoEmail-NoName]";	
+		}
+		return userName;
+	}
 	
 	public Long getId() {
 		return id;
@@ -60,7 +71,7 @@ public class Developer {
 		return userName;
 	}
 
-	public void setUserName(String userName) {
+	protected void setUserName(String userName) {
 		this.userName = userName;
 	}
 
