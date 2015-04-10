@@ -12,6 +12,7 @@ import javax.persistence.Query;
 import gaa.authorship.model.Repository;
 import gaa.dao.GenericDAO;
 import gaa.dao.PersistThread;
+import gaa.model.ProjectInfo;
 
 
 public class RepositoryDAO extends GenericDAO<Repository> {
@@ -83,5 +84,17 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 		String hql = "SELECT fullname FROM repository;";
 		Query q = em.createNativeQuery(hql);
 		return q.getResultList();
+	}
+	
+	public void update(Repository o){
+		Repository persistedRepository = this.em.find(Repository.class, o.getFullName());
+		if (persistedRepository != null){
+			persistedRepository.setAuthorshipInfoMap(o.getAuthorshipInfoMap());
+			persistedRepository.setDevelopers(o.getDevelopers());
+			persistedRepository.setFiles(o.getFiles());
+			persistedRepository.setFullName(o.getFullName());
+			persistedRepository.setStatus(o.getStatus());
+			super.merge(persistedRepository);
+		}
 	}
 }

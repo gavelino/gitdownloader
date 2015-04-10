@@ -43,6 +43,8 @@ public class Repository {
 	@Transient
 	private Map<String, AuthorshipInfo> authorshipInfoMap = new HashMap<String, AuthorshipInfo>();
 	
+	private RepositoryStatus status;
+	
 	public Repository() {
 	}
 	public Repository(String fullName) {
@@ -115,6 +117,12 @@ public class Repository {
 //	public void setAuthorships(List<AuthorshipInfo> authorships) {
 //		this.authorships = authorships;
 //	}
+	public RepositoryStatus getStatus() {
+		return status;
+	}
+	public void setStatus(RepositoryStatus status) {
+		this.status = status;
+	}
 	
 
 	
