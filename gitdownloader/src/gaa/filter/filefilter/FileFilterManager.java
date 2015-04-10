@@ -9,23 +9,23 @@ public class FileFilterManager {
 		/*********************** REGRAS GERAIS ***********************/
 		
 		//F1
-		removeFileFilter.filterAndPersistByLanguage("all", "%/docs/%");
+		removeFileFilter.filterAndPersistAllLanguages("%/docs/%");
 
 		//F2
-		removeFileFilter.filterAndPersistByLanguage("all", "examples/%");
-		removeFileFilter.filterAndPersistByLanguage("all", "%/examples/%");
+		removeFileFilter.filterAndPersistAllLanguages("examples/%");
+		removeFileFilter.filterAndPersistAllLanguages("%/examples/%");
 
 		//F3
 		removeFileFilter.filterAndPersistByLanguage("Ruby", "lib/assets/javascripts/%");
 
 		//F7
-		removeFileFilter.filterAndPersistByLanguage("all", "build/%");
+		removeFileFilter.filterAndPersistAllLanguages("build/%");
 
 		//F9
-		removeFileFilter.filterAndPersistByLanguage("all", "%/require.js");
+		removeFileFilter.filterAndPersistAllLanguages("%/require.js");
 
 		//F11
-		removeFileFilter.filterAndPersistByLanguage("all", "benchmarks/%");
+		removeFileFilter.filterAndPersistAllLanguages("benchmarks/%");
 		
 		//F49
 		removeFileFilter.filterAndPersistByLanguage("PHP", "%/extlib/%");
