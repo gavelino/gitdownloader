@@ -4,6 +4,7 @@ import gaa.authorship.dao.RepositoryDAO;
 import gaa.authorship.model.AuthorshipInfo;
 import gaa.authorship.model.File;
 import gaa.authorship.model.Repository;
+import gaa.authorship.model.RepositoryStatus;
 import gaa.dao.LogCommitFileDAO;
 import gaa.dao.ProjectInfoDAO;
 import gaa.model.ProjectInfo;
@@ -42,6 +43,7 @@ public class DOACalculator {
 					projectInfo.getFullName(), new Date());
 			
 			try{
+				repo.setStatus(RepositoryStatus.DOA_CALCULATED);
 				reDAO.persist(repo);
 			}
 			catch(Exception e){
