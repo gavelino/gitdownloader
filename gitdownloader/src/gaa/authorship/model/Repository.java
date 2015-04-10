@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,7 +44,8 @@ public class Repository {
 //	@javax.persistence.MapKey(name = "id")
 	@Transient
 	private Map<String, AuthorshipInfo> authorshipInfoMap = new HashMap<String, AuthorshipInfo>();
-	
+
+	@Enumerated(EnumType.STRING)
 	private RepositoryStatus status;
 	
 	public Repository() {
