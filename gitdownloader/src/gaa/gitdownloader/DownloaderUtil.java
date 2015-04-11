@@ -2,7 +2,7 @@ package gaa.gitdownloader;
 
 import gaa.dao.CommitInfoDAO;
 import gaa.dao.ProjectInfoDAO;
-import gaa.extractor.GitLogerExtractor;
+import gaa.extractor.GitLoggerExtractor;
 import gaa.model.CommitFileInfo;
 import gaa.model.CommitInfo;
 import gaa.model.LogCommitFileInfo;
@@ -111,7 +111,7 @@ public class DownloaderUtil {
 	
 	
 	public static void getAndPersistCommitsUsingLogFiles(String path, ProjectInfo projectInfo) throws Exception {
-		Map<String, List<LogCommitFileInfo>> mapLogFiles = GitLogerExtractor.extractProject(path, projectInfo.getFullName());
+		Map<String, List<LogCommitFileInfo>> mapLogFiles = GitLoggerExtractor.extractProject(path, projectInfo.getFullName());
 		GitServiceImpl s = new GitServiceImpl();
 		Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
 		RevCommit currentCommit = null;

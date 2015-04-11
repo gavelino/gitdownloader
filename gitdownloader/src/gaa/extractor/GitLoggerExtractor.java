@@ -19,14 +19,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class GitLogerExtractor {
+public class GitLoggerExtractor {
 	private String pathCommits;
 	private String pathCommitFiles;
 	
 	
 	
 	
-	public GitLogerExtractor(String pathCommits, String pathCommitFiles) {
+	public GitLoggerExtractor(String pathCommits, String pathCommitFiles) {
 		super();
 		this.pathCommits = pathCommits;
 		this.pathCommitFiles = pathCommitFiles;
@@ -36,9 +36,11 @@ public class GitLogerExtractor {
 	static String defaultPath = "C:/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/";
 //	static String defaultPath = "/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/";
 	public static void main(String[] args) throws IOException {
-		GitLogerExtractor gitLogerExtractor = new GitLogerExtractor(defaultPath+"_commitinfo/",defaultPath+"_commitfileinfo/");
+		if (args.length>0)
+			defaultPath = args[0];
+		GitLoggerExtractor gitLoggerExtractor = new GitLoggerExtractor(defaultPath+"_commitinfo/",defaultPath+"_commitfileinfo/");
 		System.out.println("BEGIN at "+ new Date() + "\n\n");
-		gitLogerExtractor.simpleExtract();
+		gitLoggerExtractor.simpleExtract();
 		System.out.println("\n\nEND at "+ new Date());
 	}
 	
