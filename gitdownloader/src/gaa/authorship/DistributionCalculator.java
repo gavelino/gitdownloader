@@ -3,6 +3,8 @@ package gaa.authorship;
 import gaa.authorship.dao.DeveloperAuthorshipInfoDAO;
 import gaa.authorship.dao.RepositoryDAO;
 import gaa.authorship.model.DeveloperAuthorshipInfo;
+import gaa.authorship.model.Repository;
+import gaa.authorship.model.RepositoryStatus;
 import gaa.prototype.UserInfoData;
 
 import java.io.File;
@@ -28,26 +30,38 @@ import br.ufmg.aserg.topicviewer.util.UnsufficientNumberOfColorsException;
 
 public class DistributionCalculator {
 	
-	static String filesPath ="devAuthoshipFiles/";
-//	static String filesPath ="C:/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/devauthorshipfiles/";
+//	static String filesPath ="/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/devauthorshipfiles/";
+	static String filesPath ="C:/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/devauthorshipfiles/";
 	
 	public static void main(String[] args) {
 		RepositoryDAO repoDAO = new RepositoryDAO();
 		DeveloperAuthorshipInfoDAO daiDAO =  new DeveloperAuthorshipInfoDAO();
-		for (String repoName : repoDAO.getAllRepositoryNames()) {
+		for (Repository repository : repoDAO.findAll()) {
+			String repoName = repository.getFullName();
 //			if (repoName.equalsIgnoreCase("sferik/twitter")){
-			if (daiDAO.numDevelopers(repoName)==0){
+			if (repository.getStatus() == RepositoryStatus.DOA_CALCULATED){
+				repository.setStatus(RepositoryStatus.ANALYZING);
+				repoDAO.update(repository);
 				System.out.format("%s (%s): Extracting authorship distribution information...\n", repoName, new Date());
 				HashSet<DeveloperAuthorshipInfo> developersAuthoship = distributionMap(repoDAO.getFilesAuthor(repoName), repoName, "Rank "	+ repoName, true);
 				
 				try {
 					saveInfile(repoName, developersAuthoship);
+					
+					System.out.format("%s (%s): Persisting authorship distribution information...\n", repoName, new Date());				
+					daiDAO.persistAll(developersAuthoship);
+					
+					repository.setStatus(RepositoryStatus.ANALYZED);
+					repoDAO.update(repository);
+					
 				} catch (IOException e) {
+
+					repository.setStatus(RepositoryStatus.ERROR);
+					repoDAO.update(repository);
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.format("%s (%s): Persisting authorship distribution information...\n", repoName, new Date());				
-//				daiDAO.persistAll(developersAuthoship);
+				
 			}
 			
 		}

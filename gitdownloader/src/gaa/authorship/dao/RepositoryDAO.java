@@ -40,8 +40,7 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 		return this.em.find(Repository.class, id);
 	}
 	
-	@Override
-	public List<Repository> findAll(Class clazz) {
+	public List<Repository> findAll() {
 		// TODO Auto-generated method stub
 		return super.findAll(Repository.class);
 	}
@@ -87,7 +86,7 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 	}
 	
 	public void update(Repository o){
-		Repository persistedRepository = this.em.find(Repository.class, o.getFullName());
+		Repository persistedRepository = this.em.find(Repository.class, o.getId());
 		if (persistedRepository != null){
 			persistedRepository.setAuthorshipInfoMap(o.getAuthorshipInfoMap());
 			persistedRepository.setDevelopers(o.getDevelopers());
