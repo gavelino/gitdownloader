@@ -1,8 +1,5 @@
 package gaa.model;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,9 +7,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.eclipse.persistence.annotations.Index;
@@ -29,10 +23,6 @@ public class LogCommitFileInfo extends AbstractEntity{
 	@Transient
 	private String sha;
 	
-//	@Index(name="REPOSITORYNAMELOGFILEINDEX")
-//	private String repositoryName;
-//	@Index(name="SHALOGFILEINDEX")
-//	private String sha;
 	@Index(name="OLDFILENAMEINDEX")
 	@Column(length = 1000)
 	private String oldFileName;

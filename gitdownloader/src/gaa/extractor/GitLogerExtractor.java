@@ -1,94 +1,103 @@
 package gaa.extractor;
 
-import gaa.dao.LogCommitFileDAO;
+import gaa.dao.LogCommitDAO;
 import gaa.dao.ProjectInfoDAO;
 import gaa.model.LogCommitFileInfo;
+import gaa.model.LogCommitInfo;
 import gaa.model.ProjectInfo;
+import gaa.util.CRLFLineReader;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class GitLogerExtractor {
-	private String path;
+	private String pathCommits;
+	private String pathCommitFiles;
 	
-	public GitLogerExtractor(String path) {
-		this.path = path;
+	
+	
+	
+	public GitLogerExtractor(String pathCommits, String pathCommitFiles) {
+		super();
+		this.pathCommits = pathCommits;
+		this.pathCommitFiles = pathCommitFiles;
 	}
-	
+
+
+	static String defaultPath = "C:/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/";
+//	static String defaultPath = "/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/";
 	public static void main(String[] args) throws IOException {
-		GitLogerExtractor gitLogerExtractor = new GitLogerExtractor(args[0]);
+		GitLogerExtractor gitLogerExtractor = new GitLogerExtractor(defaultPath+"_commitinfo/",defaultPath+"_commitfileinfo/");
 		System.out.println("BEGIN at "+ new Date() + "\n\n");
 		gitLogerExtractor.simpleExtract();
 		System.out.println("\n\nEND at "+ new Date());
 	}
 	
-	public void extract() throws IOException{
-//		ProjectInfoDAO piDAO = new ProjectInfoDAO();
-//		CommitInfoDAO ciDAO =  new CommitInfoDAO();
-//		List<ProjectInfo> projects =  piDAO.findAll(ProjectInfo.class);
-//		for (ProjectInfo projectInfo : projects) {
-//			System.out.println(projectInfo.getFullName()+": Extracting logCommitFiles...");
-//			String fileName = projectInfo.getFullName().replace('/', '-')+".txt";
-//			BufferedReader br = new BufferedReader(new FileReader(path+fileName));
-//			String sCurrentLine;
-//			String[] values;
-//			List<LogCommitFileInfo> logCommitFiles = new ArrayList<LogCommitFileInfo>();
-//			Map<String, CommitInfo> commitsInfoMap =  new HashMap<String, CommitInfo>();
-//			
-//			while ((sCurrentLine = br.readLine()) != null) {
-//				CommitInfo commitInfo;
-//				values = sCurrentLine.split(";");
-//				String commitSha = values[0];
-//				if (commitsInfoMap.containsKey(commitSha))
-//					commitInfo = commitsInfoMap.get(commitSha);
-//				else{
-//					commitInfo = ciDAO.find(projectInfo.getFullName(), commitSha);
-//					commitInfo.setLogCommitFiles(new ArrayList<LogCommitFileInfo>());
-//					commitsInfoMap.put(commitSha, commitInfo);
-//				}					
-//				commitInfo.getLogCommitFiles().add(new LogCommitFileInfo(values[1], values[2], values[3]));				
-//			}
-//			System.out.println(projectInfo.getFullName()+": Persisting logCommitFiles...");
-//			for (CommitInfo commit : commitsInfoMap.values()) {
-//				ciDAO.updateOnlyLogFiles(commit);
-//			}
-//		}
-	}
+
 	int MAXBUFFER = 100000;
 	public void simpleExtract() throws IOException{
 		ProjectInfoDAO piDAO = new ProjectInfoDAO();
-		LogCommitFileDAO lcfDAO = new LogCommitFileDAO();
+		LogCommitDAO lcDAO = new LogCommitDAO();
 		List<ProjectInfo> projects =  piDAO.findAll(ProjectInfo.class);
-		List<LogCommitFileInfo> logCommitFiles = new ArrayList<LogCommitFileInfo>();
 		int countcfs = 0;
+		Set<String> repositoriesPersisted = new HashSet<String>(lcDAO.getProjectsName());
 		for (ProjectInfo projectInfo : projects) {
-			System.out.println(projectInfo.getFullName()+": Extracting logCommitFiles...");
-			String fileName = projectInfo.getFullName().replace('/', '-')+".txt";
-			BufferedReader br = new BufferedReader(new FileReader(path+fileName));
-			String sCurrentLine;
-			String[] values;
-			
-			while ((sCurrentLine = br.readLine()) != null) {
-				values = sCurrentLine.split(";");
-				logCommitFiles.add(new LogCommitFileInfo(projectInfo.getFullName(), values[0], values[1], values[2], values[3]));	
-				countcfs++;
+//			if (projectInfo.getFullName().equalsIgnoreCase("torvalds/linux")){
+			if (!repositoriesPersisted.contains(projectInfo.getFullName())){
+				Map<String, LogCommitInfo> mapCommits = new HashMap<String, LogCommitInfo>();
+				System.out.println(projectInfo.getFullName()
+						+ ": Extracting logCommits...");
+				String fileName = projectInfo.getFullName().replace('/', '-')
+						+ ".txt";
+				BufferedReader br = new BufferedReader(new FileReader(
+						pathCommits + fileName));
+				CRLFLineReader lineReader = new CRLFLineReader(br);
+				String sCurrentLine;
+				String[] values;
+				while ((sCurrentLine = lineReader.readLine()) != null) {
+					values = sCurrentLine.split(";");
+					if (values.length<7)
+						System.err.println("Erro na linha " + countcfs);
+					Date authorDate = new Timestamp(
+							Long.parseLong(values[3]) * 1000L);
+					Date commiterDate = new Timestamp(
+							Long.parseLong(values[6]) * 1000L);
+					String msg = (values.length == 8) ? values[7] : "";
+
+					mapCommits.put(values[0],
+							new LogCommitInfo(projectInfo.getFullName(),
+									values[0], values[1], values[2],
+									authorDate, values[4], values[5],
+									commiterDate, msg));
+					countcfs++;
+				}
+				//			if (countcfs >= MAXBUFFER){
+				//				System.out.println("Persistindo CommitFilesLog = "+countcfs);
+				//				countcfs = 0;
+				//				lcDAO.persistAll(logCommits);					
+				//				logCommits = new ArrayList<LogCommitFileInfo>();
+				//			}
+				insertFiles(projectInfo.getFullName(), mapCommits);
+				br.close();
+				lcDAO.persistAll(mapCommits.values());
 			}
-			
-			if (countcfs >= MAXBUFFER){
-				System.out.println("Persistindo CommitFilesLog = "+countcfs);
-				countcfs = 0;
-				lcfDAO.persistAll(logCommitFiles);					
-				logCommitFiles = new ArrayList<LogCommitFileInfo>();
+			else{
+				System.out.println(projectInfo.getFullName() + " already analysed!");
 			}
+				
+			
 		}
-		if (logCommitFiles.size()>0)
-			lcfDAO.persistAll(logCommitFiles);	
+//		if (logCommits.size()>0)
+//			lcDAO.persistAll(logCommits);	
 		
 		
 	}
@@ -115,7 +124,38 @@ public class GitLogerExtractor {
 			}
 			logCommitFiles.add(new LogCommitFileInfo(values[1], values[2], values[3]));
 		}
-		
+		br.close();
 		return map;
+	}
+	
+	private void insertFiles(String projectName, Map<String, LogCommitInfo> mapCommit) throws IOException{
+		System.out.println(projectName+": Extracting logCommitFiles...");
+		String fileName = projectName.replace('/', '-')+".txt";
+		BufferedReader br = new BufferedReader(new FileReader(pathCommitFiles+fileName));
+		String sCurrentLine;
+		String[] values;
+
+		while ((sCurrentLine = br.readLine()) != null) {
+			values = sCurrentLine.split(";");
+			String sha = values[0];
+			mapCommit.get(sha).addCommitFile(new LogCommitFileInfo(values[1], values[2], values[3]));
+		}
+		br.close();
+	}
+
+	public String getPathCommits() {
+		return pathCommits;
+	}
+
+	public void setPathCommits(String pathCommits) {
+		this.pathCommits = pathCommits;
+	}
+
+	public String getPathCommitFiles() {
+		return pathCommitFiles;
+	}
+
+	public void setPathCommitFiles(String pathCommitFiles) {
+		this.pathCommitFiles = pathCommitFiles;
 	}
 }

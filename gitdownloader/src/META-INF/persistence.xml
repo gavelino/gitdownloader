@@ -13,6 +13,7 @@
     <class>gaa.model.LanguageInfo</class>
     <class>gaa.model.FileInfo</class>
     <class>gaa.model.NewFileInfo</class>
+    <class>gaa.model.LogCommitInfo</class>
     <class>gaa.model.LogCommitFileInfo</class>
     <class>gaa.authorship.model.Repository</class>
     <class>gaa.authorship.model.Developer</class>
