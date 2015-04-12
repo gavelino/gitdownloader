@@ -53,47 +53,53 @@ public class GitLoggerExtractor {
 		int countcfs = 0;
 		Set<String> repositoriesPersisted = new HashSet<String>(lcDAO.getProjectsName());
 		for (ProjectInfo projectInfo : projects) {
-//			if (projectInfo.getFullName().equalsIgnoreCase("torvalds/linux")){
-			if (!repositoriesPersisted.contains(projectInfo.getFullName())){
-				Map<String, LogCommitInfo> mapCommits = new HashMap<String, LogCommitInfo>();
-				System.out.println(projectInfo.getFullName()
-						+ ": Extracting logCommits...");
-				String fileName = projectInfo.getFullName().replace('/', '-')
-						+ ".txt";
-				BufferedReader br = new BufferedReader(new FileReader(
-						pathCommits + fileName));
-				CRLFLineReader lineReader = new CRLFLineReader(br);
-				String sCurrentLine;
-				String[] values;
-				while ((sCurrentLine = lineReader.readLine()) != null) {
-					values = sCurrentLine.split(";");
-					if (values.length<7)
-						System.err.println("Erro na linha " + countcfs);
-					Date authorDate = new Timestamp(
-							Long.parseLong(values[3]) * 1000L);
-					Date commiterDate = new Timestamp(
-							Long.parseLong(values[6]) * 1000L);
-					String msg = (values.length == 8) ? values[7] : "";
+			//			if (projectInfo.getFullName().equalsIgnoreCase("torvalds/linux")){
+			try{
+				if (!repositoriesPersisted.contains(projectInfo.getFullName())){
+//				if (!repositoriesPersisted.contains(projectInfo.getFullName())&&!projectInfo.getFullName().equalsIgnoreCase(""
+//						+ "thoughtbot/paperclip")&&!projectInfo.getFullName().equalsIgnoreCase(""
+//								+ "yiisoft/yii2")){
+					Map<String, LogCommitInfo> mapCommits = new HashMap<String, LogCommitInfo>();
+					System.out.println(projectInfo.getFullName()
+							+ ": Extracting logCommits...");
+					String fileName = projectInfo.getFullName().replace('/', '-')
+							+ ".txt";
+					BufferedReader br = new BufferedReader(new FileReader(
+							pathCommits + fileName));
+					CRLFLineReader lineReader = new CRLFLineReader(br);
+					String sCurrentLine;
+					String[] values;
+					while ((sCurrentLine = lineReader.readLine()) != null) {
+						values = sCurrentLine.split(";");
+						if (values.length<7)
+							System.err.println("Erro na linha " + countcfs);
+						Date authorDate = !values[3].isEmpty() ? new Timestamp(Long.parseLong(values[3]) * 1000L) : null;
+						Date commiterDate = !values[6].isEmpty() ? new Timestamp(Long.parseLong(values[6]) * 1000L) : null;
+						String msg = (values.length == 8) ? values[7] : "";
 
-					mapCommits.put(values[0],
-							new LogCommitInfo(projectInfo.getFullName(),
-									values[0], values[1], values[2],
-									authorDate, values[4], values[5],
-									commiterDate, msg));
-					countcfs++;
+						mapCommits.put(values[0],
+								new LogCommitInfo(projectInfo.getFullName(),
+										values[0], values[1], values[2],
+										authorDate, values[4], values[5],
+										commiterDate, msg));
+						countcfs++;
+					}
+					//			if (countcfs >= MAXBUFFER){
+					//				System.out.println("Persistindo CommitFilesLog = "+countcfs);
+					//				countcfs = 0;
+					//				lcDAO.persistAll(logCommits);					
+					//				logCommits = new ArrayList<LogCommitFileInfo>();
+					//			}
+					insertFiles(projectInfo.getFullName(), mapCommits);
+					br.close();
+					lcDAO.persistAll(mapCommits.values());
 				}
-				//			if (countcfs >= MAXBUFFER){
-				//				System.out.println("Persistindo CommitFilesLog = "+countcfs);
-				//				countcfs = 0;
-				//				lcDAO.persistAll(logCommits);					
-				//				logCommits = new ArrayList<LogCommitFileInfo>();
-				//			}
-				insertFiles(projectInfo.getFullName(), mapCommits);
-				br.close();
-				lcDAO.persistAll(mapCommits.values());
+				else{
+					System.out.println(projectInfo.getFullName() + " already analysed!");
+				}
 			}
-			else{
-				System.out.println(projectInfo.getFullName() + " already analysed!");
+			catch(Exception e ){
+				System.err.format("Error in file %s, line %d\n%s", projectInfo.getFullName(), countcfs, e.toString() );
 			}
 				
 			
