@@ -61,7 +61,7 @@ public class GitLoggerExtractor {
 //								+ "yiisoft/yii2")){
 					Map<String, LogCommitInfo> mapCommits = new HashMap<String, LogCommitInfo>();
 					System.out.println(projectInfo.getFullName()
-							+ ": Extracting logCommits...");
+							+ ": Extracting logCommits...  "+pathCommits);
 					String fileName = projectInfo.getFullName().replace('/', '-')
 							+ ".txt";
 					BufferedReader br = new BufferedReader(new FileReader(
@@ -99,7 +99,7 @@ public class GitLoggerExtractor {
 				}
 			}
 			catch(Exception e ){
-				System.err.format("Error in file %s, line %d\n%s", projectInfo.getFullName(), countcfs, e.toString() );
+				System.err.format("Error in file %s, line %d\n%s", projectInfo.getFullName(), countcfs, e.getMessage() );
 			}
 				
 			
