@@ -1,5 +1,7 @@
 package gaa.model;
 
+import gaa.authorship.model.Developer;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +41,8 @@ public class LogCommitInfo extends AbstractEntity{
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date commiterDate;
 	
+	private String userName;
+	
 
 	@Lob
 	private String message;
@@ -55,7 +59,7 @@ public class LogCommitInfo extends AbstractEntity{
 
 	public LogCommitInfo(String repositoryName, String sha, String authorName,
 			String authorEmail, Date authorDate, String commiterName,
-			String commiterMail, Date commiterDate, String message) {
+			String commiterEmail, Date commiterDate, String message) {
 		super();
 		this.repositoryName = repositoryName;
 		this.sha = sha;
@@ -63,11 +67,13 @@ public class LogCommitInfo extends AbstractEntity{
 		this.authorEmail = authorEmail;
 		this.authorDate = authorDate;
 		this.commiterName = commiterName;
-		this.commiterMail = commiterMail;
+		this.commiterMail = commiterEmail;
 		this.commiterDate = commiterDate;
 		this.message = message;
+		this.userName = createUserName(authorName, authorEmail, commiterName, commiterEmail);
 	}
-
+	
+	
 	public void addCommitFile(LogCommitFileInfo commitFile) {
 		if (logCommitFiles == null)
 			logCommitFiles = new ArrayList<LogCommitFileInfo>();
@@ -75,6 +81,21 @@ public class LogCommitInfo extends AbstractEntity{
 		
 	}
 
+	public static String createUserName(String authorName, String authorEmail, String commiterName, String commiterEmail){
+		String userName;
+		if (!authorEmail.isEmpty())
+			userName = authorEmail;	
+		else if (!authorName.isEmpty())
+			userName = authorName + "[NoAuthorEmail]";
+		else if (!commiterEmail.isEmpty())
+			userName = commiterEmail + "[NoAuthor]";
+		else if (!commiterName.isEmpty())
+			userName = commiterName + "[NoAuthor-NoEmail]";
+		else 
+			userName = "[NoAuthor-NoCommiter]";	
+		
+		return userName;
+	}
 	/**
 	 * 
 	 */
@@ -136,14 +157,14 @@ public class LogCommitInfo extends AbstractEntity{
 
 
 
-	public String getCommiterMail() {
+	public String getCommiterEmail() {
 		return commiterMail;
 	}
 
 
 
 
-	public void setCommiterMail(String commiterMail) {
+	public void setCommiterEmail(String commiterMail) {
 		this.commiterMail = commiterMail;
 	}
 
@@ -220,6 +241,18 @@ public class LogCommitInfo extends AbstractEntity{
 
 	public void setLogCommitFiles(List<LogCommitFileInfo> logCommitFiles) {
 		this.logCommitFiles = logCommitFiles;
+	}
+
+
+
+	public String getUserName() {
+		return userName;
+	}
+
+
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	

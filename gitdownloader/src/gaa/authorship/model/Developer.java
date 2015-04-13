@@ -29,24 +29,29 @@ public class Developer {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Developer(String name, String email) {
+	public Developer(String name, String email, String userName) {
 		super();
 		this.name = name;
 		this.email = email;
-		this.userName = createUserName(name, email);
+		this.userName = userName;
 	}
-
-	public static String createUserName(String name, String email){
-		String userName;
-		if (!email.isEmpty())
-			userName = email;	
-		else{
-			userName = "[NoEmail]"+name;
-			if (name.isEmpty())
-				userName = "[NoEmail-NoName]";	
-		}
-		return userName;
+	
+	public Developer(String userName) {
+		super();
+		this.userName = userName;
 	}
+//	public static String createUserName(String name, String email){
+//		String userName;
+//		if (!email.isEmpty())
+//			userName = email;	
+//		else{
+//			userName = "[NoEmail]"+name;
+//			if (name.isEmpty())
+//				userName = "[NoEmail-NoName]";	
+//		}
+//		return userName;
+//	}
+	
 	
 	public Long getId() {
 		return id;

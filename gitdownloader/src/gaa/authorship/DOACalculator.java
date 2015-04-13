@@ -118,11 +118,11 @@ public class DOACalculator {
 			List<Object[]> allFilesObjectInfo) {
 		Map<String, List<Object[]>> map = new HashMap<String, List<Object[]>>();
 		for (Object[] objects : allFilesObjectInfo) {
-			//fi.path, ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id
+			//fi.path, ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id, userName
 			String fileName = objects[0].toString();
 			if (!map.containsKey(fileName))
 					map.put(fileName, new ArrayList<Object[]>());
-			Object[] auxObjects = {objects[1], objects[2], objects[3], objects[4], objects[5], objects[6]};
+			Object[] auxObjects = {objects[1], objects[2], objects[3], objects[4], objects[5], objects[6], objects[7]};
 			map.get(fileName).add(auxObjects);
 			
 		}
@@ -133,8 +133,8 @@ public class DOACalculator {
 		List<Object[]> logFilesObjectInfo = getExpendedLogFiles(values, repository, new LogCommitFileDAO(), file);
 		String firstAuthor = null;
 		for (Object[] objects : logFilesObjectInfo) {
-			//ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id
-			AuthorshipInfo authorshipInfo = repository.getAuthorshipInfo((String)objects[0], (String)objects[1], file);
+			//ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id, username
+			AuthorshipInfo authorshipInfo = repository.getAuthorshipInfo((String)objects[0], (String)objects[1], (String)objects[6],  file);
 			Status status = Status.getStatus((String)objects[4]);
 			
 			if (status == Status.ADDED){
