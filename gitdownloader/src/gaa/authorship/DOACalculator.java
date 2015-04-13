@@ -48,8 +48,10 @@ public class DOACalculator {
 			}
 			catch(Exception e){
 				System.err.println("Erro ao persistir projeto " + repo.getFullName() + "\n"+e.toString());
+			} 
+			finally{
+				reDAO.clear();
 			}
-			
 //			printRepository(repo);
 			repositoriesPersisted.add(repo.getFullName());
 			}
@@ -140,7 +142,7 @@ public class DOACalculator {
 					firstAuthor = authorshipInfo.getDeveloper().getUserName();
 				}
 				else
-					System.err.format("New add - %s - author: %s - newauthor: %s\n", file.getPath(), firstAuthor, authorshipInfo.getDeveloper().getUserName());
+					System.err.format("New add;%s;%s;%s;%s\n", repository.getFullName(), file.getPath(), firstAuthor, authorshipInfo.getDeveloper().getUserName());
 				authorshipInfo.setAsFirstAuthor();
 				
 			}

@@ -28,6 +28,10 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 		prePersist(o);
 		super.persist(o);
 	}
+	
+	public void clear(){
+		this.em.clear();
+	}
 
 	private void prePersist(Repository repository) {
 //		new DeveloperDAO().persistAll(repository.getDevelopers());
