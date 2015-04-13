@@ -22,9 +22,12 @@ public class FileLanguageExtractor {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		FileLanguageExtractor gitLogerExtractor = new FileLanguageExtractor("C:/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/_linguistfiles/");
-//		FileLanguageExtractor gitLogerExtractor = new FileLanguageExtractor("/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/_linguistfiles/");
-
+		String path = "C:/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/_linguistfiles/";
+//		String path = "/Users/Guilherme/Dropbox/docs/doutorado UFMG/pesquisas/github/dataset/_linguistfiles/";
+		if (args.length>0)
+			path = args[0]; 
+		FileLanguageExtractor gitLogerExtractor = new FileLanguageExtractor(path);
+			
 		System.out.println("BEGIN at "+ new Date() + "\n\n");
 		gitLogerExtractor.simpleExtract();
 		System.out.println("\n\nEND at "+ new Date());
