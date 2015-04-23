@@ -29,6 +29,7 @@ public class File {
 	@OneToOne
 	private AuthorshipInfo bestAuthorshipInfo;
 	
+	private double bestDoa;
 	public File() {
 	}
 
@@ -116,6 +117,15 @@ public class File {
 
 	public void setBestAuthorshipInfo(AuthorshipInfo bestAuthorshipInfo) {
 		this.bestAuthorshipInfo = bestAuthorshipInfo;
+		this.bestDoa = bestAuthorshipInfo.getDOA();
+	}
+
+	public double getBestDoa() {
+		return bestDoa;
+	}
+
+	protected void setBestDoa(double bestDoa) {
+		this.bestDoa = bestDoa;
 	}
 	
 }
