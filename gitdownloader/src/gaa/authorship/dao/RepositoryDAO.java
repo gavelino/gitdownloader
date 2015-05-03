@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
+import gaa.authorship.FileAuthors;
 import gaa.authorship.model.Repository;
 import gaa.dao.GenericDAO;
 import gaa.dao.PersistThread;
@@ -82,7 +83,23 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 		}
 		return maps;
 	}
-	
+	public List<FileAuthors> getFilesAuthorList(String repositoryName){
+		String hql = "SELECT d.username, fi.path FROM repository_file rf	"
+				+ "JOIN repository r ON r.id = rf.repository_id "
+				+ "JOIN file fi ON fi.id = rf.files_id "
+				+ "JOIN authorshipinfo ai ON ai.id = fi.bestauthorshipinfo_id "
+				+ "JOIN developer d ON ai.developer_id = d.id "
+				+ "WHERE r.fullname = \'" +  repositoryName +"\' " 
+				+ "ORDER BY fi.path;";
+		Query q = em.createNativeQuery(hql);
+		List<Object[]> authorsFiles = q.getResultList();
+		
+		List<FileAuthors> fileAuthors = new ArrayList<FileAuthors>();
+		for (Object[] objects : authorsFiles) {
+			fileAuthors.add(new FileAuthors((String)objects[1], (String)objects[0]));			
+		}
+		return fileAuthors;
+	}
 	public List<String> getAllRepositoryNames(){
 		String hql = "SELECT fullname FROM repository;";
 		Query q = em.createNativeQuery(hql);
