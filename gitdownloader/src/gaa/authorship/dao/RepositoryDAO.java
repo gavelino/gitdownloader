@@ -67,7 +67,7 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 				+ "JOIN file fi ON fi.id = rf.files_id "
 				+ "JOIN authorshipinfo ai ON ai.id = fi.bestauthorshipinfo_id "
 				+ "JOIN developer d ON ai.developer_id = d.id "
-				+ "WHERE r.fullname = \'" +  repositoryName +"\' " 
+				+ "WHERE r.status <> \'REMOVED\' AND r.fullname = \'" +  repositoryName +"\' " 
 				+ "ORDER BY d.username;";
 		Query q = em.createNativeQuery(hql);
 		List<Object[]> authorsFiles = q.getResultList();
