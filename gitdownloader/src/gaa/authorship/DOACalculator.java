@@ -146,7 +146,7 @@ public class DOACalculator {
 		}
 		double bestDoaValueAddDeliveries = 0;
 		for (AuthorshipInfo authorshipInfo : file.getAuthorshipInfos()) {
-			double authorshipDoaAddDeliveries = authorshipInfo.getDoaMultAuthor();
+			double authorshipDoaAddDeliveries = authorshipInfo.getDoaAddDeliveries();
 			if (authorshipDoaAddDeliveries > bestDoaValueAddDeliveries){
 				bestDoaValueAddDeliveries = authorshipDoaAddDeliveries;
 				file.setBestAuthorshipAddDeliveries(authorshipInfo);
