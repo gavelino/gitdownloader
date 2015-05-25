@@ -112,6 +112,7 @@ public class DOACalculator {
 				else{
 					System.err.format("New add;%s;%s;%s;%s\n", repository.getFullName(), file.getPath(), firstAuthor, authorshipInfo.getDeveloper().getUserName());
 					authorshipInfo.setAsSecondaryAuthor();
+					authorshipInfo.addNewAddDelivery();
 				}
 				
 			}
@@ -141,6 +142,14 @@ public class DOACalculator {
 			if (authorshipDoaMult > bestDoaValueMult){
 				bestDoaValueMult = authorshipDoaMult;
 				file.setBestAuthorshipInfoMult(authorshipInfo);
+			}	
+		}
+		double bestDoaValueAddDeliveries = 0;
+		for (AuthorshipInfo authorshipInfo : file.getAuthorshipInfos()) {
+			double authorshipDoaAddDeliveries = authorshipInfo.getDoaMultAuthor();
+			if (authorshipDoaAddDeliveries > bestDoaValueAddDeliveries){
+				bestDoaValueAddDeliveries = authorshipDoaAddDeliveries;
+				file.setBestAuthorshipAddDeliveries(authorshipInfo);
 			}	
 		}
 		

@@ -22,6 +22,7 @@ public class File {
 	private String path;
 	private String oldFileName;
 	private int nChanges=0;
+	private int nExtraAdds=0;
 
 	@OneToMany(cascade = { CascadeType.ALL })
 	private List<AuthorshipInfo> authorshipInfos = new ArrayList<AuthorshipInfo>();
@@ -30,6 +31,8 @@ public class File {
 	private AuthorshipInfo bestAuthorshipInfo;
 	@OneToOne
 	private AuthorshipInfo bestAuthorshipInfoMult;
+	@OneToOne
+	private AuthorshipInfo bestAuthorshipAddDeliveries;
 
 	private double bestDoa;
 	private double bestDoaMult;
@@ -90,23 +93,23 @@ public class File {
 		
 	}
 
-	public void addRenamedHistory(File oldFile) {
-		for (AuthorshipInfo oldAuthorshipInfo : oldFile.getAuthorshipInfos()) {
-			boolean flag = true;
-			for (AuthorshipInfo newAuthorshipInfo : this.getAuthorshipInfos()) {
-				if (oldAuthorshipInfo.getDeveloper().getUserName().equalsIgnoreCase(newAuthorshipInfo.getDeveloper().getUserName())){
-					if (oldAuthorshipInfo.isFirstAuthor())
-						newAuthorshipInfo.setFirstAuthor(true);
-					newAuthorshipInfo.incNDeliveries(oldAuthorshipInfo.getnDeliveries());
-					this.incNChanges(oldFile.getnChanges());
-					flag = false;
-				}
-			}
-			if (flag)
-				this.authorshipInfos.add(oldAuthorshipInfo);
-		}
-		
-	}
+//	public void addRenamedHistory(File oldFile) {
+//		for (AuthorshipInfo oldAuthorshipInfo : oldFile.getAuthorshipInfos()) {
+//			boolean flag = true;
+//			for (AuthorshipInfo newAuthorshipInfo : this.getAuthorshipInfos()) {
+//				if (oldAuthorshipInfo.getDeveloper().getUserName().equalsIgnoreCase(newAuthorshipInfo.getDeveloper().getUserName())){
+//					if (oldAuthorshipInfo.isFirstAuthor())
+//						newAuthorshipInfo.setFirstAuthor(true);
+//					newAuthorshipInfo.incNDeliveries(oldAuthorshipInfo.getnDeliveries());
+//					this.incNChanges(oldFile.getnChanges());
+//					flag = false;
+//				}
+//			}
+//			if (flag)
+//				this.authorshipInfos.add(oldAuthorshipInfo);
+//		}
+//		
+//	}
 	
 
 	@Override
@@ -146,6 +149,23 @@ public class File {
 
 	public void setBestDoaMult(double bestDoaMult) {
 		this.bestDoaMult = bestDoaMult;
+	}
+
+	public int getnExtraAdds() {
+		return nExtraAdds;
+	}
+
+	public void addExtraAdds() {
+		this.nExtraAdds++;
+	}
+
+	public AuthorshipInfo getBestAuthorshipAddDeliveries() {
+		return bestAuthorshipAddDeliveries;
+	}
+
+	public void setBestAuthorshipAddDeliveries(
+			AuthorshipInfo bestAuthorshipAddDeliveries) {
+		this.bestAuthorshipAddDeliveries = bestAuthorshipAddDeliveries;
 	}
 	
 }

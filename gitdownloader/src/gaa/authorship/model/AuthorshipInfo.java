@@ -20,23 +20,35 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 	private boolean firstAuthor;
 	private boolean secondaryAuthor;
 	private int nDeliveries;
+	private int nAddDeliveries;
 	private double doa;
 	private double doaMultAuthor;
+	private double doaAddDeliveries;
 	
 	public AuthorshipInfo() {
 	}
 	
+	// Ignore extra adds
 	public double getDOA(){
 		if (doa == 0 )
 			doa = 3.293 + 1.098*(firstAuthor?1:0) + 0.164*nDeliveries - 0.332* Math.log(1 + this.getnAcceptances());
 		return doa;
 	}
 
+	// Take every new add for a new developer as first author. Ignore multiple Adds from the same developer.
 	public double getDoaMultAuthor() {
 		if (doaMultAuthor == 0 )
 			doaMultAuthor = 3.293 + 1.098*(firstAuthor?1:(secondaryAuthor?1:0)) + 0.164*nDeliveries - 0.332* Math.log(1 + this.getnAcceptances());
 		return doaMultAuthor;
 	}
+	
+	// Take every new add for a new developer as first author. Ignore multiple Adds from the same developer.
+	public double getDoaAddDeliveries() {
+		if (doaAddDeliveries == 0 )
+			doaAddDeliveries = 3.293 + 1.098*(firstAuthor?1:0) + 0.164*(nDeliveries + nAddDeliveries) - 0.332* Math.log(1 + this.getnAcceptancesWithAdds());
+		return doaAddDeliveries;
+	}
+	
 	public AuthorshipInfo(File file, Developer developer) {
 		super();
 		this.file = file;
@@ -53,9 +65,11 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 		this.file.addNewChange();
 	}
 	
-	public void incNDeliveries(int inc){
-		nDeliveries+=inc;
+	public void addNewAddDelivery(){
+		this.nAddDeliveries++;
+		this.file.addExtraAdds();
 	}
+	
 
 	public Long getId() {
 		return id;
@@ -88,6 +102,9 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 	public int getnAcceptances() {
 		return this.file.getnChanges() - this.nDeliveries;
 	}
+	public int getnAcceptancesWithAdds() {
+		return this.file.getnChanges() + this.file.getnExtraAdds() - this.nDeliveries - this.nAddDeliveries;
+	}
 
 
 	public void setAsFirstAuthor() {
@@ -105,6 +122,14 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 
 	public void setAsSecondaryAuthor() {
 		this.secondaryAuthor = true;
+	}
+
+	public int getnAddDeliveries() {
+		return nAddDeliveries;
+	}
+
+	public void setnAddDeliveries(int nAddDeliveries) {
+		this.nAddDeliveries = nAddDeliveries;
 	}
 
 
