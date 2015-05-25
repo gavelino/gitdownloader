@@ -50,6 +50,7 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 
 	public void addNewDelivery(){
 		this.nDeliveries++;
+		this.file.addNewChange();
 	}
 	
 	public void incNDeliveries(int inc){

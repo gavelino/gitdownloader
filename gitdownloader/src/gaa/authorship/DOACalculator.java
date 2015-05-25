@@ -117,12 +117,12 @@ public class DOACalculator {
 			}
 			else if (status == Status.MODIFIED){
 				authorshipInfo.addNewDelivery();
-				file.addNewChange();					
+				//file.addNewChange();					
 			}
 			else if (status == Status.RENAMED_TREATED){
 				// Considering a rename as a new delivery
 				authorshipInfo.addNewDelivery();
-				file.addNewChange();		
+				//file.addNewChange();		
 			}
 			else System.err.println("Invalid Status: "+ status);
 		}
