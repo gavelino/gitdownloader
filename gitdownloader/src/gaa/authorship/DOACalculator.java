@@ -73,44 +73,11 @@ public class DOACalculator {
 		System.out.format("%s (%s): All %d filesInfo loaded ...\n",
 				repository.getFullName(), new Date(), allFilesObjectInfo.size());
 		Map<String,List<Object[]>> mapFiles = getMapFiles(allFilesObjectInfo);
-//		int count =0;
-//		int persistCount = 100;
 		for (Entry<String, List<Object[]>> entry : mapFiles.entrySet()) {
 			File file = new File(entry.getKey());
 			setFileHistory(file, repository, entry.getValue());
-//			tempFiles.add(file);
-//			if (++count%persistCount == 0){
-//				fileDAO.persistAll(tempFiles);
-//				files.addAll(tempFiles);
-//				tempFiles = new ArrayList<File>();
-//			}
 			files.add(file);
 		}
-//		fileDAO.persistAll(tempFiles);
-//		files.addAll(tempFiles);
-//		System.out.format("History generated for %d files\n",count);
-		
-//		List<String> paths = fiDAO.getPathsOfNotFilteredProjectFiles(repository.getFullName());
-//		int count =0;
-//		List<File> tempFiles = new ArrayList<File>();
-//		int persistCount = 10;
-//		for (String path : paths) {
-//			File file = new File(path);
-//			setFileHistory(file, repository);
-//			tempFiles.add(file);
-//			if (++count%persistCount == 0){
-//				fileDAO.persistAll(tempFiles);
-//				files.addAll(tempFiles);
-//				tempFiles = new ArrayList<File>();
-//			}
-////			printFile(file);
-//		}
-//		if (tempFiles.size()>0){
-//			fileDAO.persistAll(tempFiles);
-//			files.addAll(tempFiles);
-//		}
-//		System.out.format("History generated for %d files\n",count);
-//		fileDAO.persistAll(files);
 		return files;
 	}
 
@@ -140,10 +107,12 @@ public class DOACalculator {
 			if (status == Status.ADDED){
 				if (firstAuthor == null){
 					firstAuthor = authorshipInfo.getDeveloper().getUserName();
+					authorshipInfo.setAsFirstAuthor();
 				}
-				else
+				else{
 					System.err.format("New add;%s;%s;%s;%s\n", repository.getFullName(), file.getPath(), firstAuthor, authorshipInfo.getDeveloper().getUserName());
-				authorshipInfo.setAsFirstAuthor();
+					authorshipInfo.setAsSecondaryAuthor();
+				}
 				
 			}
 			else if (status == Status.MODIFIED){
@@ -160,10 +129,18 @@ public class DOACalculator {
 		
 		double bestDoaValue = 0;
 		for (AuthorshipInfo authorshipInfo : file.getAuthorshipInfos()) {
-			double auhtorshipDoa = authorshipInfo.getDOA();
-			if (auhtorshipDoa > bestDoaValue){
-				bestDoaValue = auhtorshipDoa;
+			double authorshipDoa = authorshipInfo.getDOA();
+			if (authorshipDoa > bestDoaValue){
+				bestDoaValue = authorshipDoa;
 				file.setBestAuthorshipInfo(authorshipInfo);
+			}	
+		}
+		double bestDoaValueMult = 0;
+		for (AuthorshipInfo authorshipInfo : file.getAuthorshipInfos()) {
+			double authorshipDoaMult = authorshipInfo.getDoaMultAuthor();
+			if (authorshipDoaMult > bestDoaValueMult){
+				bestDoaValueMult = authorshipDoaMult;
+				file.setBestAuthorshipInfoMult(authorshipInfo);
 			}	
 		}
 		

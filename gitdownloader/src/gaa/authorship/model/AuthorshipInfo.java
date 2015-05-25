@@ -18,8 +18,10 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 	@ManyToOne(cascade = { CascadeType.ALL })
 	private Developer developer;
 	private boolean firstAuthor;
+	private boolean secondaryAuthor;
 	private int nDeliveries;
 	private double doa;
+	private double doaMultAuthor;
 	
 	public AuthorshipInfo() {
 	}
@@ -30,6 +32,11 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 		return doa;
 	}
 
+	public double getDoaMultAuthor() {
+		if (doaMultAuthor == 0 )
+			doaMultAuthor = 3.293 + 1.098*(firstAuthor?1:(secondaryAuthor?1:0)) + 0.164*nDeliveries - 0.332* Math.log(1 + this.getnAcceptances());
+		return doaMultAuthor;
+	}
 	public AuthorshipInfo(File file, Developer developer) {
 		super();
 		this.file = file;
@@ -90,6 +97,16 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 	public int compareTo(AuthorshipInfo o) {
 		return Double.compare(this.getDOA(), o.getDOA());
 	}
+
+	public boolean isSecondaryAuthor() {
+		return secondaryAuthor;
+	}
+
+	public void setAsSecondaryAuthor() {
+		this.secondaryAuthor = true;
+	}
+
+
 
 
 	

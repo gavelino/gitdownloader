@@ -25,11 +25,14 @@ public class File {
 
 	@OneToMany(cascade = { CascadeType.ALL })
 	private List<AuthorshipInfo> authorshipInfos = new ArrayList<AuthorshipInfo>();
-	
+
 	@OneToOne
 	private AuthorshipInfo bestAuthorshipInfo;
-	
+	@OneToOne
+	private AuthorshipInfo bestAuthorshipInfoMult;
+
 	private double bestDoa;
+	private double bestDoaMult;
 	public File() {
 	}
 
@@ -120,12 +123,29 @@ public class File {
 		this.bestDoa = bestAuthorshipInfo.getDOA();
 	}
 
+	public AuthorshipInfo getBestAuthorshipInfoMult() {
+		return bestAuthorshipInfoMult;
+	}
+
+	public void setBestAuthorshipInfoMult(AuthorshipInfo bestAuthorshipInfo) {
+		this.bestAuthorshipInfoMult = bestAuthorshipInfo;
+		this.bestDoaMult = bestAuthorshipInfo.getDoaMultAuthor();
+	}
+
 	public double getBestDoa() {
 		return bestDoa;
 	}
 
 	protected void setBestDoa(double bestDoa) {
 		this.bestDoa = bestDoa;
+	}
+
+	public double getBestDoaMult() {
+		return bestDoaMult;
+	}
+
+	public void setBestDoaMult(double bestDoaMult) {
+		this.bestDoaMult = bestDoaMult;
 	}
 	
 }
