@@ -36,6 +36,7 @@ public class File {
 
 	private double bestDoa;
 	private double bestDoaMult;
+	private double bestDoaAddDeliveries;
 	public File() {
 	}
 
@@ -165,6 +166,7 @@ public class File {
 
 	public void setBestAuthorshipAddDeliveries(
 			AuthorshipInfo bestAuthorshipAddDeliveries) {
+		this.bestDoaAddDeliveries = bestAuthorshipAddDeliveries.getDOA();
 		this.bestAuthorshipAddDeliveries = bestAuthorshipAddDeliveries;
 	}
 	
