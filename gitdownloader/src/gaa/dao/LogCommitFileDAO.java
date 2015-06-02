@@ -97,23 +97,23 @@ public class LogCommitFileDAO extends GenericDAO<LogCommitFileInfo>{
 		
 	}
 	
-	public List<Long> newGetAddsCommitFileOrderByDate(String repositoryName) {
-		
-		System.err.println("N�o implementado. Consulta precisa ser alterada para usar newFileInfo adequademente");
-		
-		String hql = "SELECT COUNT(*) FROM COMMITINFO_LOGCOMMITFILEINFO ci_lcfi	"
-				+ "JOIN COMMITINFO ci ON ci_lcfi.commitinfo_id = ci.ID    "
-				+ "JOIN LOGCOMMITFILEINFO lcfi ON ci_lcfi.logcommitfileinfo_id = lcfi.ID    "
-				+ "JOIN projectinfo_fileinfo pi_fi ON pi_fi.ProjectInfo_FULLNAME = ci.REPOSITORYNAME    "
-				+ "JOIN fileinfo fi ON pi_fi.files_ID = fi.ID    "
-				
-				+ "WHERE ci.REPOSITORYNAME = \"" +  repositoryName +"\"" + " AND lcfi.STATUS = \"ADDED\" AND lcfi.NEWFILENAME = fi.PATH   "
-						+ "GROUP BY ci.SHA    "
-						+ "ORDER BY ci.DATE;";
-		Query q = em.createNativeQuery(hql);
-		
-		return q.getResultList();
-	}
+//	public List<Long> newGetAddsCommitFileOrderByDate(String repositoryName) {
+//		
+//		System.err.println("N�o implementado. Consulta precisa ser alterada para usar newFileInfo adequademente");
+//		
+//		String hql = "SELECT COUNT(*) FROM COMMITINFO_LOGCOMMITFILEINFO ci_lcfi	"
+//				+ "JOIN COMMITINFO ci ON ci_lcfi.commitinfo_id = ci.ID    "
+//				+ "JOIN LOGCOMMITFILEINFO lcfi ON ci_lcfi.logcommitfileinfo_id = lcfi.ID    "
+//				+ "JOIN projectinfo_fileinfo pi_fi ON pi_fi.ProjectInfo_FULLNAME = ci.REPOSITORYNAME    "
+//				+ "JOIN fileinfo fi ON pi_fi.files_ID = fi.ID    "
+//				
+//				+ "WHERE ci.REPOSITORYNAME = \"" +  repositoryName +"\"" + " AND lcfi.STATUS = \"ADDED\" AND lcfi.NEWFILENAME = fi.PATH   "
+//						+ "GROUP BY ci.SHA    "
+//						+ "ORDER BY ci.DATE;";
+//		Query q = em.createNativeQuery(hql);
+//		
+//		return q.getResultList();
+//	}
 	
 	public List<Object[]> getLogCommitFileInfoOrderByDate(String repositoryName, String path) {
 		String hql = "SELECT ci.authorname, ci.authoremail, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id, ci.username FROM logcommitinfo_logcommitfileinfo ci_lcfi	"
@@ -126,28 +126,28 @@ public class LogCommitFileDAO extends GenericDAO<LogCommitFileInfo>{
 		
 	}
 	
-	public List<Object[]> getLogCommitFileInfoOrderByDate_old(String repositoryName, String path) {
-		String hql = "SELECT ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id FROM commitinfo_logcommitfileinfo ci_lcfi	"
-				+ "JOIN commitinfo ci ON ci_lcfi.commitinfo_id = ci.id "
-				+ "JOIN logcommitfileinfo lcfi ON ci_lcfi.logcommitfiles_id = lcfi.id "
-				+ "WHERE ci.REPOSITORYNAME = \'" +  repositoryName +"\'" + " AND (lcfi.newfilename = \'" +  path +"\'  OR lcfi.oldfilename = \'" +  path +"\' ) "
-						+ "ORDER BY ci.DATE;";
-		Query q = em.createNativeQuery(hql);
-		return q.getResultList();
-		
-	}
-	
-	public List<Object[]> getLogCommitFileInfoForAllFiles_old(String repositoryName) {
-		String hql = "SELECT fi.path, ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id FROM commitinfo_logcommitfileinfo ci_lcfi	"
-				+ "JOIN commitinfo ci ON ci_lcfi.commitinfo_id = ci.id "
-				+ "JOIN logcommitfileinfo lcfi ON ci_lcfi.logcommitfiles_id = lcfi.id "
-				+ "JOIN newfileinfo fi on fi.repositoryname = ci.repositoryname AND (fi.path = lcfi.newfilename or fi.path = lcfi.oldfilename) "
-				+ "WHERE ci.REPOSITORYNAME = \'" +  repositoryName +"\'" + " AND fi.filtered = \'FALSE\' "
-						+ "ORDER BY lcfi.newfilename, ci.DATE;";
-		Query q = em.createNativeQuery(hql);
-		return q.getResultList();
-		
-	}
+//	public List<Object[]> getLogCommitFileInfoOrderByDate_old(String repositoryName, String path) {
+//		String hql = "SELECT ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id FROM commitinfo_logcommitfileinfo ci_lcfi	"
+//				+ "JOIN commitinfo ci ON ci_lcfi.commitinfo_id = ci.id "
+//				+ "JOIN logcommitfileinfo lcfi ON ci_lcfi.logcommitfiles_id = lcfi.id "
+//				+ "WHERE ci.REPOSITORYNAME = \'" +  repositoryName +"\'" + " AND (lcfi.newfilename = \'" +  path +"\'  OR lcfi.oldfilename = \'" +  path +"\' ) "
+//						+ "ORDER BY ci.DATE;";
+//		Query q = em.createNativeQuery(hql);
+//		return q.getResultList();
+//		
+//	}
+//	
+//	public List<Object[]> getLogCommitFileInfoForAllFiles_old(String repositoryName) {
+//		String hql = "SELECT fi.path, ci.name, ci.email, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id FROM commitinfo_logcommitfileinfo ci_lcfi	"
+//				+ "JOIN commitinfo ci ON ci_lcfi.commitinfo_id = ci.id "
+//				+ "JOIN logcommitfileinfo lcfi ON ci_lcfi.logcommitfiles_id = lcfi.id "
+//				+ "JOIN newfileinfo fi on fi.repositoryname = ci.repositoryname AND (fi.path = lcfi.newfilename or fi.path = lcfi.oldfilename) "
+//				+ "WHERE ci.REPOSITORYNAME = \'" +  repositoryName +"\'" + " AND fi.filtered = \'FALSE\' "
+//						+ "ORDER BY lcfi.newfilename, ci.DATE;";
+//		Query q = em.createNativeQuery(hql);
+//		return q.getResultList();
+//		
+//	}
 	 
 	public List<Object[]> getLogCommitFileInfoForAllFiles(String repositoryName) {
 		String hql = "SELECT fi.path, ci.authorname, ci.authoremail, lcfi.oldfilename, lcfi.newfilename, lcfi.status, lcfi.id, ci.username FROM logcommitinfo_logcommitfileinfo ci_lcfi	"

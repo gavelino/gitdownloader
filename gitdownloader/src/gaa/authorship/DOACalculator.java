@@ -32,7 +32,7 @@ public class DOACalculator {
 		RepositoryDAO reDAO = new RepositoryDAO();
 		Set<String> repositoriesPersisted = new HashSet<String>(reDAO.getAllRepositoryNames());
 		for (ProjectInfo projectInfo : projects) {
-//			if (!repositoriesPersisted.contains(projectInfo.getFullName())&& !projectInfo.getFullName().equalsIgnoreCase("rails/rails")){
+//			if (!repositoriesPersisted.contains(projectInfo.getFullName())&& projectInfo.getFullName().equalsIgnoreCase("django/django")){
 			if (!repositoriesPersisted.contains(projectInfo.getFullName())){
 //			if (projectInfo.getFullName().equalsIgnoreCase("Homebrew/homebrew")){
 			System.out.format("%s (%s): Extracting authorship information...\n",
@@ -105,15 +105,19 @@ public class DOACalculator {
 			Status status = Status.getStatus((String)objects[4]);
 			
 			if (status == Status.ADDED){
-				if (firstAuthor == null){
+				if (firstAuthor == null){ //FIRST ADD
 					firstAuthor = authorshipInfo.getDeveloper().getUserName();
 					authorshipInfo.setAsFirstAuthor();
 				}
-				else{
+				else if (!authorshipInfo.isFirstAuthor()){ //New ADD made by a different developer of the first add
 					System.err.format("New add;%s;%s;%s;%s\n", repository.getFullName(), file.getPath(), firstAuthor, authorshipInfo.getDeveloper().getUserName());
 					authorshipInfo.setAsSecondaryAuthor();
 					authorshipInfo.addNewAddDelivery();
 				}
+				else{ //Treat as delivery if the extra add was made by the first author 
+					authorshipInfo.addNewAddDelivery();
+				}
+					
 				
 			}
 			else if (status == Status.MODIFIED){
