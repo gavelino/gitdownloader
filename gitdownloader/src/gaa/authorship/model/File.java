@@ -166,8 +166,16 @@ public class File {
 
 	public void setBestAuthorshipAddDeliveries(
 			AuthorshipInfo bestAuthorshipAddDeliveries) {
-		this.bestDoaAddDeliveries = bestAuthorshipAddDeliveries.getDOA();
+		this.setBestDoaAddDeliveries(bestAuthorshipAddDeliveries.getDOA());
 		this.bestAuthorshipAddDeliveries = bestAuthorshipAddDeliveries;
+	}
+
+	public double getBestDoaAddDeliveries() {
+		return bestDoaAddDeliveries;
+	}
+
+	public void setBestDoaAddDeliveries(double bestDoaAddDeliveries) {
+		this.bestDoaAddDeliveries = bestDoaAddDeliveries;
 	}
 	
 }

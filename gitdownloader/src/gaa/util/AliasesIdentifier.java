@@ -1,0 +1,157 @@
+package gaa.util;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.auth.AUTH;
+
+import gaa.authorship.FileAuthors;
+import gaa.authorship.dao.DeveloperDAO;
+import gaa.authorship.dao.FileDAO;
+import gaa.authorship.dao.RepositoryDAO;
+import gaa.authorship.model.AuthorshipInfo;
+import gaa.authorship.model.Developer;
+import gaa.authorship.model.Repository;
+
+public class AliasesIdentifier {
+	
+	
+	
+	public static void main(String[] args) {
+		RepositoryDAO repDAO = new RepositoryDAO();
+		DeveloperDAO devDAO = new DeveloperDAO();
+		//StringUtils.getLevenshteinDistance("", "");
+		
+		for (Repository rep : repDAO.findAll()) {
+			List<Developer> developers = devDAO.getAllDevelopers(rep
+					.getFullName());
+			Map<Developer, List<Developer>> aliases = findAliases(
+					developers, 1, 3);
+			List<Developer> devAliases = treatAliases(rep.getFullName(),
+					aliases);
+			updateDeveloperAliases(devDAO, devAliases);
+		}
+	}
+
+	
+
+	private static void updateDeveloperAliases(DeveloperDAO devDAO,
+			List<Developer> aliases) {
+		for (Developer alias : aliases) {
+			devDAO.update(alias);
+		}
+	}
+
+	
+
+	private static List<Developer> treatAliases(String repName, Map<Developer, List<Developer>> aliases) {
+		List<Developer> devAliases = new ArrayList<Developer>();
+		for (Entry<Developer, List<Developer>> entry : aliases.entrySet()) {
+			Developer dev1 = entry.getKey();
+			for (Developer dev2 : entry.getValue()) {
+				if (NotAlias.isAlias(repName, dev1.getName(), dev2.getName())){
+ 					System.out.println(repName + ";" + dev1.getName() + ";"+dev2.getName());
+ 					dev2.setNewUserName(dev1.getName());
+ 					mergeAliasesAuthorship(dev1, dev2);
+ 					devAliases.add(dev1);
+ 					devAliases.add(dev2);
+				}
+				else{
+					System.err.println(repName + ";" + dev1.getName() + ";"+dev2.getName());
+					
+				}
+			}
+			//System.out.println();
+			
+		}
+		return devAliases;
+	}
+
+	private static void mergeAliasesAuthorship(Developer dev1, Developer dev2) {
+		List<AuthorshipInfo> mergedList = new ArrayList<AuthorshipInfo>(dev1.getAuthorshipInfos());
+		for (AuthorshipInfo authorshipInfo : dev2.getAuthorshipInfos()) {
+			AuthorshipInfo mergeAuthorship =  getAuthorship(authorshipInfo.getFile().getPath(), mergedList);
+			if (mergeAuthorship == null){
+				authorshipInfo.setDeveloper(dev1);
+				mergedList.add(authorshipInfo);
+			}
+			else{
+				if (authorshipInfo.isFirstAuthor())
+					mergeAuthorship.setAsFirstAuthor();
+				if (authorshipInfo.isSecondaryAuthor() && !mergeAuthorship.isFirstAuthor())
+					mergeAuthorship.setAsSecondaryAuthor();
+				mergeAuthorship.setnDeliveries(mergeAuthorship.getnDeliveries()+authorshipInfo.getnDeliveries());
+				mergeAuthorship.setnAddDeliveries(mergeAuthorship.getnAddDeliveries()+authorshipInfo.getnAddDeliveries());
+				mergeAuthorship.updateDOA();
+			}
+		}
+		dev1.setAuthorshipInfos(mergedList);
+		dev2.setAsRemoved();
+	}
+
+
+
+	private static AuthorshipInfo getAuthorship(String path,
+			List<AuthorshipInfo> mergedList) {
+		for (AuthorshipInfo authorshipInfo : mergedList) {
+			if (authorshipInfo.getFile().getPath().equals(path))
+				return authorshipInfo;
+		}
+		return null;
+	}
+
+
+
+	private static boolean namesAreDifferent(String name, List<Developer> value) {
+		for (Developer developer : value) {
+			if(!developer.getName().equals(name))
+				return true;
+		}
+		return false;
+	}
+
+	private static Map<Developer, List<Developer>> findAliases(List<Developer> allDevelopers, int distance, int minSize) {
+		int newDistance = distance;
+		List<Developer> copyList =  new CopyOnWriteArrayList<Developer>(allDevelopers);
+		Map<Developer, List<Developer>> aliases =  new HashMap<Developer, List<Developer>>();
+		for (Developer developer1 : copyList) {
+			copyList.remove (developer1);
+			for (Developer developer2 : copyList) {
+				if(developer1.getId()!=developer2.getId() && developer1.getName().length()>=minSize){
+					int localDistance = StringUtils.getLevenshteinDistance(developer1.getName(), developer2.getName());
+					if (distance == -1){
+						newDistance = developer1.getName().split(" ").length;
+					}
+					if (localDistance !=0 && localDistance<=newDistance){
+						if(!aliases.containsKey(developer1))
+							aliases.put(developer1, new ArrayList<Developer>());
+						aliases.get(developer1).add(developer2);
+						copyList.remove(developer2);
+					}
+				}
+			}
+		}
+		return aliases;
+	}
+
+	private static void insert(Directory mainDirectory, String[] names, String author) {
+		Directory insertDirectory = mainDirectory;
+		for(int i=0;i<(names.length-1); i++ ){
+			if (!insertDirectory.getDirectoryMap().containsKey(names[i]))
+				insertDirectory.getDirectoryMap().put(names[i], new Directory(names[i]));
+			insertDirectory = insertDirectory.getDirectoryMap().get(names[i]);
+		}
+		String fileName = names[names.length-1];
+		insertDirectory.getDirectoryMap().put(fileName, new FileDirectory(fileName, author));
+		
+	}
+	
+	 
+	
+}

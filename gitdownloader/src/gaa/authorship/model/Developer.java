@@ -20,6 +20,8 @@ public class Developer {
 	private String name;
 	private String email;
 	private String userName;
+	private String newUserName;
+	private boolean removed;
 	
 
 	@OneToMany(cascade = { CascadeType.REFRESH })
@@ -34,11 +36,13 @@ public class Developer {
 		this.name = name;
 		this.email = email;
 		this.userName = userName;
+		this.removed = false;
 	}
 	
 	public Developer(String userName) {
 		super();
 		this.userName = userName;
+		this.removed=false;
 	}
 //	public static String createUserName(String name, String email){
 //		String userName;
@@ -95,6 +99,22 @@ public class Developer {
 	@Override
 	public String toString() {
 		return userName;
+	}
+
+	public String getNewUserName() {
+		return newUserName;
+	}
+
+	public void setNewUserName(String newUserName) {
+		this.newUserName = newUserName;
+	}
+
+	public boolean isRemoved() {
+		return removed;
+	}
+
+	public void setAsRemoved() {
+		this.removed = true;
 	}
 	
 }

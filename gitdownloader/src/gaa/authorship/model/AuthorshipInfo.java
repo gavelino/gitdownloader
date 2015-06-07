@@ -59,6 +59,18 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 		file.addAuthorshipInfo(this);
 	}
 
+	public void updateDOA(){
+		this.doa = 3.293 + 1.098*(firstAuthor?1:(secondaryAuthor?1:0)) + 0.164*nDeliveries - 0.332* Math.log(1 + this.getnAcceptances());
+		this.doaMultAuthor = 3.293 + 1.098*(firstAuthor?1:(secondaryAuthor?1:0)) + 0.164*nDeliveries - 0.332* Math.log(1 + this.getnAcceptances());
+		this.doaAddDeliveries = 3.293 + 1.098*(firstAuthor?1:0) + 0.164*(nDeliveries + nAddDeliveries) - 0.332* Math.log(1 + this.getnAcceptancesWithAdds());
+		if (this.file.getBestDoa()<doa)
+			this.file.setBestAuthorshipInfo(this);
+		if (this.file.getBestDoaMult()<doaMultAuthor)
+			this.file.setBestAuthorshipInfoMult(this);
+		if (this.file.getBestDoaAddDeliveries()<doa)
+			this.file.setBestAuthorshipAddDeliveries(this);
+			
+	}
 
 	public void addNewDelivery(){
 		this.nDeliveries++;
