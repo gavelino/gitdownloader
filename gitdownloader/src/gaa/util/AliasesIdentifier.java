@@ -18,6 +18,7 @@ import gaa.authorship.dao.RepositoryDAO;
 import gaa.authorship.model.AuthorshipInfo;
 import gaa.authorship.model.Developer;
 import gaa.authorship.model.Repository;
+import gaa.authorship.model.RepositoryStatus;
 
 public class AliasesIdentifier {
 	
@@ -29,13 +30,15 @@ public class AliasesIdentifier {
 		//StringUtils.getLevenshteinDistance("", "");
 		
 		for (Repository rep : repDAO.findAll()) {
-			List<Developer> developers = devDAO.getAllDevelopers(rep
-					.getFullName());
-			Map<Developer, List<Developer>> aliases = findAliases(
-					developers, 1, 3);
-			List<Developer> devAliases = treatAliases(rep.getFullName(),
-					aliases);
-			updateDeveloperAliases(devDAO, devAliases);
+			if (rep.getStatus() != RepositoryStatus.REMOVED) {
+				List<Developer> developers = devDAO.getAllDevelopers(rep
+						.getFullName());
+				Map<Developer, List<Developer>> aliases = findAliases(
+						developers, 1, 3);
+				List<Developer> devAliases = treatAliases(rep.getFullName(),
+						aliases);
+				//updateDeveloperAliases(devDAO, devAliases);
+			}
 		}
 	}
 
@@ -124,11 +127,11 @@ public class AliasesIdentifier {
 			copyList.remove (developer1);
 			for (Developer developer2 : copyList) {
 				if(developer1.getId()!=developer2.getId() && developer1.getName().length()>=minSize){
-					int localDistance = StringUtils.getLevenshteinDistance(developer1.getName(), developer2.getName());
+					int localDistance = StringUtils.getLevenshteinDistance(convertToUTFLower(developer1.getName()), convertToUTFLower(developer2.getName()));
 					if (distance == -1){
 						newDistance = developer1.getName().split(" ").length;
 					}
-					if (localDistance !=0 && localDistance<=newDistance){
+					if (!developer1.getName().equals(developer2.getName()) && localDistance<=newDistance){
 						if(!aliases.containsKey(developer1))
 							aliases.put(developer1, new ArrayList<Developer>());
 						aliases.get(developer1).add(developer2);
@@ -139,6 +142,19 @@ public class AliasesIdentifier {
 		}
 		return aliases;
 	}
+
+	private static CharSequence convertToUTFLower(String str) {
+		String ret = null;
+		try {
+			ret = new String(str.getBytes("ISO-8859-1"), "UTF-8");
+		}
+		catch (java.io.UnsupportedEncodingException e) {
+			return null;
+		}
+		return ret.toLowerCase();
+	}
+
+
 
 	private static void insert(Directory mainDirectory, String[] names, String author) {
 		Directory insertDirectory = mainDirectory;
