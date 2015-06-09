@@ -16,6 +16,7 @@ import gaa.authorship.dao.DeveloperDAO;
 import gaa.authorship.dao.FileDAO;
 import gaa.authorship.dao.RepositoryDAO;
 import gaa.authorship.model.AuthorshipInfo;
+import gaa.authorship.model.DevStatus;
 import gaa.authorship.model.Developer;
 import gaa.authorship.model.Repository;
 import gaa.authorship.model.RepositoryStatus;
@@ -61,9 +62,12 @@ public class AliasesIdentifier {
 				if (NotAlias.isAlias(repName, dev1.getName(), dev2.getName())){
  					System.out.println(repName + ";" + dev1.getName() + ";"+dev2.getName());
  					dev2.setNewUserName(dev1.getName());
- 					mergeAliasesAuthorship(dev1, dev2);
+ 					Developer tempDev = mergeAliasesAuthorship(dev1, dev2);
  					devAliases.add(dev1);
  					devAliases.add(dev2);
+ 					devAliases.add(tempDev);
+ 					dev1  = tempDev;
+ 					
 				}
 				else{
 					System.err.println(repName + ";" + dev1.getName() + ";"+dev2.getName());
@@ -76,13 +80,13 @@ public class AliasesIdentifier {
 		return devAliases;
 	}
 
-	private static void mergeAliasesAuthorship(Developer dev1, Developer dev2) {
-		List<AuthorshipInfo> mergedList = new ArrayList<AuthorshipInfo>(dev1.getAuthorshipInfos());
+	private static Developer mergeAliasesAuthorship(Developer dev1, Developer dev2) {
+		Developer tempDev =  new Developer(dev1.getName(), dev1.getEmail(), dev1.getUserName(), DevStatus.TEMPORARY);
+		tempDev.setAuthorshipInfos(createNewAuthorshipList(dev1.getAuthorshipInfos(), tempDev));
 		for (AuthorshipInfo authorshipInfo : dev2.getAuthorshipInfos()) {
-			AuthorshipInfo mergeAuthorship =  getAuthorship(authorshipInfo.getFile().getPath(), mergedList);
+			AuthorshipInfo mergeAuthorship =  cloneAuthorship( getAuthorship(authorshipInfo.getFile().getPath(), tempDev.getAuthorshipInfos()), tempDev);
 			if (mergeAuthorship == null){
-				authorshipInfo.setDeveloper(dev1);
-				mergedList.add(authorshipInfo);
+				mergeAuthorship = cloneAuthorship(authorshipInfo, tempDev);
 			}
 			else{
 				if (authorshipInfo.isFirstAuthor())
@@ -93,16 +97,48 @@ public class AliasesIdentifier {
 				mergeAuthorship.setnAddDeliveries(mergeAuthorship.getnAddDeliveries()+authorshipInfo.getnAddDeliveries());
 				mergeAuthorship.updateDOA();
 			}
+			tempDev.addAuthorshipInfo(mergeAuthorship);
 		}
-		dev1.setAuthorshipInfos(mergedList);
+		dev1.setAsRemoved();
 		dev2.setAsRemoved();
+		return tempDev;
+	}
+
+
+
+	private static List<AuthorshipInfo> createNewAuthorshipList(
+			List<AuthorshipInfo> authorshipInfos, Developer dev) {
+		List<AuthorshipInfo> list = new ArrayList<AuthorshipInfo>();
+		for (AuthorshipInfo authorshipInfo : authorshipInfos) {
+			list.add(cloneAuthorship(authorshipInfo, dev));
+			
+		}
+		return list;
+	}
+
+
+
+	private static AuthorshipInfo cloneAuthorship(AuthorshipInfo authorshipInfo, Developer dev) {
+		if (authorshipInfo.getDeveloper().getStatus() == DevStatus.TEMPORARY)
+			return authorshipInfo;
+		if(authorshipInfo == null)
+			return null;
+		AuthorshipInfo newAuthorshipInfo = new AuthorshipInfo(authorshipInfo.getFile(), dev);
+		if (authorshipInfo.isFirstAuthor())
+			newAuthorshipInfo.setAsFirstAuthor();
+		if (authorshipInfo.isSecondaryAuthor())
+			newAuthorshipInfo.setAsSecondaryAuthor();
+		newAuthorshipInfo.setnAddDeliveries(authorshipInfo.getnAddDeliveries());
+		newAuthorshipInfo.setnDeliveries(authorshipInfo.getnDeliveries());
+		newAuthorshipInfo.updateDOA();
+		return newAuthorshipInfo;
 	}
 
 
 
 	private static AuthorshipInfo getAuthorship(String path,
-			List<AuthorshipInfo> mergedList) {
-		for (AuthorshipInfo authorshipInfo : mergedList) {
+			List<AuthorshipInfo> list) {
+		for (AuthorshipInfo authorshipInfo : list) {
 			if (authorshipInfo.getFile().getPath().equals(path))
 				return authorshipInfo;
 		}

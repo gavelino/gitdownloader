@@ -1,5 +1,6 @@
 package gaa.authorship.dao;
 
+import gaa.authorship.model.DevStatus;
 import gaa.authorship.model.Developer;
 import gaa.authorship.model.Repository;
 import gaa.dao.GenericDAO;
@@ -75,6 +76,8 @@ public class DeveloperDAO extends GenericDAO<Developer> {
 	
 	public void update(Developer o){
 		Developer persistedDeveloper = this.em.find(Developer.class, o.getId());
+		if (o.getStatus() == DevStatus.REMOVED && persistedDeveloper == null)
+			return;
 		if (persistedDeveloper != null){
 			persistedDeveloper.setAuthorshipInfos(o.getAuthorshipInfos());
 			persistedDeveloper.setEmail(o.getEmail());
@@ -82,6 +85,8 @@ public class DeveloperDAO extends GenericDAO<Developer> {
 			persistedDeveloper.setNewUserName(o.getNewUserName());
 			if (o.isRemoved())
 				persistedDeveloper.setAsRemoved();
+			persistedDeveloper.setStatus(o.getStatus());
+			persistedDeveloper.setOrigemNames(o.getOrigemNames());
 			super.merge(persistedDeveloper);
 		}
 	}
