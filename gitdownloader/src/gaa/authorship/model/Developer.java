@@ -134,6 +134,7 @@ public class Developer {
 
 	public void setAsRemoved() {
 		this.removed = true;
+		this.status = DevStatus.REMOVED;
 	}
 
 	public DevStatus getStatus() {
