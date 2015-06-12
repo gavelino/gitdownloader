@@ -27,6 +27,17 @@ public class DeveloperDAO extends GenericDAO<Developer> {
 	public Developer find(Object id) {
 		return this.em.find(Developer.class, id);
 	}
+	public List<Developer> getDevelopers(String repositoryName, String newusername){
+
+		if (newusername.contains("\'"))
+			newusername = newusername.replace("'", "''");
+		String hql = "SELECT d FROM Repository r "
+				+ "JOIN r.developers as d "
+				
+				+ "WHERE r.fullName = "+ "\'" + repositoryName +"\' AND d.removed = \'FALSE\' AND d.newUserName = "+ "\'" + newusername +"\'";
+		Query q = em.createQuery(hql);
+		return q.getResultList();
+	}
 	
 	@Override
 	public List<Developer> findAll(Class clazz) {
@@ -42,13 +53,9 @@ public class DeveloperDAO extends GenericDAO<Developer> {
 	
 	public List<Developer> getAllDevelopers(String repositoryName){
 		String hql = "SELECT d FROM Repository r "
-				+ "JOIN r.developers d "
+				+ "JOIN r.developers as d "
 				
-				+ "WHERE r.fullName = "+ "\'" + repositoryName +"\'";
-//		String hql = "SELECT d FROM developer d "
-//				+ "JOIN repository_developer r_d ON r_d.developers_id = d.id "
-//				+ "JOIN repository r ON r.id = r_d.repository_id "
-//				+ "WHERE r.fullname = "+ "\"" + repositoryName +"\";";
+				+ "WHERE r.fullName = "+ "\'" + repositoryName +"\' AND d.removed = \'FALSE\' ";
 		Query q = em.createQuery(hql);
 		return q.getResultList();
 	}
@@ -84,5 +91,17 @@ public class DeveloperDAO extends GenericDAO<Developer> {
 				persistedDeveloper.setAsRemoved();
 			super.merge(persistedDeveloper);
 		}
+	}
+
+	public List<String> getDuplicatedUsernames(String repositoryName) {
+		String hql = "SELECT newusername FROM repository r "
+				+ "JOIN repository_developer rd ON rd.repository_id = r.id "
+				+ "JOIN developer d ON rd.developers_id = d.id "
+				+ "	WHERE r.fullname = "+ "\'" + repositoryName +"\' AND  removed = \'FALSE\' "
+				+ "GROUP BY newusername "
+				+ "HAVING COUNT(DISTINCT username)>1 "
+				+ "ORDER BY newusername;";
+		Query q = em.createNativeQuery(hql);
+		return q.getResultList();
 	}
 }

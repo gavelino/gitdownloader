@@ -28,21 +28,53 @@ public class AliasesIdentifier {
 		RepositoryDAO repDAO = new RepositoryDAO();
 		DeveloperDAO devDAO = new DeveloperDAO();
 		//StringUtils.getLevenshteinDistance("", "");
-		
 		for (Repository rep : repDAO.findAll()) {
 			if (rep.getStatus() != RepositoryStatus.REMOVED) {
+				joinAlias(rep.getFullName(), devDAO);
 				List<Developer> developers = devDAO.getAllDevelopers(rep
 						.getFullName());
 				Map<Developer, List<Developer>> aliases = findAliases(
 						developers, 1, 3);
 				List<Developer> devAliases = treatAliases(rep.getFullName(),
 						aliases);
-				//updateDeveloperAliases(devDAO, devAliases);
+				updateDeveloperAliases(devDAO, devAliases);
 			}
 		}
 	}
 
 	
+
+	private static void joinAlias(String repositoryName, DeveloperDAO devDAO) {
+		List<String> developersUsernames = devDAO.getDuplicatedUsernames(repositoryName);
+		for (String devUsername : developersUsernames) {
+			if (!devUsername.isEmpty()) {
+				List<Developer> devs = devDAO.getDevelopers(repositoryName,
+						devUsername);
+				Developer mainDev = devs.get(0);
+				for (Developer developer : devs) {
+					if (developer != mainDev)
+						mergeAliasesAuthorship(mainDev, developer);
+				}
+				for (Developer developer : devs) {
+					devDAO.update(developer);
+				}
+			}
+			
+		}
+		
+	}
+
+	
+
+	private static AuthorshipInfo test(Developer developer, String path) {
+		for (AuthorshipInfo authorshipInfo : developer.getAuthorshipInfos()) {
+			if (authorshipInfo.getFile().getPath().equals(path))
+				return authorshipInfo;
+		}
+		return null;
+	}
+
+
 
 	private static void updateDeveloperAliases(DeveloperDAO devDAO,
 			List<Developer> aliases) {
