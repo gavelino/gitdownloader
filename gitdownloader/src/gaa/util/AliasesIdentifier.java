@@ -59,14 +59,15 @@ public class AliasesIdentifier {
 			Developer dev1 = entry.getKey();
 			for (Developer dev2 : entry.getValue()) {
 				if (NotAlias.isAlias(repName, dev1.getName(), dev2.getName())){
- 					System.out.println(repName + ";" + dev1.getName() + ";"+dev2.getName());
+ 					if(!dev1.getName().equals(dev2.getName()))
+ 							System.out.println(repName + ";" + dev1.getName() + ";"+dev2.getName());
  					dev2.setNewUserName(dev1.getName());
  					mergeAliasesAuthorship(dev1, dev2);
  					devAliases.add(dev1);
  					devAliases.add(dev2);
 				}
 				else{
-					System.err.println(repName + ";" + dev1.getName() + ";"+dev2.getName());
+					System.err.println("-"+repName + ";" + dev1.getName() + ";"+dev2.getName());
 					
 				}
 			}
@@ -125,13 +126,18 @@ public class AliasesIdentifier {
 		Map<Developer, List<Developer>> aliases =  new HashMap<Developer, List<Developer>>();
 		for (Developer developer1 : copyList) {
 			copyList.remove (developer1);
+			if (developer1.getName().isEmpty())
+				continue;
 			for (Developer developer2 : copyList) {
 				if(developer1.getId()!=developer2.getId() && developer1.getName().length()>=minSize){
+					if (developer2.getName().isEmpty())
+						continue;
 					int localDistance = StringUtils.getLevenshteinDistance(convertToUTFLower(developer1.getName()), convertToUTFLower(developer2.getName()));
 					if (distance == -1){
 						newDistance = developer1.getName().split(" ").length;
 					}
-					if (!developer1.getName().equals(developer2.getName()) && localDistance<=newDistance){
+//					if (!developer1.getName().equals(developer2.getName()) && localDistance<=newDistance){
+					if (localDistance<=newDistance){
 						if(!aliases.containsKey(developer1))
 							aliases.put(developer1, new ArrayList<Developer>());
 						aliases.get(developer1).add(developer2);

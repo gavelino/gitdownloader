@@ -44,7 +44,7 @@ public class DeveloperDAO extends GenericDAO<Developer> {
 		String hql = "SELECT d FROM Repository r "
 				+ "JOIN r.developers d "
 				
-				+ "WHERE r.fullName = "+ "\'" + repositoryName +"\'";
+				+ "WHERE r.fullName = "+ "\'" + repositoryName +"\' AND d.removed = \'FALSE\'";
 //		String hql = "SELECT d FROM developer d "
 //				+ "JOIN repository_developer r_d ON r_d.developers_id = d.id "
 //				+ "JOIN repository r ON r.id = r_d.repository_id "
