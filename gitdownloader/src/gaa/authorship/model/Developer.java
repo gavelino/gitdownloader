@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,25 +26,41 @@ public class Developer {
 	private String newUserName;
 	private boolean removed;
 	
-
+	@Enumerated(EnumType.STRING)
+	private DevStatus status;
+	
+	@OneToMany(cascade = { CascadeType.REFRESH })
+	private List<Developer> origemDevelopers;
+	
 	@OneToMany(cascade = { CascadeType.REFRESH })
 	private List<AuthorshipInfo> authorshipInfos = new ArrayList<AuthorshipInfo>();
 	
 	public Developer() {
 		// TODO Auto-generated constructor stub
 	}
-	
 	public Developer(String name, String email, String userName) {
 		super();
 		this.name = name;
 		this.email = email;
 		this.userName = userName;
+		this.newUserName = name;
 		this.removed = false;
+		this.status = DevStatus.DEFAULT;
+	}
+	public Developer(String name, String email, String userName, DevStatus status) {
+		super();
+		this.name = name;
+		this.email = email;
+		this.userName = userName;
+		this.newUserName = name;
+		this.removed = false;
+		this.status = status;
 	}
 	
 	public Developer(String userName) {
 		super();
 		this.userName = userName;
+		this.newUserName = name;
 		this.removed=false;
 	}
 //	public static String createUserName(String name, String email){
@@ -115,6 +134,26 @@ public class Developer {
 
 	public void setAsRemoved() {
 		this.removed = true;
+		this.status = DevStatus.REMOVED;
 	}
+
+	public DevStatus getStatus() {
+		return status;
+	}
+	public void setStatus(DevStatus status) {
+		this.status = status;
+	}
+	public List<Developer> getOrigemDevelopers() {
+		return origemDevelopers;
+	}
+	public void addOrigemDeveloper(Developer dev) {
+		if(origemDevelopers == null)
+			origemDevelopers = new ArrayList<Developer>();
+		origemDevelopers.add(dev);
+	}
+	public void setOrigemDevelopers(List<Developer> origemDevelopers) {
+		this.origemDevelopers = origemDevelopers;
+	}
+	
 	
 }

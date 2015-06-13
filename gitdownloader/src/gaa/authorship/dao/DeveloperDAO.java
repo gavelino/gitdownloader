@@ -89,6 +89,8 @@ public class DeveloperDAO extends GenericDAO<Developer> {
 			persistedDeveloper.setNewUserName(o.getNewUserName());
 			if (o.isRemoved())
 				persistedDeveloper.setAsRemoved();
+			persistedDeveloper.setStatus(o.getStatus());
+			persistedDeveloper.setOrigemDevelopers(o.getOrigemDevelopers());
 			super.merge(persistedDeveloper);
 		}
 	}

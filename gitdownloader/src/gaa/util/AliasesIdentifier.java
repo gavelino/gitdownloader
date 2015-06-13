@@ -16,6 +16,7 @@ import gaa.authorship.dao.DeveloperDAO;
 import gaa.authorship.dao.FileDAO;
 import gaa.authorship.dao.RepositoryDAO;
 import gaa.authorship.model.AuthorshipInfo;
+import gaa.authorship.model.DevStatus;
 import gaa.authorship.model.Developer;
 import gaa.authorship.model.Repository;
 import gaa.authorship.model.RepositoryStatus;
@@ -46,14 +47,18 @@ public class AliasesIdentifier {
 
 	private static void joinAlias(String repositoryName, DeveloperDAO devDAO) {
 		List<String> developersUsernames = devDAO.getDuplicatedUsernames(repositoryName);
+		System.out.println("Usernames with different e-mails = "+developersUsernames.size());
+		int count = 0;
 		for (String devUsername : developersUsernames) {
 			if (!devUsername.isEmpty()) {
 				List<Developer> devs = devDAO.getDevelopers(repositoryName,
 						devUsername);
 				Developer mainDev = devs.get(0);
 				for (Developer developer : devs) {
-					if (developer != mainDev)
+					if (developer != mainDev){
 						mergeAliasesAuthorship(mainDev, developer);
+						count++;
+					}
 				}
 				for (Developer developer : devs) {
 					devDAO.update(developer);
@@ -61,6 +66,7 @@ public class AliasesIdentifier {
 			}
 			
 		}
+		System.out.println("Total = "+count);
 		
 	}
 
@@ -127,6 +133,8 @@ public class AliasesIdentifier {
 			}
 		}
 		dev1.setAuthorshipInfos(mergedList);
+		dev1.setStatus(DevStatus.MERGED);
+		dev1.addOrigemDeveloper(dev2);
 		dev2.setAsRemoved();
 	}
 
