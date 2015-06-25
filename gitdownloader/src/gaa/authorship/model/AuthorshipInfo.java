@@ -31,21 +31,21 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 	// Ignore extra adds
 	public double getDOA(){
 		if (doa == 0 )
-			doa = 3.293 + 1.098*(firstAuthor?1:0) + 0.164*nDeliveries - 0.332* Math.log(1 + this.getnAcceptances());
+			doa = 3.293 + 1.098*(firstAuthor?1:0) + 0.164*nDeliveries - 0.321 * Math.log(1 + this.getnAcceptances());
 		return doa;
 	}
 
 	// Take every new add for a new developer as first author. Ignore multiple Adds from the same developer.
 	public double getDoaMultAuthor() {
 		if (doaMultAuthor == 0 )
-			doaMultAuthor = 3.293 + 1.098*(firstAuthor?1:(secondaryAuthor?1:0)) + 0.164*nDeliveries - 0.332* Math.log(1 + this.getnAcceptances());
+			doaMultAuthor = 3.293 + 1.098*(firstAuthor?1:(secondaryAuthor?1:0)) + 0.164*nDeliveries - 0.321 * Math.log(1 + this.getnAcceptances());
 		return doaMultAuthor;
 	}
 	
 	// Take every new add for a new developer as first author. Ignore multiple Adds from the same developer.
 	public double getDoaAddDeliveries() {
 		if (doaAddDeliveries == 0 )
-			doaAddDeliveries = 3.293 + 1.098*(firstAuthor?1:0) + 0.164*(nDeliveries + nAddDeliveries) - 0.332* Math.log(1 + this.getnAcceptancesWithAdds());
+			doaAddDeliveries = 3.293 + 1.098*(firstAuthor?1:0) + 0.164*(nDeliveries + nAddDeliveries) - 0.321 * Math.log(1 + this.getnAcceptancesWithAdds());
 		return doaAddDeliveries;
 	}
 	
@@ -60,9 +60,9 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 	}
 
 	public void updateDOA(){
-		this.doa = 3.293 + 1.098*(firstAuthor?1:(secondaryAuthor?1:0)) + 0.164*nDeliveries - 0.332* Math.log(1 + this.getnAcceptances());
-		this.doaMultAuthor = 3.293 + 1.098*(firstAuthor?1:(secondaryAuthor?1:0)) + 0.164*nDeliveries - 0.332* Math.log(1 + this.getnAcceptances());
-		this.doaAddDeliveries = 3.293 + 1.098*(firstAuthor?1:0) + 0.164*(nDeliveries + nAddDeliveries) - 0.332* Math.log(1 + this.getnAcceptancesWithAdds());
+		this.doa = 3.293 + 1.098*(firstAuthor?1:(secondaryAuthor?1:0)) + 0.164*nDeliveries - 0.321 * Math.log(1 + this.getnAcceptances());
+		this.doaMultAuthor = 3.293 + 1.098*(firstAuthor?1:(secondaryAuthor?1:0)) + 0.164*nDeliveries - 0.321 * Math.log(1 + this.getnAcceptances());
+		this.doaAddDeliveries = 3.293 + 1.098*(firstAuthor?1:0) + 0.164*(nDeliveries + nAddDeliveries) - 0.321 * Math.log(1 + this.getnAcceptancesWithAdds());
 		if (this.file.getBestDoa()<doa)
 			this.file.setBestAuthorshipInfo(this);
 		if (this.file.getBestDoaMult()<doaMultAuthor)
