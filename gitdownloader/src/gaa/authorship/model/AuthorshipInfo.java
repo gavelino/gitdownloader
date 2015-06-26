@@ -1,5 +1,9 @@
 package gaa.authorship.model;
 
+import java.util.List;
+
+import gaa.authorship.dao.AuthorshipInfoDAO;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,6 +28,9 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 	private double doa;
 	private double doaMultAuthor;
 	private double doaAddDeliveries;
+	
+	
+	
 	
 	public AuthorshipInfo() {
 	}
@@ -144,7 +151,11 @@ public class AuthorshipInfo implements Comparable<AuthorshipInfo>{
 		this.nAddDeliveries = nAddDeliveries;
 	}
 
-
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		return super.equals(obj);
+	}
 
 
 	

@@ -1,11 +1,14 @@
 package gaa.authorship.dao;
 
 import gaa.authorship.model.AuthorshipInfo;
+import gaa.authorship.model.Developer;
 import gaa.authorship.model.DeveloperAuthorshipInfo;
 import gaa.dao.GenericDAO;
 import gaa.dao.PersistThread;
 
 import java.util.List;
+
+import javax.persistence.Query;
 
 
 public class AuthorshipInfoDAO extends GenericDAO<AuthorshipInfo> {
@@ -28,7 +31,6 @@ public class AuthorshipInfoDAO extends GenericDAO<AuthorshipInfo> {
 	
 	@Override
 	public List<AuthorshipInfo> findAll(Class clazz) {
-		// TODO Auto-generated method stub
 		return super.findAll(AuthorshipInfo.class);
 	}
 	
@@ -58,5 +60,21 @@ public class AuthorshipInfoDAO extends GenericDAO<AuthorshipInfo> {
 			}
 		}
 		thread.start();
+	}
+	
+	public List<AuthorshipInfo> getAuthorshipInfoList(String repositoryName){
+		String hql = "SELECT a FROM Repository r "
+				+ "JOIN r.files as f "
+				+ "JOIN f.authorshipInfos a "
+				
+				+ "WHERE r.fullName = "+ "\'" + repositoryName +"\' ";
+		Query q = em.createQuery(hql);
+		return q.getResultList();
+	}
+	
+	public void updateDOA(AuthorshipInfo a){
+		AuthorshipInfo persistedAuthorshipInfo = this.em.find(AuthorshipInfo.class, a.getId());
+		persistedAuthorshipInfo.updateDOA();
+		super.merge(persistedAuthorshipInfo);
 	}
 }

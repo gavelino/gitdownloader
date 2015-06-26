@@ -1,5 +1,6 @@
 package gaa.authorship;
 
+import gaa.authorship.dao.AuthorshipInfoDAO;
 import gaa.authorship.dao.RepositoryDAO;
 import gaa.authorship.model.AuthorshipInfo;
 import gaa.authorship.model.File;
@@ -23,8 +24,22 @@ import java.util.Set;
 
 public class DOACalculator {
 	public static void main(String[] args) {
-		ProjectInfoDAO piDAO = new ProjectInfoDAO();
-		List<Repository> repositories = getRepositories(piDAO.findNotFiltered());
+		DOARecalc();
+//		ProjectInfoDAO piDAO = new ProjectInfoDAO();
+//		List<Repository> repositories = getRepositories(piDAO.findNotFiltered());
+	}
+	
+	public static void DOARecalc() {
+		AuthorshipInfoDAO aiDAO = new AuthorshipInfoDAO();
+		RepositoryDAO repDAO = new RepositoryDAO();
+		for (String repName : repDAO.getAllRepositoryNames()) {
+			List<AuthorshipInfo> authorshipInfoList =  aiDAO.getAuthorshipInfoList(repName);
+			for (AuthorshipInfo authorshipInfo : authorshipInfoList) {
+				aiDAO.updateDOA(authorshipInfo);
+			}
+		}
+		
+		
 	}
 
 	private static List<Repository> getRepositories(List<ProjectInfo> projects) {
