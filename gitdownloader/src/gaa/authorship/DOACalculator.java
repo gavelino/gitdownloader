@@ -32,10 +32,24 @@ public class DOACalculator {
 	public static void DOARecalc() {
 		AuthorshipInfoDAO aiDAO = new AuthorshipInfoDAO();
 		RepositoryDAO repDAO = new RepositoryDAO();
-		for (String repName : repDAO.getAllRepositoryNames()) {
-			List<AuthorshipInfo> authorshipInfoList =  aiDAO.getAuthorshipInfoList(repName);
-			for (AuthorshipInfo authorshipInfo : authorshipInfoList) {
-				aiDAO.updateDOA(authorshipInfo);
+		for (Repository rep : repDAO.findAll()) {
+			if (rep.getStatus() == RepositoryStatus.RECALC) {
+				System.out.format("%s (%s): Recalculating DOA...\n",
+						rep.getFullName(), new Date());
+				for (File file : rep.getFiles()) {
+					for (AuthorshipInfo authorshipInfo : file.getAuthorshipInfos()) {
+						authorshipInfo.updateDOA();
+						
+					}
+				}
+				System.out.format("%s (%s): Updating DOA...\n",
+						rep.getFullName(), new Date());
+				rep.setStatus(RepositoryStatus.DOA_CALCULATED); 
+				repDAO.update(rep);
+			}
+			else{
+				System.out.format("%s (%s)\n",
+						rep.getFullName(), rep.getStatus());
 			}
 		}
 		

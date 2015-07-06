@@ -45,6 +45,9 @@ public abstract class GenericDAO<T> {
 				tx.rollback();
 			throw e;
 		}
+		finally{
+			this.em.clear();
+		}
 	}
 	
 	public void merge(T o) {
@@ -57,6 +60,9 @@ public abstract class GenericDAO<T> {
 			if(tx != null && tx.isActive()) 
 				tx.rollback();
 			throw e;
+		}
+		finally{
+			this.em.clear();
 		}
 	}
 

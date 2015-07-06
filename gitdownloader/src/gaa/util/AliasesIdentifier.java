@@ -47,7 +47,7 @@ public class AliasesIdentifier {
 
 	private static void joinAlias(String repositoryName, DeveloperDAO devDAO) {
 		List<String> developersUsernames = devDAO.getDuplicatedUsernames(repositoryName);
-		System.out.println("Usernames with different e-mails = "+developersUsernames.size());
+		System.out.println(repositoryName +";emailsdiff;"+developersUsernames.size());
 		int count = 0;
 		for (String devUsername : developersUsernames) {
 			if (!devUsername.isEmpty()) {
@@ -66,7 +66,7 @@ public class AliasesIdentifier {
 			}
 			
 		}
-		System.out.println("Total = "+count);
+		System.out.println(repositoryName +";total;"+count);
 		
 	}
 
@@ -104,7 +104,7 @@ public class AliasesIdentifier {
  					devAliases.add(dev2);
 				}
 				else{
-					System.err.println(repName + ";" + dev1.getName() + ";"+dev2.getName());
+					System.err.println("-"+repName + ";" + dev1.getName() + ";"+dev2.getName());
 					
 				}
 			}
