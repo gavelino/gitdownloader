@@ -123,8 +123,12 @@ public class File {
 	}
 
 	public void setBestAuthorshipInfo(AuthorshipInfo bestAuthorshipInfo) {
+		if (bestAuthorshipInfo == null)
+			this.bestDoa = 0;
+		else
+			this.bestDoa = bestAuthorshipInfo.getDOA();
+			
 		this.bestAuthorshipInfo = bestAuthorshipInfo;
-		this.bestDoa = bestAuthorshipInfo.getDOA();
 	}
 
 	public AuthorshipInfo getBestAuthorshipInfoMult() {
@@ -132,10 +136,23 @@ public class File {
 	}
 
 	public void setBestAuthorshipInfoMult(AuthorshipInfo bestAuthorshipInfo) {
+		if (bestAuthorshipInfo == null)
+				this.bestDoaMult = 0;
+		else
+			this.bestDoaMult = bestAuthorshipInfo.getDoaMultAuthor();
+		
 		this.bestAuthorshipInfoMult = bestAuthorshipInfo;
-		this.bestDoaMult = bestAuthorshipInfo.getDoaMultAuthor();
 	}
 
+	public void setBestAuthorshipAddDeliveries(
+			AuthorshipInfo bestAuthorshipAddDeliveries) {
+		if (bestAuthorshipAddDeliveries == null)
+			this.bestDoaAddDeliveries = 0;
+		else
+			this.setBestDoaAddDeliveries(bestAuthorshipAddDeliveries.getDoaAddDeliveries());
+			
+		this.bestAuthorshipAddDeliveries = bestAuthorshipAddDeliveries;
+	}
 	public double getBestDoa() {
 		return bestDoa;
 	}
@@ -164,11 +181,6 @@ public class File {
 		return bestAuthorshipAddDeliveries;
 	}
 
-	public void setBestAuthorshipAddDeliveries(
-			AuthorshipInfo bestAuthorshipAddDeliveries) {
-		this.setBestDoaAddDeliveries(bestAuthorshipAddDeliveries.getDOA());
-		this.bestAuthorshipAddDeliveries = bestAuthorshipAddDeliveries;
-	}
 
 	public double getBestDoaAddDeliveries() {
 		return bestDoaAddDeliveries;

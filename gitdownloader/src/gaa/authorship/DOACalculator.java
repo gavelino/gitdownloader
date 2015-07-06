@@ -37,6 +37,9 @@ public class DOACalculator {
 				System.out.format("%s (%s): Recalculating DOA...\n",
 						rep.getFullName(), new Date());
 				for (File file : rep.getFiles()) {
+					file.setBestAuthorshipInfo(null);
+					file.setBestAuthorshipInfoMult(null);
+					file.setBestAuthorshipAddDeliveries(null);
 					for (AuthorshipInfo authorshipInfo : file.getAuthorshipInfos()) {
 						authorshipInfo.updateDOA();
 						
