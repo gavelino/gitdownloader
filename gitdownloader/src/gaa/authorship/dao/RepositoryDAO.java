@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.persistence.Query;
 
 import gaa.authorship.FileAuthors;
+import gaa.authorship.model.File;
 import gaa.authorship.model.Repository;
 import gaa.dao.GenericDAO;
 import gaa.dao.PersistThread;
@@ -83,6 +84,16 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 		}
 		return maps;
 	}
+	
+	public List<File> getFiles(String repositoryName){
+		String hql = "SELECT fi FROM repository_file rf	"
+				+ "JOIN repository r ON r.id = rf.repository_id "
+				+ "JOIN file fi ON fi.id = rf.files_id "
+				+ "WHERE r.status <> \'REMOVED\' AND r.fullname = \'" +  repositoryName +"\' ;" ;
+		Query q = em.createNativeQuery(hql);
+		return q.getResultList();
+	}
+	
 	public List<FileAuthors> getFilesAuthorList(String repositoryName){
 		String hql = "SELECT d.username, fi.path FROM repository_file rf	"
 				+ "JOIN repository r ON r.id = rf.repository_id "
