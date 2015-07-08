@@ -8,18 +8,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TruckFactor {
-	public static void main(String[] args) {
-		Map<Integer, Double> truckDist = getTruckFactor("git/git");
+public abstract class TruckFactor {
+	RepositoryDAO repDAO;
+	
+	public TruckFactor() {
+		repDAO = new RepositoryDAO();
 	}
-
-	private static Map<Integer, Double> getTruckFactor(String repName) {
-		Map<Integer, Double> truckDist =  new HashMap<Integer, Double>();
-		RepositoryDAO repDAO = new RepositoryDAO();
-		List<File> files =  repDAO.getFiles(repName);
-		
-		return null;
-	}
+	
+	public abstract Map<Integer, Float> getTruckFactor(String repName);
 	
 	
 }

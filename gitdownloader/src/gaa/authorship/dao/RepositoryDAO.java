@@ -94,6 +94,38 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 		return q.getResultList();
 	}
 	
+	public Set<Long> getFilesSet(String repositoryName){
+		String hql = "SELECT fi.id FROM repository_file rf	"
+				+ "JOIN repository r ON r.id = rf.repository_id "
+				+ "JOIN file fi ON fi.id = rf.files_id "
+				+ "WHERE r.status <> \'REMOVED\' AND r.fullname = \'" +  repositoryName +"\' ;" ;
+		Query q = em.createNativeQuery(hql);
+		return new HashSet<Long>(q.getResultList());
+	}
+	
+	public Map<Long, Set<Long>> getFilesAuthorMap(String repositoryName){
+		Map<Long, Set<Long>> map = new HashMap<Long, Set<Long>>();
+		String hql = "SELECT d.id, fi.id FROM repository_file rf	"
+				+ "JOIN repository r ON r.id = rf.repository_id "
+				+ "JOIN file fi ON fi.id = rf.files_id "
+				+ "JOIN authorshipinfo ai ON ai.id = fi.bestauthorshipinfo_id "
+				+ "JOIN developer d ON ai.developer_id = d.id "
+				+ "WHERE r.fullname = \'" +  repositoryName +"\' " 
+				+ "ORDER BY fi.path;";
+		Query q = em.createNativeQuery(hql);
+		List<Object[]> authorsFiles = q.getResultList();
+		
+		List<FileAuthors> fileAuthors = new ArrayList<FileAuthors>();
+		for (Object[] objects : authorsFiles) {
+			Long authorId = (Long)objects[0];
+			Long fileId = (Long)objects[1];
+			if(!map.containsKey(authorId))
+				map.put(authorId, new HashSet<Long>());
+			map.get(authorId).add(fileId);
+		}
+		return map;
+	}
+	
 	public List<FileAuthors> getFilesAuthorList(String repositoryName){
 		String hql = "SELECT d.username, fi.path FROM repository_file rf	"
 				+ "JOIN repository r ON r.id = rf.repository_id "
@@ -112,7 +144,7 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 		return fileAuthors;
 	}
 	public List<String> getAllRepositoryNames(){
-		String hql = "SELECT fullname FROM repository;";
+		String hql = "SELECT fullname FROM repository r WHERE r.status <> \'REMOVED\'  ;";
 		Query q = em.createNativeQuery(hql);
 		return q.getResultList();
 	}
@@ -127,5 +159,10 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 			persistedRepository.setStatus(o.getStatus());
 			super.merge(persistedRepository);
 		}
+	}
+
+	public int getNumDevelopers() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
