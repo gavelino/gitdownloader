@@ -121,6 +121,7 @@ public class LogCommitFileDAO extends GenericDAO<LogCommitFileInfo>{
 				+ "JOIN logcommitfileinfo lcfi ON ci_lcfi.logcommitfiles_id = lcfi.id "
 				+ "WHERE ci.REPOSITORYNAME = \'" +  repositoryName +"\'" + " AND (lcfi.newfilename = \'" +  path +"\'  OR lcfi.oldfilename = \'" +  path +"\' ) "
 						+ "ORDER BY ci.authordate;";
+		System.err.println("Verificar se deve user newusername ao inves de username!");
 		Query q = em.createNativeQuery(hql);
 		return q.getResultList();
 		
@@ -157,6 +158,7 @@ public class LogCommitFileDAO extends GenericDAO<LogCommitFileInfo>{
 				+ "WHERE ci.REPOSITORYNAME = \'" +  repositoryName +"\'" + " AND fi.filtered = \'FALSE\' "
 						+ "ORDER BY lcfi.newfilename, ci.authordate;";
 		Query q = em.createNativeQuery(hql);
+		System.err.println("Verificar se deve user newusername ao inves de username!");
 		return q.getResultList();
 		
 	}

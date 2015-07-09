@@ -64,13 +64,13 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 	}
 	
 	public Map<String, Set<String>> getFilesAuthor(String repositoryName){
-		String hql = "SELECT d.username, fi.path FROM repository_file rf	"
+		String hql = "SELECT d.newusername, fi.path FROM repository_file rf	"
 				+ "JOIN repository r ON r.id = rf.repository_id "
 				+ "JOIN file fi ON fi.id = rf.files_id "
 				+ "JOIN authorshipinfo ai ON ai.id = fi.bestauthorshipinfo_id "
 				+ "JOIN developer d ON ai.developer_id = d.id "
 				+ "WHERE r.status <> \'REMOVED\' AND r.fullname = \'" +  repositoryName +"\' " 
-				+ "ORDER BY d.username;";
+				+ "ORDER BY d.newusername;";
 		Query q = em.createNativeQuery(hql);
 		List<Object[]> authorsFiles = q.getResultList();
 		
@@ -127,7 +127,7 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 	}
 	
 	public List<FileAuthors> getFilesAuthorList(String repositoryName){
-		String hql = "SELECT d.username, fi.path FROM repository_file rf	"
+		String hql = "SELECT d.newusername, fi.path FROM repository_file rf	"
 				+ "JOIN repository r ON r.id = rf.repository_id "
 				+ "JOIN file fi ON fi.id = rf.files_id "
 				+ "JOIN authorshipinfo ai ON ai.id = fi.bestauthorshipinfo_id "
