@@ -31,8 +31,8 @@ import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 import aserg.gtf.dao.ProjectInfoDAO;
-import aserg.gtf.model.FileInfo;
 import aserg.gtf.model.LanguageInfo;
+import aserg.gtf.model.NewFileInfo;
 import aserg.gtf.model.ProjectInfo;
 import aserg.gtf.model.ProjectStatus;
 
@@ -149,7 +149,7 @@ public class GitDownloader {
 	private static void addProjectFilesInfo(GitServiceImpl gitService, ProjectInfo projectInfo)
 			throws IOException {
 		FileInfoAux fileAux =  gitService.getRepositoriesFiles(projectInfo);;
-		List<FileInfo> files = fileAux.files;
+		List<NewFileInfo> files = fileAux.files;
 		projectInfo.setFiles(files);
 		projectInfo.setNumFiles(fileAux.numFiles);
 	}

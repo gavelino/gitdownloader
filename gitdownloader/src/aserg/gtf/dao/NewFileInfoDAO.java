@@ -10,7 +10,6 @@ import javax.persistence.Query;
 
 import aserg.gtf.authorship.model.DeveloperAuthorshipInfo;
 import aserg.gtf.filter.filefilter.FileType;
-import aserg.gtf.model.FileInfo;
 import aserg.gtf.model.NewFileInfo;
 import aserg.gtf.model.ProjectInfo;
 
