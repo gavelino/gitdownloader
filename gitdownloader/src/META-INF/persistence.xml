@@ -28,7 +28,7 @@
 
 		<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
 		
-		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gitdownloader-new" />
+		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gitdownloader" />
 		<property name="javax.persistence.jdbc.user" value="gitdownloader" />
 		<property name="javax.persistence.jdbc.password" value="gitdownloader" />
 		
@@ -48,8 +48,8 @@
 		
 		<property name="eclipselink.logging.level" value="INFO"/>
 		
-		<property name="eclipselink.ddl-generation.output-mode" value="database" />
-<!-- 		<property name="eclipselink.ddl-generation" value="create-or-extend-tables" /> -->
+<!-- 		<property name="eclipselink.ddl-generation.output-mode" value="database" /> -->
+		<property name="eclipselink.ddl-generation" value="create-or-extend-tables" />
 <!-- 		<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> -->
 <!-- 		<property name="eclipselink.ddl-generation" value="create-tables" /> -->
 <!-- 		<property name="eclipselink.ddl-generation" value="none" /> -->
