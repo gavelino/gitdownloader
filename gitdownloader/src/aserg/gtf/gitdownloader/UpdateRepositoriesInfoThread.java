@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.List;
 
 import aserg.gtf.dao.ProjectInfoDAO;
+import aserg.gtf.model.FileInfo;
 import aserg.gtf.model.LanguageInfo;
-import aserg.gtf.model.NewFileInfo;
 import aserg.gtf.model.ProjectInfo;
 import aserg.gtf.model.ProjectStatus;
 
@@ -28,7 +28,7 @@ public class UpdateRepositoriesInfoThread extends Thread {
 			FileInfoAux fileAux;
 			try {
 				fileAux = gitService.getRepositoriesFiles(projectInfo);
-				List<NewFileInfo> files = fileAux.files;
+				List<FileInfo> files = fileAux.files;
 				projectInfo.setFiles(files);
 				projectInfo.setNumFiles(fileAux.numFiles);
 				
@@ -51,7 +51,7 @@ public class UpdateRepositoriesInfoThread extends Thread {
 			GitServiceImpl gitService, ProjectInfo projectInfo)
 			throws IOException {
 		FileInfoAux fileAux =  gitService.getRepositoriesFiles(projectInfo);;
-		List<NewFileInfo> files = fileAux.files;
+		List<FileInfo> files = fileAux.files;
 		projectInfo.setFiles(files);
 		projectInfo.setNumFiles(fileAux.numFiles);
 	}

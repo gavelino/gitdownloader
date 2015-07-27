@@ -80,7 +80,7 @@ public class ProjectInfo extends AbstractEntity implements Comparable<ProjectInf
 	private List<LanguageInfo> languages;
 	
 	@OneToMany(cascade = { CascadeType.ALL })
-	private List<NewFileInfo> files;
+	private List<FileInfo> files;
 
 //	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //	private List<RevisionGit> revisionGitList = new ArrayList<RevisionGit>();
@@ -341,11 +341,11 @@ public class ProjectInfo extends AbstractEntity implements Comparable<ProjectInf
 		this.numFiles = numFiles;
 	}
 
-	public List<NewFileInfo> getFiles() {
+	public List<FileInfo> getFiles() {
 		return files;
 	}
 
-	public void setFiles(List<NewFileInfo> files) {
+	public void setFiles(List<FileInfo> files) {
 		this.files = files;
 	}
 

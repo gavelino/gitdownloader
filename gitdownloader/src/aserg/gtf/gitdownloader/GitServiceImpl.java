@@ -17,8 +17,8 @@ import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import aserg.gtf.model.FileInfo;
 import aserg.gtf.model.LanguageInfo;
-import aserg.gtf.model.NewFileInfo;
 import aserg.gtf.model.ProjectInfo;
 
 import com.jcabi.github.Github;
@@ -105,7 +105,7 @@ public class GitServiceImpl implements GitService {
 						.method(Request.GET);
 	//			JsonArray items = (JsonArray) request.fetch().as(JsonResponse.class).json().readObject();
 				JsonArray items = request.fetch().as(JsonResponse.class).json().readObject().getJsonArray("tree");
-				List<NewFileInfo> files = new ArrayList<NewFileInfo>();
+				List<FileInfo> files = new ArrayList<FileInfo>();
 				int countFiles = 0;
 				int countDirectories = 0;
 				int countAll = 0;
@@ -114,11 +114,19 @@ public class GitServiceImpl implements GitService {
 				else{
 					for (JsonValue item : items) {
 						JsonObject repoData = (JsonObject) item;
-						NewFileInfo file = new NewFileInfo(project.getFullName(), repoData.getString("path"));
+						FileInfo file = new FileInfo(project);
+						file.setPath(repoData.getString("path"));
+						file.setMode(repoData.getString("mode"));
+						file.setType(repoData.getString("type"));
+						file.setSha(repoData.getString("sha"));
+						if(!repoData.containsKey("size"))
+							file.setSize(0);
+						else
+							file.setSize(repoData.getInt("size"));
 						files.add(file);
-						if (repoData.getString("type").equalsIgnoreCase("blob"))
+						if (file.getType().equalsIgnoreCase("blob"))
 							countFiles++;
-						else if (repoData.getString("type").equalsIgnoreCase("tree"))
+						else if (file.getType().equalsIgnoreCase("tree"))
 							countDirectories++;
 						countAll++;
 					}

@@ -2,43 +2,24 @@ package aserg.gtf.dao;
 
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
-import aserg.gtf.authorship.model.DeveloperAuthorshipInfo;
 import aserg.gtf.filter.filefilter.FileType;
 import aserg.gtf.model.FileInfo;
-import aserg.gtf.model.NewFileInfo;
 import aserg.gtf.model.ProjectInfo;
 
-public class NewFileInfoDAO extends GenericDAO<NewFileInfo>{
+public class FileInfoDAO extends GenericDAO<FileInfo>{
 
 	@Override
-	public void persist(NewFileInfo o) {
-		if (o.getId()!=null){
-			NewFileInfo newFile = this.em.find(NewFileInfo.class, o.getId());
-			if (newFile != null)
-				return;
-		}
-		super.persist(o);
-		
-	}
-
-	@Override
-	public void merge(NewFileInfo o) {
-		super.merge(o);
-	}
-	
-	@Override
-	public NewFileInfo find(Object o) {
-		return this.em.find(NewFileInfo.class, o);
+	public FileInfo find(Object o) {
+		return this.em.find(FileInfo.class, o);
 	}	
 
 	@Override
-	public boolean exist(NewFileInfo entity) {
+	public boolean exist(FileInfo entity) {
 		return this.find(entity.getId())!=null;
 	}
 
@@ -56,54 +37,27 @@ public class NewFileInfoDAO extends GenericDAO<NewFileInfo>{
 //			super.merge(persistedProject);
 //		}
 //	}
-//	public List<String> getPathsOfNotFilteredProjectFiles(String projectName){
-//		String custom = "";
-//		     
-//		String hql = "SELECT fi.path FROM projectinfo_fileinfo pi_fi "
-//				+ "JOIN projectinfo pi ON pi_fi.projectinfo_fullname = pi.fullname "
-//				+ "JOIN newfileinfo nfi on pi_fi.files_id = nfi.id "
-//				+ "WHERE pi.fullname = \'"+projectName+"\' AND nfi.filtered = 'FALSE' "
-//				+ ";";
-//				
-//		Query q = em.createNativeQuery(hql);
-//		return q.getResultList();
-//			
-//	}
+	public List<String> getPathsOfNotFilteredProjectFiles(String projectName){
+		String custom = "";
+		     
+		String hql = "SELECT fi.path FROM projectinfo_fileinfo pi_fi "
+				+ "JOIN projectinfo pi ON pi_fi.projectinfo_fullname = pi.fullname "
+				+ "JOIN fileinfo fi on pi_fi.files_id = fi.id "
+				+ "WHERE pi.fullname = \'"+projectName+"\' AND fi.filtered = 'FALSE' "
+				+ ";";
+				
+		Query q = em.createNativeQuery(hql);
+		return q.getResultList();
+			
+	}
 	
 	public int filterAndUpdateFilesInfo(String whereClauses, String filterStamp){
 		String custom = "";
 		     
-		String hql = "UPDATE  newfileinfo AS fi "
+		String hql = "UPDATE  fileinfo AS fi "
 				+ "SET filtered = \'TRUE\', filterinfo = \'"+ filterStamp +"\'  "
-				+ "WHERE "
-				+ whereClauses
-				+ ";";
-				
-				
-		Query q = em.createNativeQuery(hql);
-		int rows =0 ;
-		EntityTransaction tx = this.em.getTransaction();
-		try {
-			tx.begin();
-			rows = q.executeUpdate();
-			tx.commit();
-		} catch (RuntimeException e) {
-			if(tx != null && tx.isActive()) 
-				tx.rollback();
-			throw e;
-		} 
-		finally{
-			this.em.clear();
-		}
-		return rows;
-	}
-	public int filterAndUpdateFilesInfoByLanguage(String whereClauses, String filterStamp){
-		String custom = "";
-		     
-		String hql = "UPDATE  newfileinfo AS fi "
-				+ "SET filtered = \'TRUE\', filterinfo = \'"+ filterStamp +"\'  "
-				+ "FROM projectinfo AS pi    "
-				+ "WHERE pi.fullname = fi.repositoryname AND "
+				+ "FROM projectinfo_fileinfo AS pi_fi, projectinfo AS pi    "
+				+ "WHERE pi.filtered = \'FALSE\' AND fi.filtered = \'FALSE\' AND pi_fi.projectinfo_fullname = pi.fullname AND pi_fi.files_id = fi.id "
 				+ whereClauses
 				+ ";";
 				
@@ -126,12 +80,14 @@ public class NewFileInfoDAO extends GenericDAO<NewFileInfo>{
 		return rows;
 			
 	}
+	
 	public int removeFilterAndUpdateFilesInfo(String whereClauses, String filterStamp){
 		String custom = "";
 		     
-		String hql = "UPDATE  newfileinfo AS fi "
+		String hql = "UPDATE  fileinfo AS fi "
 				+ "SET filtered = \'FALSE\', filterinfo = \'\'  "
-				+ "WHERE "
+				+ "FROM projectinfo_fileinfo AS pi_fi, projectinfo AS pi    "
+				+ "WHERE pi.filtered = \'FALSE\' AND fi.filtered = \'TRUE\' AND pi_fi.projectinfo_fullname = pi.fullname AND pi_fi.files_id = fi.id "
 				+ whereClauses
 				+ ";";
 				
@@ -158,9 +114,10 @@ public class NewFileInfoDAO extends GenericDAO<NewFileInfo>{
 	public int classifierAndUpdateFilesInfo(String whereClauses, FileType fileType){
 		String custom = "";
 		     
-		String hql = "UPDATE  newfileinfo AS fi "
+		String hql = "UPDATE  fileinfo AS fi "
 				+ "SET kind = \'"+ fileType +"\'  "
-				+ "WHERE  "
+				+ "FROM projectinfo_fileinfo AS pi_fi, projectinfo AS pi    "
+				+ "WHERE pi.filtered = \'FALSE\' AND pi_fi.projectinfo_fullname = pi.fullname AND pi_fi.files_id = fi.id "
 				+ whereClauses
 				+ ";";
 				
@@ -186,32 +143,8 @@ public class NewFileInfoDAO extends GenericDAO<NewFileInfo>{
 	
 	public int cleanFilter(){
 			     
-		String hql = "UPDATE  newfileinfo "
+		String hql = "UPDATE  fileinfo "
 				+ "SET filtered = \'FALSE', filterinfo = \'\';";
-				
-				
-		Query q = em.createNativeQuery(hql);
-		int rows =0 ;
-		EntityTransaction tx = this.em.getTransaction();
-		try {
-			tx.begin();
-			rows = q.executeUpdate();
-			tx.commit();
-		} catch (RuntimeException e) {
-			if(tx != null && tx.isActive()) 
-				tx.rollback();
-			throw e;
-		} 
-		finally{
-			this.em.clear();
-		}
-		return rows;
-			
-	}
-	public int setAllAsNotLinguist(){
-	     
-		String hql = "UPDATE  newfileinfo "
-				+ "SET filtered = \'TRUE', kind = \'NOTIDENTIFIED\', filterinfo = \'#NOTLINGUIST#\', language = \'\';";
 				
 				
 		Query q = em.createNativeQuery(hql);
@@ -239,14 +172,15 @@ public class NewFileInfoDAO extends GenericDAO<NewFileInfo>{
 		for (String path : paths) {			
 			if (path.contains("\'"))
 				path = path.replace("'", "''");
-			String hql = "UPDATE  newfileinfo "
+			String hql = "UPDATE  fileinfo AS fi "
 					+ "SET kind = \'"
 					+ fileType
 					+ "\'  , language = \'"
 					+ language
 					+ "\', filtered = \'FALSE\' "
 					+ ", filterinfo = \'\' "
-					+ "WHERE repositoryname = \'" + projectName + "\' AND path =  \'"
+					+ "FROM projectinfo_fileinfo AS pi_fi, projectinfo AS pi    "
+					+ "WHERE pi.fullname = \'" + projectName + "\' AND pi_fi.projectinfo_fullname = pi.fullname AND pi_fi.files_id = fi.id and fi.path =  \'"
 					+ path + "\' " + ";";
 			queries.add(em.createNativeQuery(hql));
 		}
@@ -269,20 +203,6 @@ public class NewFileInfoDAO extends GenericDAO<NewFileInfo>{
 		return rows;
 		
 	}
-	PersistThread<NewFileInfo> thread = null;
-	public void persistAll(Collection<NewFileInfo> newFiles){
-		if (thread == null)
-			thread = new PersistThread<NewFileInfo>(newFiles, this);
-		else {
-			try {
-				if (thread.isAlive())
-					thread.join();
-				thread = new PersistThread<NewFileInfo>(newFiles, this);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		thread.start();
-	}
+	
 
 }

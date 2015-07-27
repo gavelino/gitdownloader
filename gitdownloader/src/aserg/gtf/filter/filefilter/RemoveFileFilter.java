@@ -3,6 +3,7 @@ package aserg.gtf.filter.filefilter;
 import java.util.Date;
 import java.util.List;
 
+import aserg.gtf.model.FileInfo;
 import aserg.gtf.model.ProjectInfo;
 
 public class RemoveFileFilter extends FileFilter{
