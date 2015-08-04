@@ -43,7 +43,7 @@ public class DistributionCalculator {
 				repository.setStatus(RepositoryStatus.ANALYZING);
 				repoDAO.update(repository);
 				System.out.format("%s (%s): Extracting authorship distribution information...\n", repoName, new Date());
-				HashSet<DeveloperAuthorshipInfo> developersAuthoship = distributionMap(repoDAO.getFilesAuthor(repoName), repoName, "Rank "	+ repoName, true);
+				HashSet<DeveloperAuthorshipInfo> developersAuthoship = distributionMap(repoDAO.getFilesMainAuthor(repoName), repoName, "Rank "	+ repoName, true);
 				
 				try {
 					saveInfile(repoName, developersAuthoship);
