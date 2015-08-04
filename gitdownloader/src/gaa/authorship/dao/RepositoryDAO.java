@@ -63,7 +63,7 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 		return this.find(entity.getId())!=null;
 	}
 	
-	public Map<String, Set<String>> getFilesAuthor(String repositoryName){
+	public Map<String, Set<String>> getFilesMainAuthor(String repositoryName){
 		String hql = "SELECT d.newusername, fi.path FROM repository_file rf	"
 				+ "JOIN repository r ON r.id = rf.repository_id "
 				+ "JOIN file fi ON fi.id = rf.files_id "
@@ -108,13 +108,15 @@ public class RepositoryDAO extends GenericDAO<Repository> {
 		String hql = "SELECT d.id, fi.id FROM repository_file rf	"
 				+ "JOIN repository r ON r.id = rf.repository_id "
 				+ "JOIN file fi ON fi.id = rf.files_id "
-				+ "JOIN authorshipinfo ai ON ai.id = fi.bestauthorshipinfo_id "
-				+ "JOIN developer d ON ai.developer_id = d.id "
-				+ "WHERE r.fullname = \'" +  repositoryName +"\' " 
+				+ "	JOIN authorshipinfo ai ON ai.file_id = fi.id "
+				+ "	JOIN developer d ON ai.developer_id = d.id "
+				+ "WHERE r.fullname = \'" +  repositoryName +"\' AND d.removed = 'FALSE'  AND ai.doamultauthor/fi.bestdoamult > 0.75 AND (ai.doamultauthor>=3.293 OR ai.firstauthor OR ai.secondaryauthor) " 
 				+ "ORDER BY fi.path;";
 		Query q = em.createNativeQuery(hql);
 		List<Object[]> authorsFiles = q.getResultList();
-		
+//		for (Object[] objects : authorsFiles) {
+//			System.out.println(objects[0] + " - " + objects[1]);
+//		}
 		List<FileAuthors> fileAuthors = new ArrayList<FileAuthors>();
 		for (Object[] objects : authorsFiles) {
 			Long authorId = (Long)objects[0];
