@@ -1,26 +1,13 @@
 package gaa.gitdownloader;
 
-import gaa.dao.ProjectInfoDAO;
-import gaa.model.FileInfo;
-import gaa.model.LanguageInfo;
-import gaa.model.ProjectInfo;
-import gaa.model.ProjectStatus;
-
 import java.io.IOException;
 import java.util.Date;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
-import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.errors.AmbiguousObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
@@ -32,13 +19,16 @@ import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
-import org.eclipse.jgit.treewalk.EmptyTreeIterator;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
-import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 import com.jcabi.github.Github;
-import com.jcabi.github.Github.Time;
 import com.jcabi.github.RtGithub;
+
+import gaa.dao.ProjectInfoDAO;
+import gaa.model.FileInfo;
+import gaa.model.LanguageInfo;
+import gaa.model.ProjectInfo;
+import gaa.model.ProjectStatus;
 
 public class GitDownloader {
 	public static void main(String[] args) throws Exception {

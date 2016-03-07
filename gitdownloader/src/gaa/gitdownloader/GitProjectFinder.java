@@ -1,7 +1,5 @@
 package gaa.gitdownloader;
 
-import gaa.model.ProjectInfo;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +11,13 @@ import javax.json.JsonValue;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.apache.log4j.lf5.viewer.configure.ConfigurationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jcabi.http.Request;
 import com.jcabi.http.response.JsonResponse;
+
+import gaa.model.ProjectInfo;
 
 public class GitProjectFinder {
 

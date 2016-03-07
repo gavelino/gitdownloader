@@ -1,9 +1,5 @@
 package gaa.gitdownloader;
 
-import gaa.model.FileInfo;
-import gaa.model.LanguageInfo;
-import gaa.model.ProjectInfo;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,6 +20,10 @@ import org.slf4j.LoggerFactory;
 import com.jcabi.github.Github;
 import com.jcabi.http.Request;
 import com.jcabi.http.response.JsonResponse;
+
+import gaa.model.FileInfo;
+import gaa.model.LanguageInfo;
+import gaa.model.ProjectInfo;
 
 
 public class GitServiceImpl implements GitService {

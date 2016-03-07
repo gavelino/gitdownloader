@@ -1,13 +1,5 @@
 package gaa.gitdownloader;
 
-import gaa.dao.CommitInfoDAO;
-import gaa.dao.ProjectInfoDAO;
-import gaa.extractor.GitLoggerExtractor;
-import gaa.model.CommitFileInfo;
-import gaa.model.CommitInfo;
-import gaa.model.LogCommitFileInfo;
-import gaa.model.ProjectInfo;
-
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -26,6 +18,14 @@ import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.EmptyTreeIterator;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
+
+import gaa.dao.CommitInfoDAO;
+import gaa.dao.ProjectInfoDAO;
+import gaa.extractor.GitLoggerExtractor;
+import gaa.model.CommitFileInfo;
+import gaa.model.CommitInfo;
+import gaa.model.LogCommitFileInfo;
+import gaa.model.ProjectInfo;
 
 public class DownloaderUtil {
 	

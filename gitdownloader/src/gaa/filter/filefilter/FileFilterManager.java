@@ -1,7 +1,5 @@
 package gaa.filter.filefilter;
 
-import org.eclipse.jgit.api.CleanCommand;
-
 public class FileFilterManager {
 	public static void main(String[] args) {
 		RemoveFileFilter removeFileFilter  = new RemoveFileFilter();
