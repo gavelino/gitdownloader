@@ -41,7 +41,8 @@ public class GitProjectFinder {
 			ProjectInfo p = new ProjectInfo();
 			if (!repoData.isNull("full_name")){
 				p.setFullName(repoData.getString("full_name"));
-				p.setName(p.getFullName().replace('/', '-'));
+				p.setName(repoData.getString("name"));
+				p.setOwner(p.getFullName().split("/")[0]);
 			}
 			p.setSize(repoData.getInt("size"));
 			p.setFork(repoData.getBoolean("fork"));

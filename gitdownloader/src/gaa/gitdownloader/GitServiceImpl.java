@@ -37,7 +37,7 @@ public class GitServiceImpl implements GitService {
 	}
 	
 	public Repository cloneIfNotExists(ProjectInfo projectInfo) throws Exception {
-		String projectPath = DownloaderUtil.PATH+projectInfo.getName();
+		String projectPath = DownloaderUtil.PATH+projectInfo.getFullName();
 		String cloneUrl = projectInfo.getCloneUrl();
 		String branch = projectInfo.getDefault_branch();
 		

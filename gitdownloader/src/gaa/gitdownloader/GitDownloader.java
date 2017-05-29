@@ -45,10 +45,10 @@ public class GitDownloader {
 //		String query = "language:Java repo:gavelino/gitresearch";
 //		String query = "language:Java repo:junit-team/junit";
 //		String query = "repo:jessesquires/JSQMessagesViewController";
-//		String query = "language:Java";
-		String query = "stars:>1000";
-		String op = "4";
-		int numRepository = 1000;
+		String query = "language:Java";
+//		String query = "stars:>1000";
+		String op = "0";
+		int numRepository = 11;
 		if (args.length>0)
 			op = args[0];
 		if (args.length>1)
@@ -61,7 +61,7 @@ public class GitDownloader {
 		List<ProjectInfo> projectsInfo = null;
 		ProjectInfoDAO projectDAO = new ProjectInfoDAO();
 		GitServiceImpl gitService = new GitServiceImpl(github);
-		if (op.equals("1")){
+		if (op.equals("0")||op.equals("1")){
 			projectsInfo = gitService.searchRepositories(numRepository, query);
 			DownloaderUtil.persistProjects(projectsInfo);
 			new UpdateRepositoriesInfoThread(github, projectsInfo).start();
@@ -84,10 +84,10 @@ public class GitDownloader {
 			if (projectInfo.getStatus() == ProjectStatus.NULL) {
 				try {
 					
-					System.out.println("Clonando " + projectInfo.getName());
+					System.out.println("Clonando " + projectInfo.getFullName());
 					Repository repository = gitService.cloneIfNotExists(projectInfo);
 //					System.out.println("Clonou");
-					if (projectInfo.hasUpdated()) {
+					if (!op.equals("0") && projectInfo.hasUpdated()) {
 						Iterable<RevCommit> logs = new Git(repository).log()
 								.call();
 						int count = 0;
@@ -106,9 +106,9 @@ public class GitDownloader {
 //								+ lastCommitDate);
 						projectInfo.setCommits_count(count);
 						projectInfo.setLastCommit(lastCommitDate);
-						projectInfo.setStatus(ProjectStatus.DOWNLOADED);
-						projectDAO.update(projectInfo);
 					}
+					projectInfo.setStatus(ProjectStatus.DOWNLOADED);
+					projectDAO.update(projectInfo);
 				} catch (Exception e) {
 					e.printStackTrace();
 					projectInfo.setErrorMsg("GitDownloader error: "
@@ -138,7 +138,7 @@ public class GitDownloader {
 
 	private static void addProjectFilesInfo(GitServiceImpl gitService, ProjectInfo projectInfo)
 			throws IOException {
-		FileInfoAux fileAux =  gitService.getRepositoriesFiles(projectInfo);;
+		FileInfoAux fileAux =  gitService.getRepositoriesFiles(projectInfo);
 		List<FileInfo> files = fileAux.files;
 		projectInfo.setFiles(files);
 		projectInfo.setNumFiles(fileAux.numFiles);

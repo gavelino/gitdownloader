@@ -36,6 +36,7 @@ public class ProjectInfo extends AbstractEntity implements Comparable<ProjectInf
 	
 	private static final long serialVersionUID = 1L;
 	private String name;
+	private String owner;
 	@Column(unique = true)
 	private String cloneUrl;
 	private String homepage;
@@ -352,6 +353,14 @@ public class ProjectInfo extends AbstractEntity implements Comparable<ProjectInf
 	@Override
 	public int compareTo(ProjectInfo o) {
 		return Integer.compare(this.stargazers_count, o.stargazers_count);
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 }

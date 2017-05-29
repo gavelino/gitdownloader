@@ -29,18 +29,18 @@ import gaa.model.ProjectInfo;
 
 public class DownloaderUtil {
 	
-	public static String PATH = "F:/tmp/gitrepositories/";
+	public static String PATH = "/Users/guilherme/test/gitdownloader/";
 
 	public static Map<String, List<CommitInfo>> getAllCommits(List<ProjectInfo> projectsInfo) throws Exception {
 		Map<String, List<CommitInfo>> allCommitFiles = new HashMap<String, List<CommitInfo>>();
 		for (ProjectInfo projectInfo : projectsInfo) {
-			allCommitFiles.put(projectInfo.getName(), getCommits(projectInfo));
+			allCommitFiles.put(projectInfo.getFullName(), getCommits(projectInfo));
 }
 		return allCommitFiles;
 	}
 	public static List<CommitInfo> getCommits(ProjectInfo projectInfo) throws Exception {
 		GitServiceImpl s = new GitServiceImpl();
-		Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
+		Repository repository = s.getClonedRepository(PATH+projectInfo.getFullName(), projectInfo.getDefault_branch());
 		RevCommit currentCommit = null;
 		RevWalk walk = new RevWalk(repository);
 		List<CommitInfo> commitsInfo =  new ArrayList<CommitInfo>();
@@ -67,7 +67,7 @@ public class DownloaderUtil {
 	static int MAXBUFEER = 10000;
 	public static void getAndPersistCommitsBlock(ProjectInfo projectInfo) throws Exception {
 		GitServiceImpl s = new GitServiceImpl();
-		Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
+		Repository repository = s.getClonedRepository(PATH+projectInfo.getFullName(), projectInfo.getDefault_branch());
 		RevCommit currentCommit = null;
 		RevWalk walk = new RevWalk(repository);
 		CommitInfoDAO commitDAO = new CommitInfoDAO();
@@ -113,7 +113,7 @@ public class DownloaderUtil {
 	public static void getAndPersistCommitsUsingLogFiles(String path, ProjectInfo projectInfo) throws Exception {
 		Map<String, List<LogCommitFileInfo>> mapLogFiles = GitLoggerExtractor.extractProject(path, projectInfo.getFullName());
 		GitServiceImpl s = new GitServiceImpl();
-		Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
+		Repository repository = s.getClonedRepository(PATH+projectInfo.getFullName(), projectInfo.getDefault_branch());
 		RevCommit currentCommit = null;
 		RevWalk walk = new RevWalk(repository);
 		CommitInfoDAO commitDAO = new CommitInfoDAO();
@@ -165,7 +165,7 @@ public class DownloaderUtil {
 	}
 	public static void getAndPersistCommits(ProjectInfo projectInfo) throws Exception {
 		GitServiceImpl s = new GitServiceImpl();
-		Repository repository = s.getClonedRepository(PATH+projectInfo.getName(), projectInfo.getDefault_branch());
+		Repository repository = s.getClonedRepository(PATH+projectInfo.getFullName(), projectInfo.getDefault_branch());
 		RevCommit currentCommit = null;
 		RevWalk walk = new RevWalk(repository);
 		CommitInfoDAO commitDAO = new CommitInfoDAO();
@@ -251,9 +251,12 @@ public class DownloaderUtil {
 	public static void persistProjects(List<ProjectInfo> projectsInfo) {
 		ProjectInfoDAO projectDAO = new ProjectInfoDAO();
 		for (ProjectInfo projectGit : projectsInfo) {
-			projectDAO.persist(projectGit);
+			if (!projectDAO.exist(projectGit))
+				projectDAO.persist(projectGit);
+			else 
+				projectDAO.update(projectGit);
 		}
-
+		
 	}
 	
 	public static List<ProjectInfo> getProjects() {
