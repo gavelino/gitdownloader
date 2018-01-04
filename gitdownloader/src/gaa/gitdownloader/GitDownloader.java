@@ -44,11 +44,11 @@ public class GitDownloader {
 		Github github = new RtGithub("asergprogram", "aserg.ufmg2009");
 //		String query = "language:Java repo:gavelino/gitresearch";
 //		String query = "language:Java repo:junit-team/junit";
-//		String query = "repo:jessesquires/JSQMessagesViewController";
-		String query = "language:Java";
+		String query = "repo:pry/pry";
+//		String query = "language:Java";
 //		String query = "stars:>1000";
 		String op = "0";
-		int numRepository = 11;
+		int numRepository = 1;
 		if (args.length>0)
 			op = args[0];
 		if (args.length>1)
@@ -93,7 +93,7 @@ public class GitDownloader {
 						int count = 0;
 						Date lastCommitDate = null;
 						for (RevCommit rev : logs) {
-							//System.out.println("Commit: " + rev /* + ", name: " + rev.getName() + ", id: " + rev.getId().getName() */);
+							System.out.println("Commit: " + rev /* + ", name: " + rev.getName() + ", id: " + rev.getId().getName() */);
 							count++;
 							if (lastCommitDate == null
 									|| lastCommitDate.compareTo(rev.getCommitterIdent().getWhen()) < 0)

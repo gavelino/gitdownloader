@@ -20,7 +20,7 @@ public class GitHubDeveloperDAO extends GenericDAO<GitHubDeveloper>{
 
 	@Override
 	public void persist(GitHubDeveloper o) {
-		GitHubDeveloper persistedGitHubDev = this.em.find(GitHubDeveloper.class, o.getLogin());
+		GitHubDeveloper persistedGitHubDev = this.em.find(GitHubDeveloper.class, o.getGitHubId());
 		if (persistedGitHubDev == null)
 			super.persist(o);
 		
@@ -61,7 +61,7 @@ public class GitHubDeveloperDAO extends GenericDAO<GitHubDeveloper>{
 	
 	public void persistOrUpdate(GitHubDeveloper o){
 		o.setUpdated(false);
-		GitHubDeveloper persistedDev = this.em.find(GitHubDeveloper.class, o.getLogin());
+		GitHubDeveloper persistedDev = this.em.find(GitHubDeveloper.class, o.getGitHubId());
 		if (persistedDev != null){
 			persistedDev.setCompany(o.getCompany());
 			persistedDev.setEmail(o.getEmail());

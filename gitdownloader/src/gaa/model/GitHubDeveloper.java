@@ -22,12 +22,13 @@ public class GitHubDeveloper extends AbstractEntity{
 	@Transient
 	private static String SEP_STR= "**";
 	@Transient
-	private static Map<String, GitHubDeveloper> gitHubDevs = new HashMap<String, GitHubDeveloper>();
+	private static Map<Integer, GitHubDeveloper> gitHubDevs = new HashMap<Integer, GitHubDeveloper>();
 	@Id
+	private int gitHubId;
+	
+	@Index(name="GITHUB_LOGIN")
 	private String login;
 
-	@Index(name="GITHUB_ID")
-	private int gitHubId;
 	
 	@ElementCollection
 	private Set<String> pairsNameEmail;
@@ -52,9 +53,9 @@ public class GitHubDeveloper extends AbstractEntity{
 	}
 	
 	public static void initiateGitHubDeveloper(List<GitHubDeveloper> gitHubDevelopers){
-		gitHubDevs = new HashMap<String, GitHubDeveloper>();
+		gitHubDevs = new HashMap<Integer, GitHubDeveloper>();
 		for (GitHubDeveloper gitHubDeveloper : gitHubDevelopers) {
-			gitHubDevs.put(gitHubDeveloper.getLogin(), gitHubDeveloper);
+			gitHubDevs.put(gitHubDeveloper.getGitHubId(), gitHubDeveloper);
 		}
 	}
 
@@ -62,9 +63,9 @@ public class GitHubDeveloper extends AbstractEntity{
 			CommitUser commitUser, ProjectDevelopers projectDevs) {
 		String userString = createUserString(commitUser);
 		if(user!=null&&user.getLogin()!=null){
-			if (!gitHubDevs.containsKey(user.getLogin()))
-				gitHubDevs.put(user.getLogin(), new GitHubDeveloper(user));
-			GitHubDeveloper gitHubDev = gitHubDevs.get(user.getLogin());
+			if (!gitHubDevs.containsKey(user.getId()))
+				gitHubDevs.put(user.getId(), new GitHubDeveloper(user));
+			GitHubDeveloper gitHubDev = gitHubDevs.get(user.getId());
 			if (!gitHubDev.pairsNameEmail.contains(userString)){
 				gitHubDev.pairsNameEmail.add(createUserString(commitUser));
 				gitHubDev.setUpdated(true);
@@ -117,7 +118,7 @@ public class GitHubDeveloper extends AbstractEntity{
 		this.company = company;
 	}
 	
-	public static Map<String, GitHubDeveloper> getGitHubDevs() {
+	public static Map<Integer, GitHubDeveloper> getGitHubDevs() {
 		return gitHubDevs;
 	}
 	

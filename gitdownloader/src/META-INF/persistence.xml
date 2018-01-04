@@ -30,7 +30,7 @@
 
 		<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
 		
-		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/tfstudy-temp" />
+		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/tfstudy" />
 		<property name="javax.persistence.jdbc.user" value="gitdownloader" />
 		<property name="javax.persistence.jdbc.password" value="gitdownloader" />
 		
