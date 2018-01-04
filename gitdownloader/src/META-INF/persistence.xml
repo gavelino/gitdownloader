@@ -20,6 +20,8 @@
     <class>gaa.authorship.model.File</class>
     <class>gaa.authorship.model.AuthorshipInfo</class>
     <class>gaa.authorship.model.DeveloperAuthorshipInfo</class>
+    <class>gaa.model.GitHubDeveloper</class>
+    <class>gaa.model.ProjectDevelopers</class>
     
 <!--     <class>gaa.model.GitRepository</class> -->
 
@@ -28,7 +30,7 @@
 
 		<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
 		
-		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gitdownloader" />
+		<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/tfstudy-temp" />
 		<property name="javax.persistence.jdbc.user" value="gitdownloader" />
 		<property name="javax.persistence.jdbc.password" value="gitdownloader" />
 		

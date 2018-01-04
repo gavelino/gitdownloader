@@ -29,7 +29,7 @@ import gaa.model.ProjectInfo;
 
 public class DownloaderUtil {
 	
-	public static String PATH = "/Users/guilherme/test/gitdownloader/";
+	public static String PATH = "/Users/guilherme/test/github_repositories/";
 
 	public static Map<String, List<CommitInfo>> getAllCommits(List<ProjectInfo> projectsInfo) throws Exception {
 		Map<String, List<CommitInfo>> allCommitFiles = new HashMap<String, List<CommitInfo>>();
