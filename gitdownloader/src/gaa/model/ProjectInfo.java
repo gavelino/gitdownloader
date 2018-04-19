@@ -89,6 +89,8 @@ public class ProjectInfo extends AbstractEntity implements Comparable<ProjectInf
 
 
 	public String getName() {
+		if (this.name == null && !this.fullName.isEmpty())
+			return fullName.split("/")[1];
 		return name;
 	}
 
@@ -356,6 +358,8 @@ public class ProjectInfo extends AbstractEntity implements Comparable<ProjectInf
 	}
 
 	public String getOwner() {
+		if (this.owner == null && !this.fullName.isEmpty())
+			return fullName.split("/")[0];
 		return owner;
 	}
 
