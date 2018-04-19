@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,6 +32,7 @@ public class GitHubDeveloper extends AbstractEntity{
 
 	
 	@ElementCollection
+	@Column(length=1200)
 	private Set<String> pairsNameEmail;
 	private String name;
 	private String email;
@@ -59,27 +61,27 @@ public class GitHubDeveloper extends AbstractEntity{
 		}
 	}
 
-	public static GitHubDeveloper addGitHubDeveloper(User user,
-			CommitUser commitUser, ProjectDevelopers projectDevs) {
-		String userString = createUserString(commitUser);
-		if(user!=null&&user.getLogin()!=null){
-			if (!gitHubDevs.containsKey(user.getId()))
-				gitHubDevs.put(user.getId(), new GitHubDeveloper(user));
-			GitHubDeveloper gitHubDev = gitHubDevs.get(user.getId());
-			if (!gitHubDev.pairsNameEmail.contains(userString)){
-				gitHubDev.pairsNameEmail.add(createUserString(commitUser));
-				gitHubDev.setUpdated(true);
-			}
-			projectDevs.addGitHubDevs(user.getLogin());
-			return gitHubDev;
-		}
-		else{
-			projectDevs.addNotGitHubDevs(userString);
-		}
-		return null;
-	}
-	private static String createUserString(CommitUser commitUser) {
-		return commitUser.getName().toUpperCase()+SEP_STR+commitUser.getEmail().toUpperCase();
+//	public static GitHubDeveloper addGitHubDeveloper(User user,
+//			CommitUser commitUser, ProjectDevelopers projectDevs) {
+//		String userString = createUserString(commitUser);
+//		if(user!=null&&user.getLogin()!=null){
+//			if (!gitHubDevs.containsKey(user.getId()))
+//				gitHubDevs.put(user.getId(), new GitHubDeveloper(user));
+//			GitHubDeveloper gitHubDev = gitHubDevs.get(user.getId());
+//			if (!gitHubDev.pairsNameEmail.contains(userString)){
+//				gitHubDev.pairsNameEmail.add(createUserString(commitUser));
+//				gitHubDev.setUpdated(true);
+//			}
+//			projectDevs.addGitHubDevs(user.getLogin());
+//			return gitHubDev;
+//		}
+//		else{
+//			projectDevs.addNotGitHubDevs(userString);
+//		}
+//		return null;
+//	}
+	public static String createUserString(String userName, String userEmail) {
+		return userName.toUpperCase()+SEP_STR+userEmail.toUpperCase();
 	}
 	public int getGitHubId() {
 		return gitHubId;
@@ -133,5 +135,6 @@ public class GitHubDeveloper extends AbstractEntity{
 	public void setUpdated(boolean updated) {
 		this.updated = updated;
 	}
+	
 	
 }

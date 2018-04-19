@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.egit.github.core.Commit;
 import org.eclipse.egit.github.core.CommitUser;
@@ -37,8 +38,6 @@ public class GitDownloader_Developers {
 		
 		
 		GitHubClient client = new MyGitHubClient(new HashSet<String>(Arrays.asList(tokens)));
-		//        client.setCredentials("asergprogram", "aserg.ufmg2009");
-		//		client.setOAuth2Token("233d0f25b3fa8f0cca3a0e9e63e2487c47d19030");
 		RepositoryService service = new RepositoryService(client);
 		
 		GitHubDeveloperDAO gitHubDevelopersDao = new GitHubDeveloperDAO();
@@ -57,13 +56,13 @@ public class GitDownloader_Developers {
 		try {
 			for (ProjectInfo project : projects){
 				if (project.getStatus() == ProjectStatus.GETINFO) {
+					currentProject = project.getFullName();
+					ProjectDevelopers projectDevs = new ProjectDevelopers(currentProject);
+					System.out.println(currentProject + " - Analyzing ...");
 					Repository repo = service.getRepository(project.getOwner(),
 							project.getName());
 					project.setStatus(ProjectStatus.ANALYZING);
 					projectDAO.update(project);
-					currentProject = project.getFullName();
-					ProjectDevelopers projectDevs = new ProjectDevelopers(currentProject);
-					System.out.println(currentProject + " - Analyzing ...");
 					CommitService commitService = new CommitService(client);
 					List<RepositoryCommit> commits = commitService.getCommits(repo);
 					int nCommits1=0;
@@ -79,10 +78,10 @@ public class GitDownloader_Developers {
 									nCommits1++;
 								if (author!= null)
 									nCommits2++;
-								GitHubDeveloper.addGitHubDeveloper(
+								addGitHubDeveloper(
 										author,
 										commit.getAuthor(), projectDevs);
-								GitHubDeveloper.addGitHubDeveloper(
+								addGitHubDeveloper(
 										committer,
 										commit.getCommitter(), projectDevs);
 
@@ -116,5 +115,26 @@ public class GitDownloader_Developers {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public static GitHubDeveloper addGitHubDeveloper(User user,
+			CommitUser commitUser, ProjectDevelopers projectDevs) {
+		String userString = GitHubDeveloper.createUserString(commitUser.getName(), commitUser.getEmail());
+		Map<Integer, GitHubDeveloper> gitHubDevs = GitHubDeveloper.getGitHubDevs();
+		if(user!=null&&user.getLogin()!=null){
+			if (!gitHubDevs.containsKey(user.getId()))
+				gitHubDevs.put(user.getId(), new GitHubDeveloper(user));
+			GitHubDeveloper gitHubDev = gitHubDevs.get(user.getId());
+			if (!gitHubDev.getPairsNameEmail().contains(userString)){
+				gitHubDev.getPairsNameEmail().add(GitHubDeveloper.createUserString(commitUser.getName(), commitUser.getEmail()));
+				gitHubDev.setUpdated(true);
+			}
+			projectDevs.addGitHubDevs(user.getLogin());
+			return gitHubDev;
+		}
+		else{
+			projectDevs.addNotGitHubDevs(userString);
+		}
+		return null;
 	}
 }
